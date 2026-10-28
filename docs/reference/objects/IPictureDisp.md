@@ -1,0 +1,14 @@
+# IPictureDisp
+
+Inventor API object · versions: 2024+ · [index](../index.md)
+
+**How to get it:** `Application.ActiveDocument.Thumbnail`
+
+```csharp
+interface IPictureDisp
+{
+}
+```
+
+**Returned by:** [ApprenticeServerDocument](../objects/ApprenticeServerDocument.md).Thumbnail, [ApprenticeServerDrawingDocument](../objects/ApprenticeServerDrawingDocument.md).Thumbnail, [AssemblyDocument](../objects/AssemblyDocument.md).Thumbnail, [BIMComponentDescription](../objects/BIMComponentDescription.md).Thumbnail, [ButtonDefinition](../objects/ButtonDefinition.md).LargeIcon, [ButtonDefinition](../objects/ButtonDefinition.md).StandardIcon, [Camera](../objects/Camera.md).CreateImage, [Camera](../objects/Camera.md).CreateImageWithOptions, [ComboBoxDefinition](../objects/ComboBoxDefinition.md).LargeIcon, [ComboBoxDefinition](../objects/ComboBoxDefinition.md).StandardIcon, [ContentFamily](../objects/ContentFamily.md).Thumbnail, [ContentTreeViewNode](../objects/ContentTreeViewNode.md).Icon, [ControlDefinition](../objects/ControlDefinition.md).LargeIcon, [ControlDefinition](../objects/ControlDefinition.md).StandardIcon, [Document](../objects/Document.md).Thumbnail, [DrawingDocument](../objects/DrawingDocument.md).Thumbnail, [Environment](../objects/Environment.md).LargeIcon, [Environment](../objects/Environment.md).StandardIcon, [LibrarySketchedSymbolDefinition](../objects/LibrarySketchedSymbolDefinition.md).Thumbnail, [MacroControlDefinition](../objects/MacroControlDefinition.md).LargeIcon, [MacroControlDefinition](../objects/MacroControlDefinition.md).StandardIcon, [MiniToolbarButton](../objects/MiniToolbarButton.md).LargeIcon, [MiniToolbarButton](../objects/MiniToolbarButton.md).StandardIcon, [MiniToolbarCheckBox](../objects/MiniToolbarCheckBox.md).LargeIcon, [MiniToolbarCheckBox](../objects/MiniToolbarCheckBox.md).StandardIcon, [MiniToolbarComboBox](../objects/MiniToolbarComboBox.md).LargeIcon, [MiniToolbarComboBox](../objects/MiniToolbarComboBox.md).StandardIcon, [MiniToolbarControl](../objects/MiniToolbarControl.md).LargeIcon, [MiniToolbarControl](../objects/MiniToolbarControl.md).StandardIcon, [MiniToolbarDropdown](../objects/MiniToolbarDropdown.md).LargeIcon, [MiniToolbarDropdown](../objects/MiniToolbarDropdown.md).StandardIcon, [MiniToolbarListItem](../objects/MiniToolbarListItem.md).LargeIcon, [MiniToolbarListItem](../objects/MiniToolbarListItem.md).StandardIcon, [MiniToolbarSlider](../objects/MiniToolbarSlider.md).LargeIcon, [MiniToolbarSlider](../objects/MiniToolbarSlider.md).StandardIcon, [MiniToolbarTextBox](../objects/MiniToolbarTextBox.md).LargeIcon, [MiniToolbarTextBox](../objects/MiniToolbarTextBox.md).StandardIcon, [MiniToolbarTextEditor](../objects/MiniToolbarTextEditor.md).LargeIcon, [MiniToolbarTextEditor](../objects/MiniToolbarTextEditor.md).StandardIcon, [MiniToolbarValueEditor](../objects/MiniToolbarValueEditor.md).LargeIcon and 11 more (see `members.tsv`)
+

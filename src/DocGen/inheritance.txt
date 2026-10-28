@@ -1,0 +1,294 @@
+# Inventor API inheritance (the interop flattens COM inheritance, so it does not show up in the metadata).
+# Format: Derived: Base  (or "Base1 | Base2" when the legend is ambiguous; DocGen picks one by vtable).
+# Extracted from the [x] (base) and (x) (derived) marks of the Autodesk InventorObjectModel_2024..2027.pdf
+# posters, plus Part/AssemblyComponentDefinition -> ComponentDefinition, which the poster does not mark.
+# Types not listed here (proxies, new types) use the longest vtable prefix as their base.
+AliasFreeformFeature: PartFeature
+AngleConstraint: AssemblyConstraint
+AngleExtent: PartFeatureExtent
+AngleiMateDefinition: iMateDefinition
+AngularModelDimensionDefinition: ModelDimensionDefinition
+ArcLengthDimConstraint: DimensionConstraint
+AssemblyComponentDefinition: ComponentDefinition
+AssemblyDocument: Document
+AssemblySymmetryConstraint: AssemblyConstraint
+BalloonStyle: Style
+BendConstraint: GeometricConstraint3D
+BendFeature: PartFeature
+BendPartFeature: PartFeature
+BooleanAssetValue: AssetValue
+BoundaryPatchFeature: PartFeature
+ButtonDefinition: ControlDefinition
+CenteredWidthExtent: PartFeatureExtent
+CentermarkStyle: Style
+ChamferFeature: PartFeature
+ChoiceAssetValue: AssetValue
+CircularOccurrencePattern: OccurrencePattern
+CircularPatternFeature: PartFeature
+ClientBrowserNodeDefinition: BrowserNodeDefinition
+ClientFeature: PartFeature
+CoilFeature: PartFeature
+CoincidentConstraint: GeometricConstraint
+CoincidentConstraint3D: GeometricConstraint3D
+CollinearConstraint: GeometricConstraint
+CollinearConstraint3D: GeometricConstraint3D
+ColorAssetValue: AssetValue
+ComboBoxDefinition: ControlDefinition
+CompositeiMateDefinition: iMateDefinition
+ConcentricConstraint: GeometricConstraint
+ConcentricHolePlacementDefinition: HolePlacementDefinition
+ContourFlangeFeature: PartFeature
+CornerChamferFeature: PartFeature
+CornerFeature: PartFeature
+CornerRoundFeature: PartFeature
+CurveGraphics: GraphicsPrimitive
+CustomConstraint3D: GeometricConstraint3D
+CutAcrossBendsExtent: PartFeatureExtent
+CutFeature: PartFeature
+DWGEntityArcSegment: DWGEntitySegment | HelicalCurveDefinition
+DWGEntityEllipticalArcSegment: DWGEntitySegment | HelicalCurveDefinition
+DWGEntityLineSegment: DWGEntitySegment | HelicalCurveDefinition
+DWGEntitySplineSegment: DWGEntitySegment | HelicalCurveDefinition
+DecalFeature: PartFeature
+DeleteFaceFeature: PartFeature
+DerivedPartCoordinateSystemDef: DerivedPartDefinition
+DerivedPartTransformDef: DerivedPartDefinition
+DerivedPartUniformScaleDef: DerivedPartDefinition
+DetailDrawingView: DrawingView
+DiameterDimConstraint: DimensionConstraint
+DiameterModelDimensionDefinition: ModelDimensionDefinition
+DimensionStyle: Style
+DistanceAndAngleChamferDef: ChamferDefinition
+DistanceChamferDef: ChamferDefinition
+DistanceExtent: PartFeatureExtent
+DistanceFromFaceExtent: PartFeatureExtent
+DistanceHeightExtent: PartFeatureExtent
+DrawingDocument: Document
+DrawingSketch: Sketch
+DrawingStandardStyle: Style
+EdgeWidthExtent: PartFeatureExtent
+EllipseRadiusDimConstraint: DimensionConstraint
+EmbossFeature: PartFeature
+EqualConstraint3D: GeometricConstraint3D
+EqualLengthConstraint: GeometricConstraint
+EqualRadiusConstraint: GeometricConstraint
+ExtendFeature: PartFeature
+ExtrudeFeature: PartFeature
+FaceDraftFeature: PartFeature
+FaceFeature: PartFeature
+FeatureBasedOccurrencePattern: OccurrencePattern
+FeatureControlFrameStyle: Style
+FilenameAssetValue: AssetValue
+FilletConstantRadiusEdgeSet: FilletRadiusEdgeSet
+FilletFeature: PartFeature
+FilletVariableRadiusEdgeSet: FilletRadiusEdgeSet
+FlangeFeature: PartFeature
+FloatAssetValue: AssetValue
+FlushConstraint: AssemblyConstraint
+FlushiMateDefinition: iMateDefinition
+FoldFeature: PartFeature
+FreeDragMoveOperation: DrawingDimension | MoveOperation
+FromToExtent: PartFeatureExtent
+FromToWidthExtent: PartFeatureExtent
+FullSweepExtent: PartFeatureExtent
+GeneralDimension: DrawingDimension | MoveOperation
+GeneralNote: DrawingNote
+GraphicsColorSet: GraphicsDataSet
+GraphicsCoordinateSet: GraphicsDataSet
+GraphicsImageSet: GraphicsDataSet
+GraphicsIndexSet: GraphicsDataSet
+GraphicsNormalSet: GraphicsDataSet
+GraphicsTextureCoordinateSet: GraphicsDataSet
+GroundConstraint: GeometricConstraint
+GroundConstraint3D: GeometricConstraint3D
+HelicalConstraint3D: GeometricConstraint3D
+HelicalCurveConstantShapeDefinition: DWGEntitySegment | HelicalCurveDefinition
+HelicalCurveVariableShapeDefinition: DWGEntitySegment | HelicalCurveDefinition
+HemFeature: PartFeature
+HoleFeature: PartFeature
+HoleTableStyle: Style
+HoleTapInfo: ThreadInfo
+HorizontalAlignConstraint: GeometricConstraint
+HorizontalConstraint: GeometricConstraint
+InsertConstraint: AssemblyConstraint
+InsertiMateDefinition: iMateDefinition
+IntegerAssetValue: AssetValue
+KnitFeature: PartFeature
+Layer: Style
+LeaderNote: DrawingNote
+LeaderStyle: Style
+LegacyDistanceHeightExtent: PartFeatureExtent
+LightingStyle: Style
+LineGraphics: GraphicsPrimitive
+LineLengthDimConstraint3D: DimensionConstraint3D
+LineStripGraphics: GraphicsPrimitive
+LinearHolePlacementDefinition: HolePlacementDefinition
+LinearModelDimensionDefinition: ModelDimensionDefinition
+LoftFeature: PartFeature
+MacroControlDefinition: ControlDefinition
+MarkFeature: PartFeature
+MateConstraint: AssemblyConstraint
+MateiMateDefinition: iMateDefinition
+MeshEdge: MeshFeatureEntity
+MeshFace: MeshFeatureEntity
+MeshVertex: MeshFeatureEntity
+MidpointConstraint: GeometricConstraint
+MiniToolbarButton: MiniToolbarControl
+MiniToolbarCheckBox: MiniToolbarControl
+MiniToolbarComboBox: MiniToolbarControl
+MiniToolbarDropdown: MiniToolbarControl
+MiniToolbarSlider: MiniToolbarControl
+MiniToolbarTextBox: MiniToolbarControl
+MiniToolbarValueEditor: MiniToolbarControl
+MirrorFeature: PartFeature
+ModelCompositeAnnotation: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+ModelDatumIdentifier: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+ModelDimension: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+ModelFeatureControlFrame: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+ModelGeneralNote: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+ModelHoleThreadNoteDefinition: ModelDimensionDefinition
+ModelLeaderNote: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+ModelParameter: Parameter
+ModelSurfaceTextureSymbol: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+MoveAlongRayMoveOperation: DrawingDimension | MoveOperation
+MoveFaceFeature: PartFeature
+NativeBrowserNodeDefinition: BrowserNodeDefinition
+ObjectDefaultsStyle: Style
+OffsetConstraint: GeometricConstraint
+OffsetDimConstraint: DimensionConstraint
+OffsetWidthExtent: PartFeatureExtent
+OnFaceConstraint3D: GeometricConstraint3D
+OnFaceCurve: SketchEntity3D
+OrdinateDimension: DrawingDimension | MoveOperation
+ParallelConstraint: GeometricConstraint
+ParallelConstraint3D: GeometricConstraint3D
+ParallelToXAxisConstraint3D: GeometricConstraint3D
+ParallelToXYPlaneConstraint3D: GeometricConstraint3D
+ParallelToXZPlaneConstraint3D: GeometricConstraint3D
+ParallelToYAxisConstraint3D: GeometricConstraint3D
+ParallelToYZPlaneConstraint3D: GeometricConstraint3D
+ParallelToZAxisConstraint3D: GeometricConstraint3D
+PartComponentDefinition: ComponentDefinition
+PartDocument: Document
+PartsListStyle: Style
+PathAndGuideRailSweepDef: SolidSweepDefinition | SweepDefinition
+PathAndGuideSurfaceSweepDef: SolidSweepDefinition | SweepDefinition
+PathAndSectionTwistsSweepDef: SolidSweepDefinition | SweepDefinition
+PathSweepDef: SolidSweepDefinition | SweepDefinition
+PatternConstraint: GeometricConstraint
+PerpendicularConstraint: GeometricConstraint
+PerpendicularConstraint3D: GeometricConstraint3D
+PitchAndHeightCoilExtent: PartFeatureExtent
+PitchAndRevolutionCoilExtent: PartFeatureExtent
+PlanarSketch: Sketch
+PointAndPlaneDistanceDimConstraint3D: DimensionConstraint3D
+PointGraphics: GraphicsPrimitive
+PointHolePlacementDefinition: HolePlacementDefinition
+PunchToolFeature: PartFeature
+RadiusDimConstraint: DimensionConstraint
+RadiusDimConstraint3D: DimensionConstraint3D
+RadiusModelDimensionDefinition: ModelDimensionDefinition
+RectangularOccurrencePattern: OccurrencePattern
+RectangularPatternFeature: PartFeature
+ReferenceAssetValue: AssetValue
+ReferenceFeature: PartFeature
+ReferenceParameter: Parameter
+ReplaceFaceFeature: PartFeature
+RevisionTableStyle: Style
+RevolutionAndHeightCoilExtent: PartFeatureExtent
+RevolveFeature: PartFeature
+RibFeature: PartFeature
+RotateAboutLineMoveOperation: DrawingDimension | MoveOperation
+RotateRotateConstraint: AssemblyConstraint
+RotateRotateiMateDefinition: iMateDefinition
+RotateTranslateConstraint: AssemblyConstraint
+RotateTranslateiMateDefinition: iMateDefinition
+SculptFeature: PartFeature
+SectionDrawingView: DrawingView
+SheetMetalComponentDefinition: PartComponentDefinition
+SheetMetalFeatures: PartFeatures
+SheetMetalStyle: Style
+SheetMetalStylesFlatPattern: PartComponentDefinition
+ShellFeature: PartFeature
+SimplifyFeature: PartFeature
+SketchArc: SketchEntity
+SketchArc3D: SketchEntity3D
+SketchBlockDefinition: DrawingDimension | MoveOperation
+SketchCircle: SketchEntity
+SketchCircle3D: SketchEntity3D
+SketchControlPointSpline: SketchEntity
+SketchControlPointSpline3D: SketchEntity3D
+SketchDrivenPatternFeature: PartFeature
+SketchEllipse: SketchEntity
+SketchEllipse3D: SketchEntity3D
+SketchEllipticalArc: SketchEntity
+SketchEllipticalArc3D: SketchEntity3D
+SketchEquationCurve: SketchEntity
+SketchEquationCurve3D: SketchEntity3D
+SketchFixedSpline: SketchEntity
+SketchFixedSpline3D: SketchEntity3D
+SketchHolePlacementDefinition: HolePlacementDefinition
+SketchLine: SketchEntity
+SketchLine3D: SketchEntity3D
+SketchOffsetSpline: SketchEntity
+SketchPoint: SketchEntity
+SketchPoint3D: SketchEntity3D
+SketchSpline: SketchEntity
+SketchSpline3D: SketchEntity3D
+SketchSplines3DSplineFitPointsConstraint3D: GeometricConstraint3D
+SmoothConstraint: GeometricConstraint
+SmoothConstraint3D: GeometricConstraint3D
+SpiralCoilExtent: PartFeatureExtent
+SplineFitPointConstraint: GeometricConstraint
+SplineLengthDimConstraint3D: DimensionConstraint3D
+SplitFeature: PartFeature
+StandardThreadInfo: ThreadInfo
+StringAssetValue: AssetValue
+SurfaceTextureANSIDefinition: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+SurfaceTextureBSIDefinition: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+SurfaceTextureDINDefinition: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+SurfaceTextureGBDefinition: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+SurfaceTextureGOSTDefinition: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+SurfaceTextureISODefinition: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+SurfaceTextureJISDefinition: DirectEditOperation | ModelAnnotation | SurfaceTextureSymbolDefinition
+SurfaceTextureStyle: Style
+SweepFeature: PartFeature
+SymmetryConstraint: GeometricConstraint
+TableParameter: Parameter
+TableStyle: Style
+TangentConstraint: AssemblyConstraint
+TangentConstraint3D: GeometricConstraint3D
+TangentDistanceDimConstraint: DimensionConstraint
+TangentSketchConstraint: GeometricConstraint
+TangentiMateDefinition: iMateDefinition
+TaperedThreadInfo: ThreadInfo
+TextStyle: Style
+TextureAssetValue: AssetValue
+ThickenFeature: PartFeature
+ThreadFeature: PartFeature
+ThreePointAngleDimConstraint: DimensionConstraint
+ThroughAllExtent: PartFeatureExtent
+ToExtent: PartFeatureExtent
+ToHeightExtent: PartFeatureExtent
+ToNextExtent: PartFeatureExtent
+TransitionalConstraint: AssemblyConstraint
+TranslateTranslateConstraint: AssemblyConstraint
+TrimFeature: PartFeature
+TwoDistancesChamferDef: ChamferDefinition
+TwoLineAngleDimConstraint: DimensionConstraint
+TwoLineAngleDimConstraint3D: DimensionConstraint3D
+TwoPointDistanceDimConstraint: DimensionConstraint
+TwoPointDistanceDimConstraint3D: DimensionConstraint3D
+UnfoldMethod: Style
+UnwrapFeature: PartFeature
+UserParameter: Parameter
+VerticalAlignConstraint: GeometricConstraint
+VerticalConstraint: GeometricConstraint
+WeldmentComponentDefinition: AssemblyComponentDefinition
+WidthOffsetWidthExtent: PartFeatureExtent
+iFeature: PartFeature
+iFeatureEntityInput: iFeatureInput
+iFeatureParameterInput: iFeatureInput
+iFeatureSketchPlaneInput: iFeatureInput
+iFeatureVectorInput: iFeatureInput
+iFeatureWorkPlaneInput: iFeatureInput

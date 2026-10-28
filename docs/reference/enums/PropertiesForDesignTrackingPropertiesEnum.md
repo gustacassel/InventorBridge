@@ -1,0 +1,61 @@
+# PropertiesForDesignTrackingPropertiesEnum
+
+Inventor API enum · versions: 2024+ · [index](../index.md)
+
+```csharp
+enum PropertiesForDesignTrackingPropertiesEnum
+{
+    kCreationDateDesignTrackingProperties = 4,
+    kPartNumberDesignTrackingProperties = 5,
+    kProjectDesignTrackingProperties = 7,
+    kCostCenterDesignTrackingProperties = 9,
+    kCheckedByDesignTrackingProperties = 10,
+    kDateCheckedDesignTrackingProperties = 11,
+    kEngrApprovedByDesignTrackingProperties = 12,
+    kDateEngrApprovedDesignTrackingProperties = 13,
+    kUserStatusDesignTrackingProperties = 17,
+    kMaterialDesignTrackingProperties = 20,
+    kPartPropRevIdDesignTrackingProperties = 21,
+    kCatalogWebLinkDesignTrackingProperties = 23,
+    kPartIconDesignTrackingProperties = 28,
+    kDescriptionDesignTrackingProperties = 29,
+    kVendorDesignTrackingProperties = 30,
+    kDocSubTypeDesignTrackingProperties = 31,
+    kDocSubTypeNameDesignTrackingProperties = 32,
+    kProxyRefreshDateDesignTrackingProperties = 33,
+    kMfgApprovedByDesignTrackingProperties = 34,
+    kDateMfgApprovedDesignTrackingProperties = 35,
+    kCostDesignTrackingProperties = 36,
+    kStandardDesignTrackingProperties = 37,
+    kDesignStatusDesignTrackingProperties = 40,
+    kDesignerDesignTrackingProperties = 41,
+    kEngineerDesignTrackingProperties = 42,
+    kAuthorityDesignTrackingProperties = 43,
+    kParameterizedTemplateDesignTrackingProperties = 44,
+    kTemplateRowDesignTrackingProperties = 45,
+    kExternalPropRevIdDesignTrackingProperties = 46,
+    kStandardRevisionDesignTrackingProperties = 47,
+    kManufacturerDesignTrackingProperties = 48,
+    kStandardsOrganizationDesignTrackingProperties = 49,
+    kLanguageDesignTrackingProperties = 50,
+    kDrawingDeferUpdateDesignTrackingProperties = 51,
+    kStockNumberDesignTrackingProperties = 55,
+    kCategoriesDesignTrackingProperties = 56,
+    kWeldMaterialDesignTrackingProperties = 57,
+    kMassDesignTrackingProperties = 58,
+    kSurfaceAreaDesignTrackingProperties = 59,
+    kVolumeDesignTrackingProperties = 60,
+    kDensityDesignTrackingProperties = 61,
+    kValidMassPropsDesignTrackingProperties = 62,
+    kFlatPatternExtentsWidthDesignTrackingProperties = 63,
+    kFlatPatternExtentsLengthDesignTrackingProperties = 64,
+    kFlatPatternExtentsAreaDesignTrackingProperties = 65,
+    kSheetMetalRuleDesignTrackingProperties = 66,
+    kLastUpdatedWithDesignTrackingProperties = 67,
+    kMaterialIdentifierDesignTrackingProperties = 71,
+    kAppearanceDesignTrackingProperties = 72,
+    kFlatPatternDeferUpdateDesignTrackingProperties = 73,
+    kRevitCategoryDesignTrackingProperties = 74, // since 2026
+}
+```
+

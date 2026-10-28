@@ -1,0 +1,23 @@
+# ModelStateTableColumns
+
+Inventor API object · versions: 2024+ · [index](../index.md)
+
+**How to get it:** `Application.ActiveDocument → (PartDocument).ComponentDefinition.ModelStates.ModelStateTable.TableColumns`
+
+```csharp
+interface ModelStateTableColumns
+{
+    // Properties
+    object Application { get; }
+    int Count { get; }
+    ModelStateTableColumn Item[object Index] { get; }
+    ObjectTypeEnum Type { get; }
+}
+```
+
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
+
+**Returned by:** [ModelStateTable](../objects/ModelStateTable.md).TableColumns
+
+**Referenced types:** [ModelStateTableColumn](../objects/ModelStateTableColumn.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
+

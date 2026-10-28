@@ -1,0 +1,67 @@
+# DSJointTypeEnum
+
+Inventor API enum · versions: 2024+ · [index](../index.md)
+
+```csharp
+enum DSJointTypeEnum
+{
+    kDSJointTypeRigidity = 92929,
+    kDSJointTypeSpatial = 92930,
+    kDSJointTypePointPlane = 92931,
+    kDSJointTypeLinePlane = 92932,
+    kDSJointTypePointLine = 92933,
+    kDSJointTypePlanar3D = 92934,
+    kDSJointTypeSpherical = 92935,
+    kDSJointTypePointPlaneInv = 92936,
+    kDSJointTypePointLineInv = 92937,
+    kDSJointTypeLinePlaneInv = 92938,
+    kDSJointTypeCylindrical = 92939,
+    kDSJointTypePivot = 92940,
+    kDSJointTypePrismatic = 92941,
+    kDSJointTypeUndefined = 92942,
+    kDSJointTypeRollDiscLine2C = 92943,
+    kDSJointTypeRollDiscOnDisc2C = 92944,
+    kDSJointTypeRollDiscInDisc2C = 92945,
+    kDSJointTypeHeliScrew1C = 92946,
+    kDSJointTypeBelt1C = 92947,
+    kDSJointTypeRollDiscOnDisc1C = 92948,
+    kDSJointTypeRollDiscInDisc1C = 92949,
+    kDSJointTypeRollConeOnPlane1C = 92950,
+    kDSJointTypeRollConeOnCone1C = 92951,
+    kDSJointTypeRollConeInCone1C = 92952,
+    kDSJointTypeRollDiscLine1C = 92953,
+    kDSJointTypeSlidDiscInDisc1C = 92954,
+    kDSJointTypeSlidDiscOnDisc1C = 92955,
+    kDSJointTypeSlidDiscLine1C = 92956,
+    kDSJointTypeSlidPointDisk1C = 92957,
+    kDSJointTypeHeliCouple = 92958,
+    kDSJointTypeWormGearCouple = 92959,
+    kDSJointTypeSlidPointCurve1C = 92960,
+    kDSJointTypeRollDiskCurve2C = 92961,
+    kDSJointTypeSlidDiscCurve1C = 92962,
+    kDSJointTypePointLineJct = 92963,
+    kDSJointTypeDiscLineJct = 92964,
+    kDSJointTypeDiscOnDiscJct = 92965,
+    kDSJointTypePointOnDiscJct = 92966,
+    kDSJointTypeDiscInDiscJct = 92967,
+    kDSJointTypePointInDiscJct = 92968,
+    kDSJointTypePointSegmentJct = 92969,
+    kDSJointTypeDiscSegmentJct = 92970,
+    kDSJointTypeCurveCurveJct = 92971,
+    kDSJointType3DSpherePlane = 92972,
+    kDSJointType3DSphereOnSphere = 92973,
+    kDSJointType3DSphereInSphere = 92974,
+    kDSJointType3DSphereOnCyl = 92975,
+    kDSJointType3DSphereInCyl = 92976,
+    kDSJointType3DPointPlane = 92977,
+    kDSJointType3DPointOnSphere = 92978,
+    kDSJointType3DPointInSphere = 92979,
+    kDSJointType3DPointOnCyl = 92980,
+    kDSJointType3DPointInCyl = 92981,
+    kDSJointTypeImpact3D = 92982,
+    kDSJointTypeAcuator = 92983,
+}
+```
+
+**Used by:** [DSJoint](../objects/DSJoint.md).JointType
+

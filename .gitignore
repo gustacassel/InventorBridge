@@ -1,0 +1,11 @@
+# Autodesk files (interop DLLs and object model posters): not redistributed.
+lib/
+
+# Full JSON model: large and regenerated on every DocGen run.
+docs/reference/_data/
+
+# Build and Visual Studio
+bin/
+obj/
+.vs/
+*.user
