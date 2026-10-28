@@ -101,8 +101,12 @@ The initial target is Inventor 2024. With out-of-process COM, the version matter
 ```
 InventorBridge/
   src/
-    InventorBridge.Core/      ScriptHost, COM connection, unit conversion (netstandard2.0)
     InventorBridge.Mcp/       stdio MCP server (net8.0-windows)
+      Connection/             STA thread, message filter, attaching to or starting Inventor
+      Scripting/              Roslyn script runner and transactions
+      Reading/                status, inspection and view capture
+      Tools/                  the MCP tools
+    InventorBridge.Core/      (only if an add-in is ever needed: Scripting/ moves here, netstandard2.0)
     DocGen/                   reflection over the interops -> docs/reference
       Reading/                reading the DLLs and inheritance.txt
       Model/                  per-version model and combined model
@@ -123,7 +127,11 @@ InventorBridge/
    - Done (2026-10-25): `src/DocGen` generates `docs/reference` from `lib/inventor/<year>/`. COM inheritance comes from `src/DocGen/inheritance.txt` (extracted from the InventorObjectModel 2024 to 2027 posters), confirmed by vtable order.
    - Done (2026-10-28): reference for 2024, 2025, 2026 and 2027, with a "since 20xx" mark per member. The 2024 interop comes from the Inventor installation; 2025+ come from Autodesk's interop downloads page (2025 v29.3, 2026 v30.2, 2027 v31.0).
    - To do: `api_lookup` in the MCP server.
+   - To do: properties whose getter and setter have different types (e.g. `Parameter.Units`: string getter, object setter) cannot be used as properties from C#; the reference should show them as `get_Units()` / `set_Units(object)`.
 2. **Proof of concept:** MCP server with `inventor_status`, `inspect`, `run_csharp`, `screenshot`, tested on Inventor 2024. Validate the "agent writes a script, runs it, checks it" loop with Claude Code. Measure typical script times.
+   - Done (2026-10-28): `src/InventorBridge.Mcp` with `inventor_status`, `inventor_start`, `run_csharp`, `inspect` and `screenshot`. Verified without Inventor: the MCP handshake, tool listing, the "Inventor is not running" errors, and that Roslyn compiles scripts against the 2024 interop on .NET 8 (including a full sketch-and-extrude tube script).
+   - Inventor transactions belong to one document (there is no global transaction), so `run_csharp` wraps the script in a transaction on the document that is active when it starts; documents the script creates are not covered.
+   - To do: run the tube-and-bend assembly example on a real Inventor 2024 and measure script times; a script timeout (a stuck script currently blocks the STA thread).
 3. **Documentation:** 5 guides + 10 tested recipes + `inventor-api` skill. Measure the improvement: the same tasks with and without docs.
 4. **iLogic:** `ilogic_*` tools and temporary-rule execution for heavy tasks; `undo_last`.
 5. **Company standards:** support for each company's private standards and skills (`docs/company`), iProperties checks and part number cross-checks against the ERP (read-only).

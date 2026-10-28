@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>InventorBridge.Mcp</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    The Inventor 2024 interop (the oldest supported version; COM interfaces are backward compatible).
+    Looked up in lib/inventor/2024 first, then in the Inventor 2024 installation.
+    Override with: dotnet build -p:InventorInteropPath=<path to Autodesk.Inventor.Interop.dll>
+  -->
+  <PropertyGroup>
+    <RepositoryInteropPath>$(MSBuildThisFileDirectory)..\..\lib\inventor\2024\Autodesk.Inventor.Interop.dll</RepositoryInteropPath>
+    <InstalledInteropPath>$(ProgramW6432)\Autodesk\Inventor 2024\Bin\Public Assemblies\Autodesk.Inventor.Interop.dll</InstalledInteropPath>
+    <InventorInteropPath Condition="'$(InventorInteropPath)' == '' and Exists('$(RepositoryInteropPath)')">$(RepositoryInteropPath)</InventorInteropPath>
+    <InventorInteropPath Condition="'$(InventorInteropPath)' == ''">$(InstalledInteropPath)</InventorInteropPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Inventor.Interop">
+      <HintPath>$(InventorInteropPath)</HintPath>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
+    <PackageReference Include="ModelContextProtocol" Version="2.3.0" />
+  </ItemGroup>
+
+</Project>
