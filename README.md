@@ -1,4 +1,18 @@
-# InventorBridge
+<p align="center">
+  <img src="assets/logo.svg" width="128" alt="InventorBridge logo">
+</p>
+
+<h1 align="center">InventorBridge</h1>
+
+<p align="center">Help AI agents work with Autodesk Inventor.</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <img src="docs/cover.png" width="720" alt="InventorBridge logo above an excerpt of the generated reference: the ExtrudeFeatures interface in pseudo-C#">
+</p>
 
 A bridge between AI agents (Claude Code, Codex and other MCP clients) and Autodesk Inventor: API documentation designed for agents and, in later phases, an MCP server that runs code inside Inventor.
 
@@ -44,6 +58,8 @@ src/DocGen/
   Output/      Markdown pages, index, members.tsv and JSON
   inheritance.txt   derived/base pairs extracted from the object model poster legend
 docs/reference/     generated output (do not edit by hand)
+assets/             logo and social preview (SVG sources and PNG)
+docs/cover.svg      README and portfolio image (rendered to docs/cover.png)
 ```
 
 ## License

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080">
+  <title>InventorBridge</title>
+  <defs>
+    <pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="2" fill="#1c232c"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1080" fill="#0b0d10"/>
+  <rect width="1600" height="1080" fill="url(#dots)"/>
+  <!-- Logo (same drawing as assets/logo.svg, scaled). Kept near the center: the site crops the sides. -->
+  <g transform="translate(620 150) scale(0.703125)">
+    <rect width="512" height="512" rx="112" fill="#151a20"/>
+    <g fill="none">
+      <g stroke="#9aa5b1" stroke-width="10" stroke-linecap="round">
+        <path d="M172 340 V207"/>
+        <path d="M214 340 V179"/>
+        <path d="M256 340 V171"/>
+        <path d="M298 340 V179"/>
+        <path d="M340 340 V207"/>
+      </g>
+      <path d="M120 340 A136 170 0 0 1 392 340" stroke="#ffc857" stroke-width="20"/>
+      <path d="M60 340 H452" stroke="#e8edf2" stroke-width="18" stroke-linecap="round"/>
+    </g>
+    <path d="M88 194 C93 226 105 235 134 240 C105 245 93 254 88 286 C83 254 71 245 42 240 C71 235 83 226 88 194 Z" fill="#4fa3ff"/>
+    <path d="M424 194 L464 217 L424 240 L384 217 Z" fill="#ffc857"/>
+    <path d="M384 217 L424 240 L424 286 L384 263 Z" fill="#d99a2b"/>
+    <path d="M424 240 L464 217 L464 263 L424 286 Z" fill="#a8741c"/>
+  </g>
+  <!-- Code window with a real excerpt from docs/reference/objects/ExtrudeFeatures.md -->
+  <rect x="330" y="600" width="940" height="350" rx="22" fill="#151a20" stroke="#252c35" stroke-width="2"/>
+  <circle cx="372" cy="640" r="8" fill="#ff6b6b"/>
+  <circle cx="400" cy="640" r="8" fill="#ffc857"/>
+  <circle cx="428" cy="640" r="8" fill="#3ddc97"/>
+  <text x="800" y="648" text-anchor="middle" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="22" fill="#6b7682">objects/ExtrudeFeatures.md</text>
+  <g font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="26" fill="#e8edf2">
+    <text x="372" y="712"><tspan fill="#4fa3ff">interface</tspan> <tspan fill="#ffc857">ExtrudeFeatures</tspan>  <tspan fill="#6b7682">// 2024+</tspan></text>
+    <text x="372" y="750">{</text>
+    <text x="434" y="788"><tspan fill="#4fa3ff">int</tspan> Count { <tspan fill="#4fa3ff">get</tspan>; }</text>
+    <text x="434" y="826"><tspan fill="#ffc857">ExtrudeFeature</tspan> Item[<tspan fill="#4fa3ff">object</tspan> Index] { <tspan fill="#4fa3ff">get</tspan>; }</text>
+    <text x="434" y="864"><tspan fill="#ffc857">ExtrudeFeature</tspan> Add(<tspan fill="#ffc857">ExtrudeDefinition</tspan> Definition);</text>
+    <text x="372" y="902">}</text>
+  </g>
+</svg>
