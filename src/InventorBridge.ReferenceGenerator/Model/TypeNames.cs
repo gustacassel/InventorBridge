@@ -1,4 +1,4 @@
-namespace DocGen.Model
+namespace InventorBridge.ReferenceGenerator.Model
 {
     public static class TypeNames
     {

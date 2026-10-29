@@ -1,6 +1,6 @@
-using DocGen.Model;
+using InventorBridge.ReferenceGenerator.Model;
 
-namespace DocGen.Output
+namespace InventorBridge.ReferenceGenerator.Output
 {
     /// <summary>Text about which versions something exists in ("2024+", "// since 2026", "// removed in 2027"...).</summary>
     public sealed class VersionLabels

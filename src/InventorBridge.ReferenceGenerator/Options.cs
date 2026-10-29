@@ -1,4 +1,4 @@
-namespace DocGen
+namespace InventorBridge.ReferenceGenerator
 {
     /// <summary>Command-line options. Without arguments, the repository's default folders are used.</summary>
     internal sealed class Options

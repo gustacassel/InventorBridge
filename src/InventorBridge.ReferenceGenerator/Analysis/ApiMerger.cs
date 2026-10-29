@@ -1,7 +1,7 @@
-using DocGen.Model;
-using DocGen.Output;
+using InventorBridge.ReferenceGenerator.Model;
+using InventorBridge.ReferenceGenerator.Output;
 
-namespace DocGen.Analysis
+namespace InventorBridge.ReferenceGenerator.Analysis
 {
     /// <summary>
     /// Combines the versions read into a single model. Each type, member and enum value keeps the versions

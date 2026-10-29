@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using InventorBridge.Mcp.Connection;
 using InventorBridge.Mcp.Reading;
+using InventorBridge.Mcp.Reference;
 using InventorBridge.Mcp.Scripting;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
@@ -19,6 +20,7 @@ namespace InventorBridge.Mcp.Tools
         private const int DefaultMaxItems = 100;
         private const int DefaultScreenshotWidth = 1280;
         private const int DefaultScreenshotHeight = 800;
+        private const int InventorMajorToYear = 1996;
         private static readonly TimeSpan StartTimeout = TimeSpan.FromMinutes(5);
 
         private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
@@ -26,12 +28,14 @@ namespace InventorBridge.Mcp.Tools
         private readonly StaDispatcher dispatcher;
         private readonly InventorSession session;
         private readonly ScriptRunner scriptRunner;
+        private readonly ApiReference apiReference;
 
-        public InventorTools(StaDispatcher dispatcher, InventorSession session, ScriptRunner scriptRunner)
+        public InventorTools(StaDispatcher dispatcher, InventorSession session, ScriptRunner scriptRunner, ApiReference apiReference)
         {
             this.dispatcher = dispatcher;
             this.session = session;
             this.scriptRunner = scriptRunner;
+            this.apiReference = apiReference;
         }
 
         [McpServerTool(Name = "inventor_status", Title = "Inventor status", ReadOnly = true, Idempotent = true)]
@@ -75,8 +79,8 @@ namespace InventorBridge.Mcp.Tools
             "using the templates from inventor_status.\n" +
             "The script runs in a transaction on the document that is active when it starts: on success it is one " +
             "undo step in Inventor, on an exception it is rolled back. Documents created by the script are not covered.\n" +
-            "Compilation errors come back with line and column; fix them and call again. API reference (one page per " +
-            "object, with members per Inventor version): https://github.com/gustacassel/InventorBridge/tree/main/docs/reference")]
+            "Compilation errors come back with line and column; fix them and call again. Check names, signatures and " +
+            "enum values with api_lookup before writing the script.")]
         public Task<CallToolResult> RunCSharpAsync(
             [Description("The C# script. Statements run top to bottom; 'return x;' at the end sends x back.")] string code,
             [Description("Short description of what the script does; it becomes the undo step name in Inventor.")] string description)
@@ -130,6 +134,53 @@ namespace InventorBridge.Mcp.Tools
                     Content = [ImageContentBlock.FromBytes(png, "image/png")],
                 };
             });
+        }
+
+        [McpServerTool(Name = "api_lookup", Title = "Look up the Inventor API", ReadOnly = true, Idempotent = true)]
+        [Description(
+            "Looks up the Inventor API reference (generated from the interop of Inventor 2024 to 2027), so you do not " +
+            "have to guess names, signatures or enum values. Works without Inventor running.\n" +
+            "Query forms: 'ExtrudeFeatures' returns the whole page of an object or enum (its interface in pseudo-C#, " +
+            "a path to get it from Application, what returns it, what it inherits from); 'ExtrudeFeatures.Add' or " +
+            "'ObjectTypeEnum.kExtrude' returns the members of that type whose name contains the text after the dot; " +
+            "anything else ('Extrude', 'AddInsertConstraint') searches type and member names.\n" +
+            "When Inventor is running, members that do not exist in its version are hidden.")]
+        public async Task<CallToolResult> LookUpApiAsync(
+            [Description("A type name, 'Type.part of a member name', or any part of a type or member name.")] string query,
+            [Description("Inventor version to filter by, such as 2024. Default: the version of the running Inventor, or every version if none is running.")] int? version = null)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return Error("Give a type name (\"ExtrudeFeatures\"), \"Type.member\" or part of a name to search.");
+            }
+
+            var year = version ?? await GetRunningInventorYearAsync();
+
+            try
+            {
+                return Text(apiReference.Lookup(query, year));
+            }
+            catch (InvalidOperationException exception)
+            {
+                return Error(exception.Message);
+            }
+        }
+
+        /// <summary>The year of the running Inventor (Major 28 is 2024), or null when none is running.</summary>
+        private async Task<int?> GetRunningInventorYearAsync()
+        {
+            try
+            {
+                return await dispatcher.InvokeAsync<int?>(() =>
+                {
+                    var application = session.TryGetApplication();
+                    return application is null ? null : application.SoftwareVersion.Major + InventorMajorToYear;
+                });
+            }
+            catch (COMException)
+            {
+                return null;
+            }
         }
 
         /// <summary>Runs the work on the STA thread and turns expected failures into error results.</summary>

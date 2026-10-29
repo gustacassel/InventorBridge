@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/DocGen/DocGen.csproj" />
+    <Project Path="src/InventorBridge.ReferenceGenerator/InventorBridge.ReferenceGenerator.csproj" />
     <Project Path="src/InventorBridge.Mcp/InventorBridge.Mcp.csproj" />
   </Folder>
 </Solution>

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace DocGen.Model
+namespace InventorBridge.ReferenceGenerator.Model
 {
     // Model with ALL versions combined, used to generate the documentation.
 

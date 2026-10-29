@@ -28,6 +28,13 @@
     </Reference>
   </ItemGroup>
 
+  <!-- The generated API reference, read by api_lookup. Copied to bin\...\reference\. -->
+  <ItemGroup>
+    <None Include="..\..\docs\reference\members.tsv" Link="reference\members.tsv" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="..\..\docs\reference\objects\*.md" Link="reference\objects\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="..\..\docs\reference\enums\*.md" Link="reference\enums\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.9.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.14" />

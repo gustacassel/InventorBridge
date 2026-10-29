@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using DocGen.Model;
+using InventorBridge.ReferenceGenerator.Model;
 
-namespace DocGen.Reading
+namespace InventorBridge.ReferenceGenerator.Reading
 {
     /// <summary>
     /// Reads an Autodesk.Inventor.Interop.dll as metadata only: it does not run any code from the DLL and

@@ -1,6 +1,6 @@
-using DocGen.Model;
+using InventorBridge.ReferenceGenerator.Model;
 
-namespace DocGen.Analysis
+namespace InventorBridge.ReferenceGenerator.Analysis
 {
     /// <summary>
     /// Builds the reverse indexes: which members return each object (<see cref="MergedType.ReturnedBy"/>)

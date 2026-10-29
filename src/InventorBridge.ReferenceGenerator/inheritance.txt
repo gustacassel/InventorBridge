@@ -1,5 +1,5 @@
 # Inventor API inheritance (the interop flattens COM inheritance, so it does not show up in the metadata).
-# Format: Derived: Base  (or "Base1 | Base2" when the legend is ambiguous; DocGen picks one by vtable).
+# Format: Derived: Base  (or "Base1 | Base2" when the legend is ambiguous; the generator picks one by vtable).
 # Extracted from the [x] (base) and (x) (derived) marks of the Autodesk InventorObjectModel_2024..2027.pdf
 # posters, plus Part/AssemblyComponentDefinition -> ComponentDefinition, which the poster does not mark.
 # Types not listed here (proxies, new types) use the longest vtable prefix as their base.

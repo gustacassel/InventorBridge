@@ -1,6 +1,6 @@
-using DocGen.Model;
+using InventorBridge.ReferenceGenerator.Model;
 
-namespace DocGen.Analysis
+namespace InventorBridge.ReferenceGenerator.Analysis
 {
     /// <summary>
     /// Infers the inheritance that the interop hides and fills in <see cref="MergedType.Ancestors"/>.

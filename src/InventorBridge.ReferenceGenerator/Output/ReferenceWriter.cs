@@ -1,9 +1,9 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using DocGen.Model;
+using InventorBridge.ReferenceGenerator.Model;
 
-namespace DocGen.Output
+namespace InventorBridge.ReferenceGenerator.Output
 {
     /// <summary>
     /// Writes the complete reference:

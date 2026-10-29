@@ -1,4 +1,4 @@
-namespace DocGen.Reading
+namespace InventorBridge.ReferenceGenerator.Reading
 {
     /// <summary>
     /// Reads inheritance.txt: one "Derived: Base" line per type, or "Derived: Base1 | Base2" when the

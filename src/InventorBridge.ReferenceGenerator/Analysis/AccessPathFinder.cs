@@ -1,6 +1,6 @@
-using DocGen.Model;
+using InventorBridge.ReferenceGenerator.Model;
 
-namespace DocGen.Analysis
+namespace InventorBridge.ReferenceGenerator.Analysis
 {
     /// <summary>
     /// Computes, for each object, an example path from Application

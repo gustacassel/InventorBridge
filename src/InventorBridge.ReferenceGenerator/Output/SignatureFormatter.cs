@@ -1,6 +1,6 @@
-using DocGen.Model;
+using InventorBridge.ReferenceGenerator.Model;
 
-namespace DocGen.Output
+namespace InventorBridge.ReferenceGenerator.Output
 {
     /// <summary>
     /// Formats members as pseudo-C# declarations, for example:

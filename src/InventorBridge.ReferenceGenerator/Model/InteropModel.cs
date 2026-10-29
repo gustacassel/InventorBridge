@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace DocGen.Model
+namespace InventorBridge.ReferenceGenerator.Model
 {
     // Model of ONE API version, as read from one interop DLL.
 

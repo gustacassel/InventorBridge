@@ -1,13 +1,13 @@
-﻿using DocGen.Analysis;
-using DocGen.Model;
-using DocGen.Output;
-using DocGen.Reading;
+﻿using InventorBridge.ReferenceGenerator.Analysis;
+using InventorBridge.ReferenceGenerator.Model;
+using InventorBridge.ReferenceGenerator.Output;
+using InventorBridge.ReferenceGenerator.Reading;
 
-namespace DocGen
+namespace InventorBridge.ReferenceGenerator
 {
     /// <summary>
     /// Generates the Inventor API reference (docs/reference) from the interop DLLs in lib/inventor/{year}/.
-    /// Usage: dotnet run --project src/DocGen [-- --lib lib/inventor --out docs/reference --stdole {path}]
+    /// Usage: dotnet run --project src/InventorBridge.ReferenceGenerator [-- --lib lib/inventor --out docs/reference --stdole {path}]
     /// </summary>
     internal static class Program
     {

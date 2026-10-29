@@ -27,8 +27,8 @@ A bridge between AI agents (Claude Code, Codex and other MCP clients) and Autode
   - what returns each object and where each enum is used;
   - a `// since 20xx` mark on members that do not exist in every version;
   - [`members.tsv`](docs/reference/members.tsv), one member per line, for `grep`.
-- **DocGen** (`src/DocGen`), the generator of that reference.
-- **MCP server** (`src/InventorBridge.Mcp`, first version): connects Claude Code, Codex or any MCP client to the Inventor running on your computer. The agent writes C# against the Inventor API, the server runs it inside Inventor, and you watch the result in your own Inventor window.
+- **The reference generator** (`src/InventorBridge.ReferenceGenerator`).
+- **MCP server** (`src/InventorBridge.Mcp`, first version): connects Claude Code, Codex or any MCP client to the Inventor running on your computer. The agent writes C# against the Inventor API, the server runs it inside Inventor, and you watch the result in your own Inventor window. The agent looks up the API with `api_lookup` instead of guessing names.
 
 The full plan is in [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -57,6 +57,7 @@ Requirements: Windows, Autodesk Inventor 2024 or later, and the [.NET 8 SDK](htt
 | `run_csharp` | Compiles and runs a C# script against the Inventor API. It runs as one undo step on the active document and is rolled back on an error; compilation errors come back with line and column |
 | `inspect` | Structured summary of the active document: features and parameters of a part, occurrences, constraints and free degrees of freedom of an assembly, sheets of a drawing |
 | `screenshot` | An image of the Inventor view, so the agent sees what you see |
+| `api_lookup` | Looks up the API reference: an object's or enum's page, some members of a type, or a search by name. It hides members that the running Inventor version does not have, and works without Inventor |
 
 Inventor must stay open while the agent works: the server talks to it through COM, out of process, so nothing is installed inside Inventor.
 
@@ -72,10 +73,10 @@ The Autodesk interop DLLs are not in the repository. Put one per version at `lib
 Then, from the repository root (requires the .NET 8 SDK):
 
 ```bash
-dotnet run --project src/DocGen
+dotnet run --project src/InventorBridge.ReferenceGenerator
 ```
 
-DocGen does not run Inventor and does not need it installed: it only reads the DLLs' metadata.
+The generator does not run Inventor and does not need it installed: it only reads the DLLs' metadata. Building `InventorBridge.Mcp` copies the generated pages next to the server, for `api_lookup`.
 
 ## Layout
 
@@ -84,8 +85,9 @@ src/InventorBridge.Mcp/
   Connection/  COM connection: STA thread, retry of busy calls, attaching to or starting Inventor
   Scripting/   compiling and running run_csharp scripts (Roslyn), transactions
   Reading/     inventor_status, inspect and screenshot
+  Reference/   api_lookup: searching the generated reference
   Tools/       the MCP tools
-src/DocGen/
+src/InventorBridge.ReferenceGenerator/
   Reading/     reading the DLLs and inheritance.txt
   Model/       per-version model and combined model
   Analysis/    version merging, inheritance, reverse indexes, access paths
