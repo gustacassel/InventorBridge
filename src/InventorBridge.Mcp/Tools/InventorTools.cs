@@ -46,7 +46,8 @@ namespace InventorBridge.Mcp.Tools
             this.guides = guides;
         }
 
-        [McpServerTool(Name = "inventor_status", Title = "Inventor status", ReadOnly = true, Idempotent = true)]
+        [McpServerTool(Name = "inventor_status", Title = "Inventor status",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Call this first. Connects to the Inventor the user has open and returns its version, the active project " +
             "(workspace folder where new files must be saved, templates folder), the default part/assembly/drawing " +
@@ -60,7 +61,8 @@ namespace InventorBridge.Mcp.Tools
             });
         }
 
-        [McpServerTool(Name = "inventor_start", Title = "Start Inventor", Destructive = false, Idempotent = true)]
+        [McpServerTool(Name = "inventor_start", Title = "Start Inventor",
+            ReadOnly = false, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Starts Inventor, visible, when it is not running, and waits until it is ready (this can take a few " +
             "minutes and uses an Inventor license). If Inventor is already running, just connects to it. Only call " +
@@ -74,7 +76,8 @@ namespace InventorBridge.Mcp.Tools
             });
         }
 
-        [McpServerTool(Name = "run_csharp", Title = "Run C# in Inventor", Destructive = true)]
+        [McpServerTool(Name = "run_csharp", Title = "Run C# in Inventor",
+            ReadOnly = false, Destructive = true, Idempotent = false, OpenWorld = true)]
         [Description(
             "Compiles and runs a C# script against the Inventor API (Autodesk.Inventor.Interop) in the running Inventor.\n" +
             "Globals: App (Inventor.Application), ActiveDocument (Document or null), Geometry (TransientGeometry: " +
@@ -128,7 +131,8 @@ namespace InventorBridge.Mcp.Tools
             return unreported is null ? finished : Combine(unreported, finished);
         }
 
-        [McpServerTool(Name = "script_result", Title = "Result of a long script", ReadOnly = true, Idempotent = false)]
+        [McpServerTool(Name = "script_result", Title = "Result of a long script",
+            ReadOnly = true, Destructive = false, Idempotent = false, OpenWorld = false)]
         [Description(
             "Waits for the run_csharp script that was still running when its call returned, and returns its result. " +
             "If it is still running when the wait ends, says so; call it again to keep waiting.")]
@@ -154,7 +158,8 @@ namespace InventorBridge.Mcp.Tools
             return await scriptTask;
         }
 
-        [McpServerTool(Name = "inspect", Title = "Inspect the active document", ReadOnly = true, Idempotent = true)]
+        [McpServerTool(Name = "inspect", Title = "Inspect the active document",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Structured summary of the active document, to check work without a screenshot. Part: features (type, " +
             "suppressed, health), parameters, solid bodies, bounding box (mm), volume (mm3). Assembly: occurrences " +
@@ -170,7 +175,8 @@ namespace InventorBridge.Mcp.Tools
             });
         }
 
-        [McpServerTool(Name = "topology", Title = "Faces and edges", ReadOnly = true, Idempotent = true)]
+        [McpServerTool(Name = "topology", Title = "Faces and edges",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Lists the faces and edges of the active part's bodies, or of one occurrence of the active assembly, so a " +
             "script can pick them: 1-based index, type, a point on it, normal of planes, axis and radius of cylinders, " +
@@ -202,7 +208,8 @@ namespace InventorBridge.Mcp.Tools
             });
         }
 
-        [McpServerTool(Name = "screenshot", Title = "Screenshot of the Inventor view", ReadOnly = false, Idempotent = true)]
+        [McpServerTool(Name = "screenshot", Title = "Screenshot of the Inventor view",
+            ReadOnly = false, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Captures the active Inventor view as an image, so you can see what the user sees. With view other than " +
             "'current', the camera is turned to that view and zoomed to fit first, which also changes the user's view.")]
@@ -229,7 +236,8 @@ namespace InventorBridge.Mcp.Tools
             });
         }
 
-        [McpServerTool(Name = "api_lookup", Title = "Look up the Inventor API", ReadOnly = true, Idempotent = true)]
+        [McpServerTool(Name = "api_lookup", Title = "Look up the Inventor API",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Looks up the Inventor API reference (generated from the interop of Inventor 2024 to 2027), so you do not " +
             "have to guess names, signatures or enum values. Works without Inventor running.\n" +
@@ -259,7 +267,8 @@ namespace InventorBridge.Mcp.Tools
             }
         }
 
-        [McpServerTool(Name = "guide", Title = "Guides", ReadOnly = true, Idempotent = true)]
+        [McpServerTool(Name = "guide", Title = "Guides",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Short guides on working with Inventor through these tools: the workflow, modeling parts, assemblies and " +
             "constraints, and API pitfalls. Call it without a name for the list. Read 'workflow' before the first change.")]

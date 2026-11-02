@@ -81,6 +81,14 @@ dotnet run --project src/InventorBridge.ReferenceGenerator
 
 The generator does not run Inventor and does not need it installed: it only reads the DLLs' metadata. Building `InventorBridge.Mcp` copies the generated pages next to the server, for `api_lookup`.
 
+## Tests
+
+```bash
+dotnet test
+```
+
+The tests do not need Inventor. They cover the API lookup, the guides (every C# example must compile as a `run_csharp` script), script compilation, and the server itself: they start it over stdio and check that every tool declares all four MCP hints. Like the build, they need `Autodesk.Inventor.Interop.dll`, from the Inventor 2024 installation or `lib/inventor/2024/`.
+
 ## Layout
 
 ```
@@ -98,6 +106,8 @@ src/InventorBridge.ReferenceGenerator/
   inheritance.txt   derived/base pairs extracted from the object model poster legend
 docs/reference/     generated output (do not edit by hand)
 docs/guides/        hand-written guides served by the guide tool
+tests/InventorBridge.Mcp.Tests/   tests that run without Inventor
+InventorInterop.props             where the build finds Autodesk.Inventor.Interop.dll
 assets/             logo and social preview (SVG sources and PNG)
 docs/cover.svg      README and portfolio image (rendered to docs/cover.png)
 ```

@@ -118,6 +118,7 @@ InventorBridge/
       Output/                 Markdown pages, index, members.tsv and JSON
   docs/{reference,guides,recipes}/
   skills/
+  tests/InventorBridge.Mcp.Tests/  tests without Inventor: lookup, guides, compilation, the MCP server over stdio
   tests/recipes/              runs each recipe in a blank document and checks the result
   lib/inventor/<year>/        Autodesk interop DLLs (outside git)
   AGENTS.md
@@ -141,6 +142,7 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
      - `run_csharp` takes an optional `expect` (volume, bounding box size, solid bodies, occurrences, free degrees of freedom) and returns an error when the result does not match, keeping the changes.
      - `topology` lists faces and edges with what a script needs to pick them; split cylinders are merged with the centers of their circular edges. Scripts name entities with `Name()` and find them with `Named()`, using the attribute of Inventor's "Assign Name" command (`iLogicEntityNameSet`).
      - Instead of a timeout, a script still running after 60 s is left to finish: `run_csharp` returns "still running", `script_result` waits for the result, and the other tools answer "busy". A COM call cannot be interrupted safely; an endless loop needs a server restart.
+   - Done (2026-11-02), after the M8ven Trust Index review: every tool declares all four MCP hints (readOnly, destructive, idempotent, openWorld; only `run_csharp` is open-world, because a script can reach files and the network), and `tests/InventorBridge.Mcp.Tests` covers what runs without Inventor, including the server over stdio and the compilation of every guide example.
    - To do: run the tube-and-bend assembly example on a real Inventor 2024 and measure script times. None of the 2026-11-02 additions has run against Inventor yet.
 3. **Documentation:** 5 guides + 10 tested recipes + `inventor-api` skill. Measure the improvement: the same tasks with and without docs.
    - Started (2026-11-02): `docs/guides` with `workflow`, `parts`, `assemblies` and `api-pitfalls`, served by the `guide` tool; the server instructions tell the agent to read `workflow` first. Their C# blocks compile against the 2024 interop but have not run on Inventor yet.

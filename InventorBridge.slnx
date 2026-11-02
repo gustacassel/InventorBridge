@@ -3,4 +3,7 @@
     <Project Path="src/InventorBridge.ReferenceGenerator/InventorBridge.ReferenceGenerator.csproj" />
     <Project Path="src/InventorBridge.Mcp/InventorBridge.Mcp.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/InventorBridge.Mcp.Tests/InventorBridge.Mcp.Tests.csproj" />
+  </Folder>
 </Solution>

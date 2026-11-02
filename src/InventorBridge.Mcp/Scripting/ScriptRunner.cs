@@ -38,10 +38,8 @@ namespace InventorBridge.Mcp.Scripting
         {
             var stopwatch = Stopwatch.StartNew();
 
-            var script = CSharpScript.Create<object>(code, options, typeof(ScriptGlobals));
-            var errors = script.Compile()
-                .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
-                .ToList();
+            var script = CreateScript(code);
+            var errors = GetCompilationErrors(script);
 
             if (errors.Count > 0)
             {
@@ -50,7 +48,7 @@ namespace InventorBridge.Mcp.Scripting
                     Outcome = ScriptOutcome.CompilationFailed,
                     TransactionNote = "not started",
                     Elapsed = stopwatch.Elapsed,
-                    Error = string.Join(System.Environment.NewLine, errors.Select(FormatDiagnostic)),
+                    Error = string.Join(System.Environment.NewLine, errors),
                 };
             }
 
@@ -95,6 +93,26 @@ namespace InventorBridge.Mcp.Scripting
                     Changes = DescribeChanges(application, before),
                 };
             }
+        }
+
+        /// <summary>The compilation errors of a script, formatted as in run_csharp results; empty when it compiles.</summary>
+        /// <remarks>Does not need Inventor: the guides' examples are checked with it.</remarks>
+        public IReadOnlyList<string> GetCompilationErrors(string code)
+        {
+            return GetCompilationErrors(CreateScript(code));
+        }
+
+        private Script<object> CreateScript(string code)
+        {
+            return CSharpScript.Create<object>(code, options, typeof(ScriptGlobals));
+        }
+
+        private static List<string> GetCompilationErrors(Script<object> script)
+        {
+            return script.Compile()
+                .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                .Select(FormatDiagnostic)
+                .ToList();
         }
 
         private static DocumentSnapshot? TakeSnapshot(Application application)

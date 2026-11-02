@@ -1,0 +1,23 @@
+<Project>
+
+  <!--
+    The Inventor 2024 interop (the oldest supported version; COM interfaces are backward compatible).
+    Looked up in lib/inventor/2024 first, then in the Inventor 2024 installation.
+    Override with: dotnet build -p:InventorInteropPath=<path to Autodesk.Inventor.Interop.dll>
+  -->
+  <PropertyGroup>
+    <RepositoryInteropPath>$(MSBuildThisFileDirectory)lib\inventor\2024\Autodesk.Inventor.Interop.dll</RepositoryInteropPath>
+    <InstalledInteropPath>$(ProgramW6432)\Autodesk\Inventor 2024\Bin\Public Assemblies\Autodesk.Inventor.Interop.dll</InstalledInteropPath>
+    <InventorInteropPath Condition="'$(InventorInteropPath)' == '' and Exists('$(RepositoryInteropPath)')">$(RepositoryInteropPath)</InventorInteropPath>
+    <InventorInteropPath Condition="'$(InventorInteropPath)' == ''">$(InstalledInteropPath)</InventorInteropPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Inventor.Interop">
+      <HintPath>$(InventorInteropPath)</HintPath>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
