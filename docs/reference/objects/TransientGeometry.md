@@ -15,8 +15,8 @@ interface TransientGeometry
     Arc2d CreateArc2dByThreePoints2(Point2d PointOne, Point2d PointTwo, Point2d PointThree); // since 2025
     Arc3d CreateArc3d(Point Center, UnitVector Normal, UnitVector ReferenceVector, double Radius, double StartAngle, double SweepAngle);
     Arc3d CreateArc3dByThreePoints(Point PointOne, Point PointTwo, Point PointThree);
-    BSplineCurve CreateBSplineCurve(int Order, out double[] Poles, out double[] Knots, out double[] Weights, bool IsPeriodic);
-    BSplineCurve2d CreateBSplineCurve2d(int Order, out double[] Poles, out double[] Knots, out double[] Weights, bool IsPeriodic);
+    BSplineCurve CreateBSplineCurve(int Order, ref double[] Poles, ref double[] Knots, ref double[] Weights, bool IsPeriodic);
+    BSplineCurve2d CreateBSplineCurve2d(int Order, ref double[] Poles, ref double[] Knots, ref double[] Weights, bool IsPeriodic);
     BSplineCurve2dDefinition CreateBSplineCurve2dDefinition();
     BSplineCurveDefinition CreateBSplineCurveDefinition();
     BSplineSurface CreateBSplineSurface(ref int[] Order, ref double[] Poles, ref double[] KnotsU, ref double[] KnotsV, ref double[] Weights, ref bool[] IsPeriodic);

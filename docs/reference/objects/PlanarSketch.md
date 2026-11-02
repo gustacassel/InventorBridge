@@ -83,7 +83,7 @@ interface PlanarSketch
     void Edit();
     void ExitEdit();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     Point2d ModelToSketchSpace(Point ModelCoordinate);
     ObjectsEnumerator MoveSketchObjects(ObjectCollection SketchObjects, Vector2d Vector, bool Copy = false, bool RemoveConstraints = false);
     SketchEntitiesEnumerator OffsetSketchEntitiesUsingDistance(ObjectCollection SketchEntities, double OffsetDistance, bool NaturalOffsetDirection, bool IncludeConnectedEntities = false, bool CreateOffsetConstraints = true);

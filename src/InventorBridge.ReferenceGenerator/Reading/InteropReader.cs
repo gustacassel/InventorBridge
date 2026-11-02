@@ -241,7 +241,9 @@ namespace InventorBridge.ReferenceGenerator.Reading
             var direction = ParameterDirection.In;
             if (parameter.ParameterType.IsByRef)
             {
-                direction = parameter.IsOut ? ParameterDirection.Out : ParameterDirection.Ref;
+                // [In, Out] parameters (arrays filled by the call, such as GetPointAtParam) are "ref" in C#;
+                // only [Out] without [In] can be passed with "out".
+                direction = parameter.IsOut && !parameter.IsIn ? ParameterDirection.Out : ParameterDirection.Ref;
             }
 
             return new ApiParameter

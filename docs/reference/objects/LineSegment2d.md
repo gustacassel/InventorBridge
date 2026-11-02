@@ -16,9 +16,9 @@ interface LineSegment2d
     // Methods
     LineSegment2d Copy();
     double DistanceTo(Point2d Point);
-    void GetLineSegmentData(out double[] StartPoint, out double[] EndPoint);
+    void GetLineSegmentData(ref double[] StartPoint, ref double[] EndPoint);
     ObjectsEnumerator IntersectWithCurve(object Curve, double Tolerance = 0);
-    void PutLineSegmentData(out double[] StartPoint, out double[] EndPoint);
+    void PutLineSegmentData(ref double[] StartPoint, ref double[] EndPoint);
 }
 ```
 

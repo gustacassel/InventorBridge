@@ -14,8 +14,8 @@ interface EllipseFull2d
     double MinorMajorRatio { get; set; }
     // Methods
     EllipseFull2d Copy();
-    void GetEllipseFullData(out double[] Center, out double[] MajorAxis, out double MinorMajorRatio);
-    void PutEllipseFullData(out double[] Center, out double[] MajorAxis, double MinorMajorRatio);
+    void GetEllipseFullData(ref double[] Center, ref double[] MajorAxis, out double MinorMajorRatio);
+    void PutEllipseFullData(ref double[] Center, ref double[] MajorAxis, double MinorMajorRatio);
 }
 ```
 

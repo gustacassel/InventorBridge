@@ -17,12 +17,12 @@ interface Plane
     // Methods
     Plane Copy();
     double DistanceTo(Point Point);
-    void GetPlaneData(out double[] RootPoint, out double[] Normal);
+    void GetPlaneData(ref double[] RootPoint, ref double[] Normal);
     ObjectsEnumerator IntersectWithCurve(object Curve, double Tolerance = 0);
     Point IntersectWithLine(object Line, double Tolerance = 0);
     Line IntersectWithPlane(Plane Plane, double Tolerance = 0);
     ObjectsEnumerator IntersectWithSurface(object Surface, double Tolerance = 0);
-    void PutPlaneData(out double[] RootPoint, out double[] Normal);
+    void PutPlaneData(ref double[] RootPoint, ref double[] Normal);
 }
 ```
 

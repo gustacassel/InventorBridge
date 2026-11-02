@@ -16,8 +16,8 @@ interface Cone
     double Radius { get; set; }
     // Methods
     Cone Copy();
-    void GetConeData(out double[] BasePoint, out double[] AxisVector, out double Radius, out double HalfAngle, out bool IsExpanding);
-    void PutConeData(out double[] BasePoint, out double[] AxisVector, double Radius, double HalfAngle, bool IsExpanding);
+    void GetConeData(ref double[] BasePoint, ref double[] AxisVector, out double Radius, out double HalfAngle, out bool IsExpanding);
+    void PutConeData(ref double[] BasePoint, ref double[] AxisVector, double Radius, double HalfAngle, bool IsExpanding);
 }
 ```
 

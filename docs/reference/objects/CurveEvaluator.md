@@ -11,19 +11,19 @@ interface CurveEvaluator
     int Continuity { get; }
     Box RangeBox { get; }
     // Methods
-    void GetCurvature(out double[] Params, out double[] Directions, out double[] Curvatures);
-    void GetEndPoints(out double[] StartPoint, out double[] EndPoint);
-    void GetFirstDerivatives(out double[] Params, out double[] FirstDerivs);
+    void GetCurvature(ref double[] Params, ref double[] Directions, ref double[] Curvatures);
+    void GetEndPoints(ref double[] StartPoint, ref double[] EndPoint);
+    void GetFirstDerivatives(ref double[] Params, ref double[] FirstDerivs);
     void GetLengthAtParam(double FromParam, double ToParam, out double Length);
-    void GetParamAnomaly(out double[] Periodicity, out bool IsSingular, out bool UnboundedParam);
+    void GetParamAnomaly(ref double[] Periodicity, out bool IsSingular, out bool UnboundedParam);
     void GetParamAtLength(double FromParam, double Length, out double Param);
-    void GetParamAtPoint(out double[] Points, out double[] GuessParams, out double[] MaxDeviations, out double[] Params, out SolutionNatureEnum[] SolTypes);
+    void GetParamAtPoint(ref double[] Points, ref double[] GuessParams, ref double[] MaxDeviations, ref double[] Params, ref SolutionNatureEnum[] SolTypes);
     void GetParamExtents(out double MinParam, out double MaxParam);
-    void GetPointAtParam(out double[] Params, out double[] Points);
-    void GetSecondDerivatives(out double[] Params, out double[] SecondDerivs);
+    void GetPointAtParam(ref double[] Params, ref double[] Points);
+    void GetSecondDerivatives(ref double[] Params, ref double[] SecondDerivs);
     void GetStrokes(double FromParam, double ToParam, double Tolerance, out int VertexCount, out double[] VertexCoordinates);
-    void GetTangent(out double[] Params, out double[] Tangents);
-    void GetThirdDerivatives(out double[] Params, out double[] ThirdDerivs);
+    void GetTangent(ref double[] Params, ref double[] Tangents);
+    void GetThirdDerivatives(ref double[] Params, ref double[] ThirdDerivs);
 }
 ```
 

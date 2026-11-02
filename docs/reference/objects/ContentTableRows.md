@@ -13,7 +13,7 @@ interface ContentTableRows
     ContentTableRow Item[object Index] { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    ContentTableRow Add(out string[] RowData, int Position = -1);
+    ContentTableRow Add(ref string[] RowData, int Position = -1);
 }
 ```
 

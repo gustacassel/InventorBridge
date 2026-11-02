@@ -18,7 +18,7 @@ interface ModelLeaderNode
     // Methods
     void AddLeader(ObjectCollection Points);
     void Delete(bool RetainDependentNodes = false);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     ModelLeaderNode InsertNode(ModelLeaderNode ChildNode, Point Position);
 }
 ```

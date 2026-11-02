@@ -12,7 +12,7 @@ interface DebugInstrumentation
     int ObjectReferenceCount[int Cookie] { get; }
     DebugWatchType ObjectWatchType[int Cookie] { get; set; }
     // Methods
-    void GetLiveObjects(out int[] Cookies);
+    void GetLiveObjects(ref int[] Cookies);
     int GetObjectCookie(object Object);
     void GetTraceInfo(out bool Enabled, out string TraceFilename);
     void SetProfileInfo(bool Enable, bool WriteToFileOnStop = true, string FileName = "");

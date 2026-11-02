@@ -23,7 +23,7 @@ interface Balloon
     // Methods
     void Delete();
     void GetBalloonType(out BalloonTypeEnum BalloonType, out object BalloonTypeData);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void ReplaceBOMView(PartsListLevelEnum Level, object NumberingScheme = Missing, object MinimumDigitsOrDelimiter = Missing, object IgnoreOverrides = Missing); // since 2027
     void SaveItemOverridesToBOM();
     void SetBalloonType(BalloonTypeEnum BalloonType, object BalloonTypeData = Missing);

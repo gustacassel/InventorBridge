@@ -14,12 +14,12 @@ interface Matrix
     // Methods
     Matrix Copy();
     void GetCoordinateSystem(out Point Origin, out Vector XAxis, out Vector YAxis, out Vector ZAxis);
-    void GetMatrixData(out double[] Cells);
+    void GetMatrixData(ref double[] Cells);
     void Invert();
     bool IsEqualTo(Matrix Matrix, double Tolerance = 0);
     void PostMultiplyBy(Matrix Matrix);
     void PreMultiplyBy(Matrix Matrix);
-    void PutMatrixData(out double[] Cells);
+    void PutMatrixData(ref double[] Cells);
     void SetCoordinateSystem(Point Origin, Vector XAxis, Vector YAxis, Vector ZAxis);
     void SetToAlignCoordinateSystems(Point FromOrigin, Vector FromXAxis, Vector FromYAxis, Vector FromZAxis, Point ToOrigin, Vector ToXAxis, Vector ToYAxis, Vector ToZAxis);
     void SetToIdentity();

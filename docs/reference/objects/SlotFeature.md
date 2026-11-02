@@ -34,7 +34,7 @@ interface SlotFeature
     ObjectTypeEnum Type { get; } // since 2027
     // Methods
     void Delete(bool RetainConsumedSketches = false, bool RetainDependentFeaturesAndSketches = false, bool RetainDependentWorkFeatures = false); // since 2027
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0); // since 2027
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0); // since 2027
     bool GetSuppressionCondition(out Parameter Parameter, out ComparisonTypeEnum ComparisonType, out object Expression); // since 2027
     void RemoveParticipant(ComponentOccurrence Occurrence); // since 2027
     void SetAffectedBodies(ObjectCollection Bodies); // since 2027

@@ -16,7 +16,7 @@ interface GroundConstraint3DProxy
     ObjectTypeEnum Type { get; }
     // Methods
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

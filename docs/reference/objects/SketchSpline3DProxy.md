@@ -42,7 +42,7 @@ interface SketchSpline3DProxy
     void Disconnect(object FitPoint);
     SketchSplineHandle3D GetHandle(SketchPoint3D FitPoint);
     bool GetHandleStatus(SketchPoint3D FitPoint);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     SketchPoint3D InsertFitPoint(object FitPoint, int TargetIndex = 0, bool InsertBefore = true);
     void SetHandleStatus(SketchPoint3D FitPoint, bool Value);
     SketchSpline3D Split(object FitPoint);

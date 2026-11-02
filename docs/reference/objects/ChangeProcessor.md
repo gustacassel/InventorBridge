@@ -24,7 +24,7 @@ interface ChangeProcessor
     void SetMessageDialogOptions(bool AllowAccept, bool AllowEdit);
     void SuppressChangeNotifications(ref string[] SuppressedEvents, bool Suppressed); // since 2025
     // Events
-    event OnExecute(Document Document, NameValueMap Context, out bool Succeeded);
+    event OnExecute(Document Document, NameValueMap Context, ref bool Succeeded);
     event OnReadFromScript(Document Document, string Inputs, NameValueMap Context);
     event OnTerminate();
     event OnWriteToScript(Document Document, NameValueMap Context, out string ResultInputs);

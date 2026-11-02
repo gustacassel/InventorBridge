@@ -125,7 +125,7 @@ interface DimensionStyle
     void Delete();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
     void GetHoleThreadNoteOptionValue(string HoleThreadType, string OptionName, out object Value); // since 2025
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SaveToGlobal();
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
     void SetHoleThreadNoteOptionValue(string HoleThreadType, string OptionName, object OptionValue, object ApplyToAll = Missing); // since 2025

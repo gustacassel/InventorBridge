@@ -14,9 +14,9 @@ interface Line2d
     // Methods
     Line2d Copy();
     double DistanceTo(Point2d Point);
-    void GetLineData(out double[] RootPoint, out double[] Direction);
+    void GetLineData(ref double[] RootPoint, ref double[] Direction);
     ObjectsEnumerator IntersectWithCurve(object Curve, double Tolerance = 0);
-    void PutLineData(out double[] RootPoint, out double[] Direction);
+    void PutLineData(ref double[] RootPoint, ref double[] Direction);
 }
 ```
 

@@ -17,8 +17,8 @@ interface GraphicsNormalSet
     // Methods
     void Add(int Index, UnitVector Normal);
     void Delete();
-    void GetNormals(out double[] Normals);
-    void PutNormals(out double[] Normals);
+    void GetNormals(ref double[] Normals);
+    void PutNormals(ref double[] Normals);
     void Remove(int Index);
 }
 ```

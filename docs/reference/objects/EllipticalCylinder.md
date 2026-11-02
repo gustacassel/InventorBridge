@@ -15,8 +15,8 @@ interface EllipticalCylinder
     double MinorMajorRatio { get; set; }
     // Methods
     EllipticalCylinder Copy();
-    void GetEllipticalCylinderData(out double[] BasePoint, out double[] AxisVector, out double[] MajorAxis, out double MinorMajorRatio);
-    void PutEllipticalCylinderData(out double[] BasePoint, out double[] AxisVector, out double[] MajorAxis, double MinorMajorRatio);
+    void GetEllipticalCylinderData(ref double[] BasePoint, ref double[] AxisVector, ref double[] MajorAxis, out double MinorMajorRatio);
+    void PutEllipticalCylinderData(ref double[] BasePoint, ref double[] AxisVector, ref double[] MajorAxis, double MinorMajorRatio);
 }
 ```
 

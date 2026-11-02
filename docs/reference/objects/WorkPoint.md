@@ -38,7 +38,7 @@ interface WorkPoint
     bool Visible { get; set; }
     // Methods
     void Delete(bool RetainDependents = false);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetAtCentroid(object Entities);
     void SetByCurveAndEntity(object Curve, object Entity, object ProximityPoint = Missing);
     void SetByMidPoint(Edge Edge);

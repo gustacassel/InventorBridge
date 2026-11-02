@@ -18,7 +18,7 @@ Conclusion: nobody has invested in a **documentation layer for agents**, nor in 
 1. **Few tools, one strong executor.** The agent writes C# code against the real API and the server runs it. Fixed tools only for what is frequent or needs a structured format (inspection, screenshot, iLogic).
 2. **Documentation is generated from the interop DLLs.** Signatures, enums and members come from reflection over each version's `Autodesk.Inventor.Interop.dll`. The agent looks things up instead of guessing.
 3. **Fast, verifiable feedback.** Compilation errors come back with line and message; every change produces a summary of what changed; screenshots are available for visual checks.
-4. **Safe by default.** Every execution runs inside an Inventor transaction (undoable), with a timeout. Saving, overwriting and checking files into Vault are separate, explicit actions.
+4. **Safe by default.** Every execution runs inside an Inventor transaction (undoable). A long script is never killed in the middle of a COM call: after 60 s the call returns and the result is collected later. Saving, overwriting and checking files into Vault are separate, explicit actions.
 5. **Works with any agent.** Standard MCP (stdio) + plain Markdown documentation + `AGENTS.md` for Codex and skills for Claude Code.
 6. **Nothing installed inside Inventor**, unless a measurement shows it is needed (see 3.2).
 
@@ -62,6 +62,9 @@ Mitigations, in order:
 | `inventor_status` | Version, open documents, active document, document units |
 | `inspect` | Structured summary of the active document: feature or occurrence tree, parameters, iProperties, mass. Paginated, with controllable depth |
 | `run_csharp` | Compiles and runs a C# script with `app`, `doc` and helpers (`mm()`, `deg()`, `Log()`) available. Runs in a transaction; returns output, return value, compilation errors or a translated COM exception |
+| `script_result` | Result of a script still running when its `run_csharp` call returned |
+| `topology` | Faces and edges of a part or occurrence with positions, normals, cylinder axes and circle centers, to pick them in a script |
+| `guide` | The hand-written guides (`docs/guides`), served so the agent can read them from any folder |
 | `undo_last` | Undoes the last transaction opened by the bridge |
 | `screenshot` | Viewport capture (optional view and zoom), returned as an image |
 | `api_lookup` | Searches the generated reference, filtered by the connected version: "members of `PartComponentDefinition`", "values of `PartFeatureExtentDirectionEnum`" |
@@ -128,12 +131,19 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
    - Done (2026-10-25): `src/InventorBridge.ReferenceGenerator` (first called DocGen) generates `docs/reference` from `lib/inventor/<year>/`. COM inheritance comes from `src/InventorBridge.ReferenceGenerator/inheritance.txt` (extracted from the InventorObjectModel 2024 to 2027 posters), confirmed by vtable order.
    - Done (2026-10-28): reference for 2024, 2025, 2026 and 2027, with a "since 20xx" mark per member. The 2024 interop comes from the Inventor installation; 2025+ come from Autodesk's interop downloads page (2025 v29.3, 2026 v30.2, 2027 v31.0).
    - Done (2026-10-29): `api_lookup` in the MCP server. The build copies the object and enum pages and `members.tsv` next to the server; the tool returns a page without links, the members of a type that match a text, or a name search, hiding members that the running Inventor version does not have. Enums longer than 100 values are cut short and searched by name instead.
+   - Fixed (2026-11-02): `[In, Out]` parameters (arrays the call fills, such as `CurveEvaluator.GetPointAtParam`) are shown as `ref`, as C# needs, instead of `out`.
    - To do: properties whose getter and setter have different types (e.g. `Parameter.Units`: string getter, object setter) cannot be used as properties from C#; the reference should show them as `get_Units()` / `set_Units(object)`.
 2. **Proof of concept:** MCP server with `inventor_status`, `inspect`, `run_csharp`, `screenshot`, tested on Inventor 2024. Validate the "agent writes a script, runs it, checks it" loop with Claude Code. Measure typical script times.
    - Done (2026-10-28): `src/InventorBridge.Mcp` with `inventor_status`, `inventor_start`, `run_csharp`, `inspect` and `screenshot`. Verified without Inventor: the MCP handshake, tool listing, the "Inventor is not running" errors, and that Roslyn compiles scripts against the 2024 interop on .NET 8 (including a full sketch-and-extrude tube script).
    - Inventor transactions belong to one document (there is no global transaction), so `run_csharp` wraps the script in a transaction on the document that is active when it starts; documents the script creates are not covered.
-   - To do: run the tube-and-bend assembly example on a real Inventor 2024 and measure script times; a script timeout (a stuck script currently blocks the STA thread).
+   - Done (2026-11-02), after looking at SolidCraft's MCP server:
+     - `run_csharp` lists what the script changed (documents created, saved or closed; features, sketches, occurrences and constraints added), from snapshots of the open documents taken before and after.
+     - `run_csharp` takes an optional `expect` (volume, bounding box size, solid bodies, occurrences, free degrees of freedom) and returns an error when the result does not match, keeping the changes.
+     - `topology` lists faces and edges with what a script needs to pick them; split cylinders are merged with the centers of their circular edges. Scripts name entities with `Name()` and find them with `Named()`, using the attribute of Inventor's "Assign Name" command (`iLogicEntityNameSet`).
+     - Instead of a timeout, a script still running after 60 s is left to finish: `run_csharp` returns "still running", `script_result` waits for the result, and the other tools answer "busy". A COM call cannot be interrupted safely; an endless loop needs a server restart.
+   - To do: run the tube-and-bend assembly example on a real Inventor 2024 and measure script times. None of the 2026-11-02 additions has run against Inventor yet.
 3. **Documentation:** 5 guides + 10 tested recipes + `inventor-api` skill. Measure the improvement: the same tasks with and without docs.
+   - Started (2026-11-02): `docs/guides` with `workflow`, `parts`, `assemblies` and `api-pitfalls`, served by the `guide` tool; the server instructions tell the agent to read `workflow` first. Their C# blocks compile against the 2024 interop but have not run on Inventor yet.
 4. **iLogic:** `ilogic_*` tools and temporary-rule execution for heavy tasks; `undo_last`.
 5. **Company standards:** support for each company's private standards and skills (`docs/company`), iProperties checks and part number cross-checks against the ERP (read-only).
 6. **Our own add-in:** only if the measurements from phases 2 and 4 show it is needed.

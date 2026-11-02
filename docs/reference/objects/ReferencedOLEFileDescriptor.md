@@ -25,7 +25,7 @@ interface ReferencedOLEFileDescriptor
     // Methods
     void Activate(OLEVerbEnum Verb, out object OLEDocumentObject);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

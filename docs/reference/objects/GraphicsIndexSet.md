@@ -17,8 +17,8 @@ interface GraphicsIndexSet
     // Methods
     void Add(int Index, int IndexValue);
     void Delete();
-    void GetIndices(out int[] IndexValues);
-    void PutIndices(out int[] IndexValues);
+    void GetIndices(ref int[] IndexValues);
+    void PutIndices(ref int[] IndexValues);
     void Remove(int Index);
 }
 ```

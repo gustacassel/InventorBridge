@@ -26,7 +26,7 @@ interface EdgeSymbolStyle
     Style ConvertToLocal();
     Style Copy(string Name);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SaveToGlobal();
     void UpdateFromGlobal();
 }

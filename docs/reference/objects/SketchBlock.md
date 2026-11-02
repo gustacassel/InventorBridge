@@ -36,7 +36,7 @@ interface SketchBlock
     void Explode();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
     object GetObject(object ObjectInDefinition);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
 }
 ```

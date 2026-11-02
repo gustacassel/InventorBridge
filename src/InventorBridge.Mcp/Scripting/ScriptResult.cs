@@ -8,6 +8,7 @@ namespace InventorBridge.Mcp.Scripting
         Succeeded,
         CompilationFailed,
         RuntimeFailed,
+        ExpectationFailed,
     }
 
     /// <summary>The result of one run_csharp call, formatted as text for the agent.</summary>
@@ -29,6 +30,12 @@ namespace InventorBridge.Mcp.Scripting
         /// <summary>Compilation errors or the exception, when the script failed.</summary>
         public string? Error { get; init; }
 
+        /// <summary>What the script changed in the open documents (created, saved, features added...).</summary>
+        public IReadOnlyList<string> Changes { get; init; } = [];
+
+        /// <summary>The result of the "expect" check, one line per value; empty when nothing was expected.</summary>
+        public IReadOnlyList<string> ExpectationLines { get; init; } = [];
+
         public bool IsError => Outcome != ScriptOutcome.Succeeded;
 
         public string ToText()
@@ -49,6 +56,24 @@ namespace InventorBridge.Mcp.Scripting
                 text.AppendLine($"return value: {ReturnValue}");
             }
 
+            if (Outcome != ScriptOutcome.CompilationFailed)
+            {
+                text.AppendLine(Changes.Count == 0 ? "changes: none detected in the open documents" : "changes:");
+                foreach (var change in Changes)
+                {
+                    text.AppendLine("  " + change);
+                }
+            }
+
+            if (ExpectationLines.Count > 0)
+            {
+                text.AppendLine("expect:");
+                foreach (var line in ExpectationLines)
+                {
+                    text.AppendLine("  " + line);
+                }
+            }
+
             if (Error is not null)
             {
                 text.AppendLine("error:");
@@ -64,6 +89,7 @@ namespace InventorBridge.Mcp.Scripting
             {
                 case ScriptOutcome.Succeeded: return "succeeded";
                 case ScriptOutcome.CompilationFailed: return "compilation failed (nothing was run)";
+                case ScriptOutcome.ExpectationFailed: return "ran, but the result does not match \"expect\" (the changes were kept)";
                 default: return "failed while running";
             }
         }

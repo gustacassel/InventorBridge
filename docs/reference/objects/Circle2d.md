@@ -13,8 +13,8 @@ interface Circle2d
     double Radius { get; set; }
     // Methods
     Circle2d Copy();
-    void GetCircleData(out double[] Center, out double Radius);
-    void PutCircleData(out double[] Center, double Radius);
+    void GetCircleData(ref double[] Center, out double Radius);
+    void PutCircleData(ref double[] Center, double Radius);
 }
 ```
 

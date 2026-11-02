@@ -21,7 +21,7 @@ interface BalloonTip
     void Display(string Message = "");
     // Events
     event OnClick(NameValueMap Context);
-    event OnDisplay(out bool Cancel);
+    event OnDisplay(ref bool Cancel);
 }
 ```
 

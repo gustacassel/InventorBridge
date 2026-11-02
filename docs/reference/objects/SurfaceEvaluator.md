@@ -11,23 +11,23 @@ interface SurfaceEvaluator
     double Area { get; }
     int Continuity { get; }
     bool IsExtrudedShape { get; }
-    bool IsParamOnFace[out double[] Params] { get; }
+    bool IsParamOnFace[ref double[] Params] { get; }
     bool IsRevolvedShape { get; }
     Box2d ParamRangeRect { get; }
     Box RangeBox { get; }
     // Methods
     object Get3dCurveFrom2dCurve(object Curve2d);
-    void GetCurvatures(out double[] Params, out double[] MaxTangents, out double[] MaxCurvatures, out double[] MinCurvatures);
-    void GetFirstDerivatives(out double[] Params, out double[] UPartials, out double[] VPartials);
+    void GetCurvatures(ref double[] Params, ref double[] MaxTangents, ref double[] MaxCurvatures, ref double[] MinCurvatures);
+    void GetFirstDerivatives(ref double[] Params, ref double[] UPartials, ref double[] VPartials);
     ObjectCollection GetIsoCurve(double Parameter, bool UDirection);
-    void GetNormal(out double[] Params, out double[] Normals);
-    void GetNormalAtPoint(out double[] Points, out double[] Normals);
-    void GetParamAnomaly(out double[] PeriodicityU, out double[] PeriodicityV, out int NumEndSingularitiesU, out double[] SingularitiesU, out int NumEndSingularitiesV, out double[] SingularitiesV, out bool[] UnboundedParams);
-    void GetParamAtPoint(out double[] Points, out double[] GuessParams, out double[] MaxDeviations, out double[] Params, out SolutionNatureEnum[] SolutionNatures);
-    void GetPointAtParam(out double[] Params, out double[] Points);
-    void GetSecondDerivatives(out double[] Params, out double[] UUPartials, out double[] UVPartials, out double[] VVPartials);
-    void GetTangents(out double[] Params, out double[] UTangents, out double[] VTangents);
-    void GetThirdDerivatives(out double[] Params, out double[] UUUPartials, out double[] VVVPartials);
+    void GetNormal(ref double[] Params, ref double[] Normals);
+    void GetNormalAtPoint(ref double[] Points, ref double[] Normals);
+    void GetParamAnomaly(ref double[] PeriodicityU, ref double[] PeriodicityV, out int NumEndSingularitiesU, ref double[] SingularitiesU, out int NumEndSingularitiesV, ref double[] SingularitiesV, ref bool[] UnboundedParams);
+    void GetParamAtPoint(ref double[] Points, ref double[] GuessParams, ref double[] MaxDeviations, ref double[] Params, ref SolutionNatureEnum[] SolutionNatures);
+    void GetPointAtParam(ref double[] Params, ref double[] Points);
+    void GetSecondDerivatives(ref double[] Params, ref double[] UUPartials, ref double[] UVPartials, ref double[] VVPartials);
+    void GetTangents(ref double[] Params, ref double[] UTangents, ref double[] VTangents);
+    void GetThirdDerivatives(ref double[] Params, ref double[] UUUPartials, ref double[] VVVPartials);
 }
 ```
 

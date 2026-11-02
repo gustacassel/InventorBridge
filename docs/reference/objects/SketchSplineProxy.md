@@ -51,7 +51,7 @@ interface SketchSplineProxy
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
     SketchSplineHandle GetHandle(SketchPoint FitPoint);
     bool GetHandleStatus(SketchPoint FitPoint);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     SketchPoint InsertFitPoint(object FitPoint, int TargetIndex = 0, bool InsertBefore = true);
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
     void SetHandleStatus(SketchPoint FitPoint, bool Value);

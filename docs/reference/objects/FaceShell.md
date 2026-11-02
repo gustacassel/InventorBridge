@@ -13,7 +13,7 @@ interface FaceShell
     Edges Edges { get; }
     Faces Faces { get; }
     bool IsClosed { get; }
-    ContainmentEnum IsPointInside[out double[] Point, bool UseBox = true] { get; }
+    ContainmentEnum IsPointInside[ref double[] Point, bool UseBox = true] { get; }
     bool IsVoid { get; }
     SurfaceBody Parent { get; }
     Box RangeBox { get; }
@@ -22,7 +22,7 @@ interface FaceShell
     ObjectTypeEnum Type { get; }
     double Volume[double PrecisionPercent] { get; }
     // Methods
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

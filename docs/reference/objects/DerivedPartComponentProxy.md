@@ -35,7 +35,7 @@ interface DerivedPartComponentProxy
     // Methods
     void BreakLinkToFile();
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void Replace(string FullFileName, NameValueMap Options);
     void SetEndOfPart(bool Before);
 }

@@ -13,9 +13,9 @@ interface BSplineCurve2d
     // Methods
     BSplineCurve2d Copy();
     BSplineCurve2d ExtractPartial(double StartParam, double EndParam);
-    void GetBSplineData(out double[] Poles, out double[] Knots, out double[] Weights);
+    void GetBSplineData(ref double[] Poles, ref double[] Knots, ref double[] Weights);
     void GetBSplineInfo(out int Order, out int NumPoles, out int NumKnots, out bool IsRational, out bool IsPeriodic, out bool IsClosed);
-    void PutBSplineInfoAndData(int Order, out double[] Poles, out double[] Knots, out double[] Weights, bool IsPeriodic);
+    void PutBSplineInfoAndData(int Order, ref double[] Poles, ref double[] Knots, ref double[] Weights, bool IsPeriodic);
     void Split(double SplitParam, out BSplineCurve2d CurveOne, out BSplineCurve2d CurveTwo);
 }
 ```

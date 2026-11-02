@@ -13,9 +13,9 @@ interface Point2d
     // Methods
     Point2d Copy();
     double DistanceTo(Point2d Point);
-    void GetPointData(out double[] Coords);
+    void GetPointData(ref double[] Coords);
     bool IsEqualTo(Point2d Point, double Tolerance = 0);
-    void PutPointData(out double[] Coords);
+    void PutPointData(ref double[] Coords);
     void TransformBy(Matrix2d Matrix);
     void TranslateBy(Vector2d Vector);
     Vector2d VectorTo(Point2d Point);

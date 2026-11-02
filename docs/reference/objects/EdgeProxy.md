@@ -37,7 +37,7 @@ interface EdgeProxy
     Point GetClosestPointTo(Point InputPoint);
     void GetExistingStrokeTolerances(out int ToleranceCount, out double[] ExistingTolerances);
     void GetExistingStrokes(double ToleranceIndex, out int VertexCount, out double[] VertexCoordinates, out int PolylineCount, out int[] PolylineLengths);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     Edge GetSourceEdge(bool GetLeafSource = true);
 }
 ```

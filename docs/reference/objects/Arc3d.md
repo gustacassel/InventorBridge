@@ -19,8 +19,8 @@ interface Arc3d
     double SweepAngle { get; set; }
     // Methods
     Arc3d Copy();
-    void GetArcData(out double[] Center, out double[] AxisVector, out double[] RefVector, out double Radius, out double StartAngle, out double SweepAngle);
-    void PutArcData(out double[] Center, out double[] AxisVector, out double[] RefVector, double Radius, double StartAngle, double SweepAngle);
+    void GetArcData(ref double[] Center, ref double[] AxisVector, ref double[] RefVector, out double Radius, out double StartAngle, out double SweepAngle);
+    void PutArcData(ref double[] Center, ref double[] AxisVector, ref double[] RefVector, double Radius, double StartAngle, double SweepAngle);
 }
 ```
 

@@ -17,8 +17,8 @@ interface GraphicsColorSet
     // Methods
     void Add(int Index, byte Red, byte Green, byte Blue);
     void Delete();
-    void GetColors(out byte[] Colors);
-    void PutColors(out byte[] Colors);
+    void GetColors(ref byte[] Colors);
+    void PutColors(ref byte[] Colors);
     void Remove(int Index);
 }
 ```

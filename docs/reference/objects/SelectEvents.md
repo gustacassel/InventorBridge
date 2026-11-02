@@ -31,7 +31,7 @@ interface SelectEvents
     void RemoveFromSelectedEntities(object ItemObject);
     void ResetSelections();
     // Events
-    event OnPreSelect(out object PreSelectEntity, out bool DoHighlight, out ObjectCollection MorePreSelectEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, View View);
+    event OnPreSelect(ref object PreSelectEntity, out bool DoHighlight, ref ObjectCollection MorePreSelectEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, View View);
     event OnPreSelectMouseMove(object PreSelectEntity, Point ModelPosition, Point2d ViewPosition, View View);
     event OnSelect(ObjectsEnumerator JustSelectedEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, View View);
     event OnStopPreSelect(Point ModelPosition, Point2d ViewPosition, View View);

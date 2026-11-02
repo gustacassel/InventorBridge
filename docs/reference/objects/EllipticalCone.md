@@ -17,8 +17,8 @@ interface EllipticalCone
     double MinorMajorRatio { get; set; }
     // Methods
     EllipticalCone Copy();
-    void GetEllipticalConeData(out double[] BasePoint, out double[] AxisVector, out double[] MajorAxis, out double MinorMajorRatio, out double HalfAngle, out bool IsExpanding);
-    void PutEllipticalConeData(out double[] BasePoint, out double[] AxisVector, out double[] MajorAxis, double MinorMajorRatio, double HalfAngle, bool IsExpanding);
+    void GetEllipticalConeData(ref double[] BasePoint, ref double[] AxisVector, ref double[] MajorAxis, out double MinorMajorRatio, out double HalfAngle, out bool IsExpanding);
+    void PutEllipticalConeData(ref double[] BasePoint, ref double[] AxisVector, ref double[] MajorAxis, double MinorMajorRatio, double HalfAngle, bool IsExpanding);
 }
 ```
 

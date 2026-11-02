@@ -25,7 +25,7 @@ interface ShrinkwrapComponent
     // Methods
     void BreakLinkToFile();
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetEndOfPart(bool Before);
 }
 ```

@@ -16,8 +16,8 @@ interface GraphicsColorMapper
     int ValueCount { get; }
     // Methods
     void Delete();
-    void GetColors(out byte[] Colors);
-    void GetValues(out double[] Values);
+    void GetColors(ref byte[] Colors);
+    void GetValues(ref double[] Values);
     void PutColors(ref byte[] Colors);
     void PutValues(ref double[] Values);
 }

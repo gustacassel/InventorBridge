@@ -41,7 +41,7 @@ interface BendPartFeature
     // Methods
     void Delete(bool RetainConsumedSketches = false, bool RetainDependentFeaturesAndSketches = false, bool RetainDependentWorkFeatures = false);
     void Edit(SketchLine BendLine, BendPartTypeEnum BendPartType, object InputOne, object InputTwo, PartFeatureExtentDirectionEnum BendSide, bool BendInSketchNormalDirection, object Body = Missing, bool BendMinimum = true);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     bool GetSuppressionCondition(out Parameter Parameter, out ComparisonTypeEnum ComparisonType, out object Expression);
     void RemoveParticipant(ComponentOccurrence Occurrence);
     void SetAffectedBodies(ObjectCollection Bodies);

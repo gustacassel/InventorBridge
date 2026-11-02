@@ -44,6 +44,37 @@ namespace InventorBridge.Mcp.Scripting
             return degrees * Math.PI / 180.0;
         }
 
+        /// <summary>
+        /// Names a Face, Edge or Vertex like Inventor's "Assign Name", so later scripts find it with Named().
+        /// For a proxy in an assembly, the name goes on the entity in its part document.
+        /// </summary>
+        public void Name(object entity, string name)
+        {
+            EntityNames.Set(entity, name);
+        }
+
+        /// <summary>The Face, Edge or Vertex named <paramref name="name"/> in a part document, or null.</summary>
+        public object? Named(Document document, string name)
+        {
+            return EntityNames.Find(document, name);
+        }
+
+        /// <summary>
+        /// The entity named <paramref name="name"/> in the part placed as <paramref name="occurrence"/>, as a proxy
+        /// in the assembly (what assembly constraints need), or null.
+        /// </summary>
+        public object? Named(ComponentOccurrence occurrence, string name)
+        {
+            var native = EntityNames.Find((Document)occurrence.Definition.Document, name);
+            if (native is null)
+            {
+                return null;
+            }
+
+            occurrence.CreateGeometryProxy(native, out var proxy);
+            return proxy;
+        }
+
         /// <summary>Writes a line to the output returned to the agent.</summary>
         public void Log(object? value)
         {

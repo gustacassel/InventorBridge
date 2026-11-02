@@ -18,7 +18,7 @@ interface AutoCADBlockDefinition
     AutoCADBlockDefinition CopyTo(DrawingDocument TargetDocument, bool ReplaceExisting = false);
     void Delete();
     void GetPromptTags(out object Tags, out object Prompts = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

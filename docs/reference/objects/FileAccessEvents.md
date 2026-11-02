@@ -12,10 +12,10 @@ interface FileAccessEvents
     object Parent { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    void FireOnFileResolution(string RelativeFileName, string LibraryName, out byte[] CustomLogicalName, EventTimingEnum BeforeOrAfter, NameValueMap Context, out string FullFileName, out HandlingCodeEnum HandlingCode);
+    void FireOnFileResolution(string RelativeFileName, string LibraryName, ref byte[] CustomLogicalName, EventTimingEnum BeforeOrAfter, NameValueMap Context, out string FullFileName, out HandlingCodeEnum HandlingCode);
     // Events
-    event OnFileDirty(string RelativeFileName, string LibraryName, out byte[] CustomLogicalName, string FullFileName, Document DocumentObject, EventTimingEnum BeforeOrAfter, NameValueMap Context, out HandlingCodeEnum HandlingCode);
-    event OnFileResolution(string RelativeFileName, string LibraryName, out byte[] CustomLogicalName, EventTimingEnum BeforeOrAfter, NameValueMap Context, out string FullFileName, out HandlingCodeEnum HandlingCode);
+    event OnFileDirty(string RelativeFileName, string LibraryName, ref byte[] CustomLogicalName, string FullFileName, Document DocumentObject, EventTimingEnum BeforeOrAfter, NameValueMap Context, out HandlingCodeEnum HandlingCode);
+    event OnFileResolution(string RelativeFileName, string LibraryName, ref byte[] CustomLogicalName, EventTimingEnum BeforeOrAfter, NameValueMap Context, out string FullFileName, out HandlingCodeEnum HandlingCode);
 }
 ```
 

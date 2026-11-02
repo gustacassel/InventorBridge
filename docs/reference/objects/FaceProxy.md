@@ -51,7 +51,7 @@ interface FaceProxy
     void GetExistingFacetsAndTextureMap(double ToleranceIndex, out int VertexCount, out int FacetCount, out double[] VertexCoordinates, out double[] NormalVectors, out int[] VertexIndices, out double[] TextureCoordinates);
     void GetExistingStrokeTolerances(out int ToleranceCount, out double[] ExistingTolerances);
     void GetExistingStrokes(double ToleranceIndex, out int VertexCount, out double[] VertexCoordinates, out int PolylineCount, out int[] PolylineLengths);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     Face GetSourceFace(bool GetLeafSource = true);
     void GetTextureScale(out double UScale, out double VScale);
 }

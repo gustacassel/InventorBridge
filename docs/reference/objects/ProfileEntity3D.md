@@ -19,7 +19,7 @@ interface ProfileEntity3D
     SketchPoint3D StartSketchPoint { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

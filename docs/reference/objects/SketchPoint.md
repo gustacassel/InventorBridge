@@ -36,7 +36,7 @@ interface SketchPoint
     ObjectTypeEnum Type { get; }
     // Methods
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void Merge(SketchPoint SketchPoint);
     void MoveBy(Vector2d Vector);
     void MoveTo(Point2d Point);

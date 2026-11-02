@@ -23,7 +23,7 @@ interface iMateResultProxy
     // Methods
     void Delete();
     void GetInputs(out iMateDefinition iMateDefinition, out object Entity);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetInputs(iMateDefinition iMateDefinition, object Entity, object EntityBiasPoint = Missing, AngleConstraintSolutionTypeEnum SolutionType = AngleConstraintSolutionTypeEnum.kDirectedSolution);
 }
 ```

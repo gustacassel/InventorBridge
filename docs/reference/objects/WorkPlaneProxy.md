@@ -45,7 +45,7 @@ interface WorkPlaneProxy
     void Delete(bool RetainDependents = false);
     void FlipNormal();
     void GetPosition(out Point Origin, out UnitVector XAxis, out UnitVector YAxis);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void GetSize(out Point Point1, out Point Point2);
     void SetByLineAndTangent(object Line, Face Face, Point ProximityPoint);
     void SetByLinePlaneAndAngle(object Line, object Plane, object Angle);

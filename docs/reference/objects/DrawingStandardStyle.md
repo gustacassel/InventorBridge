@@ -43,7 +43,7 @@ interface DrawingStandardStyle
     Style Copy(string Name);
     void Delete();
     ObjectCollection GetAvailableStyles(StyleTypeEnum StyleType); // since 2026
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void GetViewAnnotationDefaults(DrawingViewTypeEnum ViewType, out string FormattedText); // since 2026
     void GetViewLabelDefaults(DrawingViewTypeEnum ViewType, out string Prefix, out bool Visible, out string FormattedText, out bool ConstrainToBorder, out bool PlaceBelowView);
     void SaveToGlobal();

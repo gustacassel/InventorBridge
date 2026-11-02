@@ -53,7 +53,7 @@ interface FeatureControlFrameStyle
     Style Copy(string Name);
     void Delete();
     void GetAvailableAdditionalSymbols(out FeatureControlFrameAdditionalSymbolsEnum[] AvailaleAdditionalSymbols);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SaveToGlobal();
     void SetAvailableAdditionalSymbols(ref FeatureControlFrameAdditionalSymbolsEnum[] AvailaleAdditionalSymbols);
     void UpdateFromGlobal();

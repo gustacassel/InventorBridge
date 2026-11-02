@@ -29,7 +29,7 @@ interface OnFaceCurve
     void Delete();
     void Edit(NameValueMap Faces, NameValueMap FitPoints);
     SketchPoint3D FitPoint(int Index);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

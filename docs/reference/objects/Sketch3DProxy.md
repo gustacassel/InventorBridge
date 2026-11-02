@@ -56,7 +56,7 @@ interface Sketch3DProxy
     void Delete();
     void Edit();
     void ExitEdit();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     SketchEntity3D Include(object Entity);
     void SetEndOfPart(bool Before);
     void Solve();

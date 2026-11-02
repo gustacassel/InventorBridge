@@ -20,7 +20,7 @@ interface DrawingViewAnnotation
     Point2d TextPosition { get; set; } // since 2026
     ObjectTypeEnum Type { get; } // since 2026
     // Methods
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0); // since 2026
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0); // since 2026
 }
 ```
 

@@ -27,7 +27,7 @@ interface Centerline
     // Methods
     void Delete();
     void GetBisectorEntities(out GeometryIntent EntityOne, out GeometryIntent EntityTwo);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

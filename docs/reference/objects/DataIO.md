@@ -8,12 +8,12 @@ Inventor API object · versions: 2024+ · [index](../index.md)
 interface DataIO
 {
     // Methods
-    void GetInputFormats(out string[] Formats, out StorageTypeEnum[] StorageTypes);
-    void GetOutputFormats(out string[] Formats, out StorageTypeEnum[] StorageTypes);
+    void GetInputFormats(ref string[] Formats, ref StorageTypeEnum[] StorageTypes);
+    void GetOutputFormats(ref string[] Formats, ref StorageTypeEnum[] StorageTypes);
     void ReadDataFromFile(string Format, string FileName);
     void ReadDataFromStream(string Format, object Stream);
     void WriteDataToFile(string Format, string FileName);
-    void WriteDataToStream(string Format, out object Stream);
+    void WriteDataToStream(string Format, ref object Stream);
 }
 ```
 

@@ -39,7 +39,7 @@ interface WorkAxis
     bool Visible { get; set; }
     // Methods
     void Delete(bool RetainDependents = false);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void GetSize(out Point Point1, out Point Point2);
     void SetByAnalyticEdge(Edge Edge);
     void SetByLine(object Line);

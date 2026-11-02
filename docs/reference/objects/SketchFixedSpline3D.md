@@ -34,7 +34,7 @@ interface SketchFixedSpline3D
     void Delete();
     void Edit(BSplineCurve SplineCurve, object StartPoint = Missing, object EndPoint = Missing);
     void EditByEdge(Edge TransientEdge);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

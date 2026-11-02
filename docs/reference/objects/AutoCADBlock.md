@@ -27,7 +27,7 @@ interface AutoCADBlock
     void Delete();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
     void GetPromptTextValues(out object PromptTags, out object Values);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
     void SetPromptTextValues(object PromptTags, object Values);
 }

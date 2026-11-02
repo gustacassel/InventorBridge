@@ -18,8 +18,8 @@ interface Arc2d
     double SweepAngle { get; set; }
     // Methods
     Arc2d Copy();
-    void GetArcData(out double[] Center, out double Radius, out double StartAngle, out double SweepAngle);
-    void PutArcData(out double[] Center, double Radius, double StartAngle, double SweepAngle);
+    void GetArcData(ref double[] Center, out double Radius, out double StartAngle, out double SweepAngle);
+    void PutArcData(ref double[] Center, double Radius, double StartAngle, double SweepAngle);
 }
 ```
 

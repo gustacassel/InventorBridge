@@ -36,7 +36,7 @@ interface LightingStyle
     LightingStyle ConvertToLocal();
     LightingStyle Copy(string NewName);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SaveToGlobal();
     void UpdateFromGlobal();
     void UploadImage(string ImageFileName, object EnvName = Missing);

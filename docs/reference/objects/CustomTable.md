@@ -43,7 +43,7 @@ interface CustomTable
     CustomTable CopyTo(Sheet TargetSheet);
     void Delete();
     void Export(string FileName, FileFormatEnum FileFormat, object Options = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     MergedCell MergeCells(Cell StartCell, Cell EndCell); // since 2025
     void Renumber();
     void Sort(string PrimaryColumnTitle, bool PrimaryColumnAscending = true, string SecondaryColumnTitle = "", bool SecondaryColumnAscending = true, string TertiaryColumnTitle = "", bool TertiaryColumnAscending = true);

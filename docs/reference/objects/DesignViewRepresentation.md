@@ -27,7 +27,7 @@ interface DesignViewRepresentation
     DesignViewRepresentation Copy(string NewName = "");
     ModelState CopyComponentVisibilityToSuppression(string NewName = "");
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void GetSectionViewInfo(out SectionViewTypeEnum SectionViewType, out Plane FirstSectionPlane, out Plane SecondSectionPlane);
     void HideAll();
     void RemoveAppearanceOverrides();

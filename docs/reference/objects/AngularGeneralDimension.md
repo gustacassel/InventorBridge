@@ -53,7 +53,7 @@ interface AngularGeneralDimension
     void CenterText();
     void Delete();
     void GetInspectionDimensionData(out InspectionDimensionShapeEnum Shape, out string Label, out string Rate);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     DimensionConstraint PromoteToSketch();
     void SetInspectionDimensionData(InspectionDimensionShapeEnum Shape = InspectionDimensionShapeEnum.kNoInspectionBorder, string Label = "", string Rate = "");
     void ShowAllExtensionLines();

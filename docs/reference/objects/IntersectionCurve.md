@@ -20,7 +20,7 @@ interface IntersectionCurve
     void BreakLink();
     void Delete();
     IntersectionCurve Edit(object EntityOne, object EntityTwo);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

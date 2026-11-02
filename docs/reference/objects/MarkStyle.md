@@ -34,7 +34,7 @@ interface MarkStyle
     void Delete();
     void GetBackCustomLineType(out string LineTypeName, out string LineTypeDescription);
     void GetFrontCustomLineType(out string LineTypeName, out string LineTypeDescription);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     string[] GetStrokeFontList();
     void SaveToGlobal();
     void SetBackCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);

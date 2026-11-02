@@ -17,11 +17,11 @@ interface UnitVector
     UnitVector Copy();
     UnitVector CrossProduct(UnitVector Argument);
     double DotProduct(UnitVector Argument);
-    void GetUnitVectorData(out double[] Coords);
+    void GetUnitVectorData(ref double[] Coords);
     bool IsEqualTo(UnitVector Argument, double Tolerance = 0);
     bool IsParallelTo(UnitVector Argument, double Tolerance = 0);
     bool IsPerpendicularTo(UnitVector Argument, double Tolerance = 0);
-    void PutUnitVectorData(out double[] Coords);
+    void PutUnitVectorData(ref double[] Coords);
     void TransformBy(Matrix Matrix);
 }
 ```

@@ -34,7 +34,7 @@ namespace InventorBridge.Mcp.Scripting
             .AddImports(Imports)
             .WithEmitDebugInformation(true);
 
-        public ScriptResult Run(Application application, string code, string description, string? workspacePath)
+        public ScriptResult Run(Application application, string code, string description, string? workspacePath, ScriptExpectation? expectation)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -55,6 +55,7 @@ namespace InventorBridge.Mcp.Scripting
             }
 
             var globals = new ScriptGlobals(application, workspacePath);
+            var before = TakeSnapshot(application);
             var document = application.ActiveDocument;
             var transaction = document is null
                 ? null
@@ -65,13 +66,19 @@ namespace InventorBridge.Mcp.Scripting
                 var state = script.RunAsync(globals).GetAwaiter().GetResult();
                 transaction?.End();
 
+                var expectationLines = new List<string>();
+                var expectationMet = expectation is null || expectation.IsEmpty
+                    || CheckExpectation(application, expectation, expectationLines);
+
                 return new ScriptResult
                 {
-                    Outcome = ScriptOutcome.Succeeded,
+                    Outcome = expectationMet ? ScriptOutcome.Succeeded : ScriptOutcome.ExpectationFailed,
                     TransactionNote = DescribeCommittedTransaction(transaction, document),
                     Elapsed = stopwatch.Elapsed,
                     Output = globals.Output,
                     ReturnValue = FormatReturnValue(state.ReturnValue),
+                    Changes = DescribeChanges(application, before),
+                    ExpectationLines = expectationLines,
                 };
             }
             catch (Exception exception)
@@ -85,7 +92,52 @@ namespace InventorBridge.Mcp.Scripting
                     Elapsed = stopwatch.Elapsed,
                     Output = globals.Output,
                     Error = DescribeException(exception),
+                    Changes = DescribeChanges(application, before),
                 };
+            }
+        }
+
+        private static DocumentSnapshot? TakeSnapshot(Application application)
+        {
+            try
+            {
+                return DocumentSnapshot.Take(application);
+            }
+            catch (COMException)
+            {
+                return null;
+            }
+        }
+
+        private static List<string> DescribeChanges(Application application, DocumentSnapshot? before)
+        {
+            var after = TakeSnapshot(application);
+            if (before is null || after is null)
+            {
+                return ["could not read the open documents to list the changes"];
+            }
+
+            try
+            {
+                return DocumentSnapshot.Compare(before, after);
+            }
+            catch (COMException exception)
+            {
+                return [$"could not list the changes ({exception.Message})"];
+            }
+        }
+
+        private static bool CheckExpectation(Application application, ScriptExpectation expectation, List<string> lines)
+        {
+            try
+            {
+                lines.AddRange(ExpectationChecker.Check(application, expectation, out var allMet));
+                return allMet;
+            }
+            catch (COMException exception)
+            {
+                lines.Add($"could not measure the document ({exception.Message})");
+                return false;
             }
         }
 

@@ -12,7 +12,7 @@ interface StylesManager
     object Parent { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    void GetStyleNameFromKey(out byte[] ReferenceKey, out string InternalName, out string DisplayName);
+    void GetStyleNameFromKey(ref byte[] ReferenceKey, out string InternalName, out string DisplayName);
 }
 ```
 

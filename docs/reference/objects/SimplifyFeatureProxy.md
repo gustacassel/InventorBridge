@@ -36,7 +36,7 @@ interface SimplifyFeatureProxy
     ObjectTypeEnum Type { get; } // since 2026
     // Methods
     void Delete(bool RetainConsumedSketches = false, bool RetainDependentFeaturesAndSketches = false, bool RetainDependentWorkFeatures = false); // since 2026
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0); // since 2026
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0); // since 2026
     bool GetSuppressionCondition(out Parameter Parameter, out ComparisonTypeEnum ComparisonType, out object Expression); // since 2026
     void RemoveParticipant(ComponentOccurrence Occurrence); // since 2026
     void SetAffectedBodies(ObjectCollection Bodies); // since 2026

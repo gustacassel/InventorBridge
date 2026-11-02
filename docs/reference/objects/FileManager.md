@@ -22,10 +22,10 @@ interface FileManager
     string[] GetDesignViewRepresentations(string FullFileName);
     string GetEmbeddedDocumentShortName(string FullFileName);
     CachedGraphicsStatusEnum GetExpressGraphicsStatus(string AssemblyFullFilename);
-    void GetFileNameFromIdentifier(out byte[] Identifier, out string FullFileName, string AbsolutePath = "");
+    void GetFileNameFromIdentifier(ref byte[] Identifier, out string FullFileName, string AbsolutePath = "");
     string GetFullDocumentName(string FullFileName, string ModelStateName = "");
     string GetFullFileName(string FullDocumentName);
-    void GetIdentifierFromFileName(string FullFileName, out byte[] Identifier, string AbsolutePath = "");
+    void GetIdentifierFromFileName(string FullFileName, ref byte[] Identifier, string AbsolutePath = "");
     string GetLastActiveDesignViewRepresentation(string FullFileName);
     string GetLastActiveModelState(string FullFileName);
     string GetModelStateName(string FullDocumentName);

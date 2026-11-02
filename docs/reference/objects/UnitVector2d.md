@@ -15,11 +15,11 @@ interface UnitVector2d
     Vector2d AsVector();
     UnitVector2d Copy();
     double DotProduct(UnitVector2d Vector);
-    void GetUnitVectorData(out double[] Coords);
+    void GetUnitVectorData(ref double[] Coords);
     bool IsEqualTo(UnitVector2d Vector, double Tolerance = 0);
     bool IsParallelTo(UnitVector2d Vector, double Tolerance = 0);
     bool IsPerpendicularTo(UnitVector2d Vector, double Tolerance = 0);
-    void PutUnitVectorData(out double[] Coords);
+    void PutUnitVectorData(ref double[] Coords);
     void TransformBy(Matrix2d Value);
 }
 ```

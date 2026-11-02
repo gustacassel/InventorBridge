@@ -23,8 +23,8 @@ interface VertexProxy
     int TransientKey { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    void GetPoint(out double[] Point);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetPoint(ref double[] Point);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     Vertex GetSourceVertex(bool GetLeafSource = true);
 }
 ```

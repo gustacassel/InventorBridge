@@ -25,7 +25,7 @@ interface MeshFeatureSetProxy
     MeshFeaturesVisibilityEnum Visible { get; set; }
     // Methods
     void Delete(bool RetainDependentFeaturesAndSketches = false, bool RetainDependentWorkFeatures = false);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetEndOfPart(bool Before);
 }
 ```

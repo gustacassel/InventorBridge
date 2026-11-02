@@ -23,7 +23,7 @@ interface SilhouetteCurve
     void BreakLink();
     void Delete();
     SilhouetteCurve Edit(SurfaceBody FacesOrBody, object DirectionEntity, object ExcludedFaces = Missing, object ExcludeStraightFaces = Missing, object ExcludeInternalFaces = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

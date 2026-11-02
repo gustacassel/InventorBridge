@@ -30,7 +30,7 @@ interface PointCloud
     bool Visible { get; set; }
     // Methods
     void Delete(bool RetainDependents = false);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     Point ModelToPointCloudSpace(Point ModelCoordinate);
     Point PointCloudToModelSpace(Point PointCloudCoordinate);
 }

@@ -18,7 +18,7 @@ interface GraphicsTextureCoordinateSet
     // Methods
     void Add(int Index, object Coordinate);
     void Delete();
-    void GetCoordinates(out double[] Coordinates);
+    void GetCoordinates(ref double[] Coordinates);
     void PutCoordinates(ref double[] Coordinates);
     void Remove(int Index);
 }

@@ -12,9 +12,9 @@ interface BSplineSurface
     Point PoleAtIndex[int IndexU, int IndexV] { get; set; }
     // Methods
     BSplineSurface Copy();
-    void GetBSplineData(out double[] Poles, out double[] KnotsU, out double[] KnotsV, out double[] Weights);
-    void GetBSplineInfo(out int[] Order, out int[] NumPoles, out int[] NumKnots, out bool IsRational, out bool[] IsPeriodic, out bool[] IsClosed, out bool IsPlanar, out double[] PlaneVector);
-    void PutBSplineInfoAndData(out int[] Order, out double[] Poles, out double[] KnotsU, out double[] KnotsV, out double[] Weights, out bool[] IsPeriodic);
+    void GetBSplineData(ref double[] Poles, ref double[] KnotsU, ref double[] KnotsV, ref double[] Weights);
+    void GetBSplineInfo(ref int[] Order, ref int[] NumPoles, ref int[] NumKnots, out bool IsRational, ref bool[] IsPeriodic, ref bool[] IsClosed, out bool IsPlanar, ref double[] PlaneVector);
+    void PutBSplineInfoAndData(ref int[] Order, ref double[] Poles, ref double[] KnotsU, ref double[] KnotsV, ref double[] Weights, ref bool[] IsPeriodic);
 }
 ```
 

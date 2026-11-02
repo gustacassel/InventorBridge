@@ -27,7 +27,7 @@ interface TangentDistanceDimConstraint
     // Methods
     void Delete();
     void FlipDirection(); // since 2026
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

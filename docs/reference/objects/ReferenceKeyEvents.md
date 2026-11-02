@@ -9,7 +9,7 @@ interface ReferenceKeyEvents
     object Application { get; }
     ObjectTypeEnum Type { get; }
     // Events
-    event OnBindKeyToObject(out byte[] ReferenceKey, object Document, out object Object, out SolutionNatureEnum MatchType, NameValueMap Context, out HandlingCodeEnum HandlingCode);
+    event OnBindKeyToObject(ref byte[] ReferenceKey, object Document, ref object Object, out SolutionNatureEnum MatchType, NameValueMap Context, ref HandlingCodeEnum HandlingCode);
 }
 ```
 

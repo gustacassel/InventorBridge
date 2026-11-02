@@ -13,8 +13,8 @@ interface Sphere
     double Radius { get; set; }
     // Methods
     Sphere Copy();
-    void GetSphereData(out double[] CenterPoint, out double Radius);
-    void PutSphereData(out double[] CenterPoint, double Radius);
+    void GetSphereData(ref double[] CenterPoint, out double Radius);
+    void PutSphereData(ref double[] CenterPoint, double Radius);
 }
 ```
 

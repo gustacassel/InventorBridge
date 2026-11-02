@@ -20,7 +20,7 @@ interface BreakOutOperation
     // Methods
     void Delete();
     void GetDepth(out object DepthSource, out double DepthValue);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetDepth(object DepthSource = Missing, double DepthValue = 0);
 }
 ```

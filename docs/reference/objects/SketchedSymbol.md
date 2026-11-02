@@ -32,7 +32,7 @@ interface SketchedSymbol
     // Methods
     void Delete();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     string GetResultText(TextBox DefinitionText);
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
     void SetPromptResultText(TextBox DefinitionText, string NewValue);

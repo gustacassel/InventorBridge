@@ -17,7 +17,7 @@ interface CropOperation
     ObjectTypeEnum Type { get; } // since 2025
     // Methods
     void Delete(); // since 2025
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0); // since 2025
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0); // since 2025
 }
 ```
 

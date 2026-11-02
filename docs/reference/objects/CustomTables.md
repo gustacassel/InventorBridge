@@ -13,7 +13,7 @@ interface CustomTables
     CustomTable Item[int Index] { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    CustomTable Add(string Title, Point2d PlacementPoint, int NumberOfColumns, int NumberOfRows, out string[] ColumnTitles, object Contents = Missing, object ColumnWidths = Missing, object RowHeights = Missing, object MoreInfo = Missing);
+    CustomTable Add(string Title, Point2d PlacementPoint, int NumberOfColumns, int NumberOfRows, ref string[] ColumnTitles, object Contents = Missing, object ColumnWidths = Missing, object RowHeights = Missing, object MoreInfo = Missing);
     CustomTable AddBendTableWithOptions(string SheetMetalFileName, Point2d PlacementPoint, object Options = Missing);
     CustomTable AddCSVTable(string CSVFileName, Point2d PlacementPoint, string Title = "", bool UseFirstRowForHeaders = true);
     CustomTable AddConfigurationTable(string ConfigurationFileName, Point2d PlacementPoint, string Title = "", object Columns = Missing);

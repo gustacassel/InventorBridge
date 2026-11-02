@@ -20,8 +20,8 @@ interface EllipticalArc
     double SweepAngle { get; set; }
     // Methods
     EllipticalArc Copy();
-    void GetEllipticalArcData(out double[] Center, out double[] MajorAxis, out double[] MinorAxis, out double MajorRadius, out double MinorRadius, out double StartAngle, out double SweepAngle);
-    void PutEllipticalArcData(out double[] Center, out double[] MajorAxis, out double[] MinorAxis, double MajorRadius, double MinorRadius, double StartAngle, double SweepAngle);
+    void GetEllipticalArcData(ref double[] Center, ref double[] MajorAxis, ref double[] MinorAxis, out double MajorRadius, out double MinorRadius, out double StartAngle, out double SweepAngle);
+    void PutEllipticalArcData(ref double[] Center, ref double[] MajorAxis, ref double[] MinorAxis, double MajorRadius, double MinorRadius, double StartAngle, double SweepAngle);
 }
 ```
 

@@ -23,7 +23,7 @@ interface CoincidentConstraint3DProxy
     // Methods
     void Delete();
     void Disconnect(object Entity);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

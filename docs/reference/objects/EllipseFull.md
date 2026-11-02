@@ -15,8 +15,8 @@ interface EllipseFull
     UnitVector Normal { get; set; }
     // Methods
     EllipseFull Copy();
-    void GetEllipseFullData(out double[] Center, out double[] AxisVector, out double[] MajorAxis, out double MinorMajorRatio);
-    void PutEllipseFullData(out double[] Center, out double[] AxisVector, out double[] MajorAxis, double MinorMajorRatio);
+    void GetEllipseFullData(ref double[] Center, ref double[] AxisVector, ref double[] MajorAxis, out double MinorMajorRatio);
+    void PutEllipseFullData(ref double[] Center, ref double[] AxisVector, ref double[] MajorAxis, double MinorMajorRatio);
 }
 ```
 

@@ -23,7 +23,7 @@ interface SketchedSymbolDefinition
     void Delete();
     void Edit(out DrawingSketch Result);
     void ExitEdit(bool SaveChanges = true, object SaveAsName = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SaveToLibrary(object TargetSketchedSymbolDefinitionLibrary, object RetainResourceFolderStructure = Missing, object DestinationFolder = Missing, object ReplaceExisting = Missing);
 }
 ```

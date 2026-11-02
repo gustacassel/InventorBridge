@@ -23,6 +23,9 @@ namespace InventorBridge.Mcp.Connection
 
         private InventorApplication? application;
 
+        /// <summary>The year of the Inventor seen last (2024...), for when the STA thread is busy. Null if never seen.</summary>
+        public int? LastKnownYear { get; set; }
+
         /// <summary>The running Inventor, reconnecting if the previous one was closed.</summary>
         /// <exception cref="InventorNotRunningException">No Inventor is running.</exception>
         public InventorApplication GetApplication()

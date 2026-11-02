@@ -21,7 +21,7 @@ interface BrowserFolder
     // Methods
     void Add(BrowserNode BrowserNode, object TargetNode = Missing, bool Before = false);
     void Delete(bool Reserved = true);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void Remove(BrowserNode BrowserNode, object TargetNode = Missing, bool Before = false);
     void SetEndOfPart(bool Before);
 }

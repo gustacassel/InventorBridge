@@ -30,10 +30,10 @@ interface TriangleStripGraphics
     ObjectTypeEnum Type { get; }
     // Methods
     void Delete();
-    void GetStripLengths(out int[] StripLengths);
+    void GetStripLengths(ref int[] StripLengths);
     void GetTransformBehavior(out Point TextAnchor, out DisplayTransformBehaviorEnum BehaviorType, out double PixelScale);
     void GetViewSpaceAnchor(out Point Origin, out Point2d Anchor, out ViewLayoutEnum AnchorRelativeTo);
-    void PutStripLengths(out int[] StripLengths);
+    void PutStripLengths(ref int[] StripLengths);
     void RemoveViewSpaceAnchor();
     void SetTransformBehavior(Point Anchor, DisplayTransformBehaviorEnum BehaviorType, double PixelScale = 1);
     void SetViewSpaceAnchor(Point Origin, Point2d Anchor, ViewLayoutEnum AnchorRelativeTo);

@@ -15,9 +15,9 @@ interface Box2d
     Box2d Copy();
     void Expand(double Distance);
     void Extend(Point2d Point);
-    void GetBoxData(out double[] MinPoint, out double[] MaxPoint);
+    void GetBoxData(ref double[] MinPoint, ref double[] MaxPoint);
     bool IsDisjoint(Box2d Box);
-    void PutBoxData(out double[] MinPoint, out double[] MaxPoint);
+    void PutBoxData(ref double[] MinPoint, ref double[] MaxPoint);
 }
 ```
 

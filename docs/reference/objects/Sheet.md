@@ -59,7 +59,7 @@ interface Sheet
     void Delete(bool RetainDependentViews = false);
     ObjectsEnumerator FindUsingPoint(Point2d PointOnSheet, object ProximityTolerance = Missing);
     string[] GetAvailableDesignViewsToRetrieve3DAnnotations(DrawingView View); // since 2025
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     ObjectCollection GetRetrievableAnnotations2(DrawingView View, object SketchAndFeatureDimensions = Missing, object ModelObject = Missing, object DesignView = Missing); // since 2026
     ObjectsEnumerator RetrieveAnnotations2(object ViewOrSketch, object AnnotationsToRetrieve = Missing); // since 2026
     void Update();

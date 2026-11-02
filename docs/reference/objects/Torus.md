@@ -15,8 +15,8 @@ interface Torus
     double MinorRadius { get; set; }
     // Methods
     Torus Copy();
-    void GetTorusData(out double[] CenterPoint, out double[] AxisVector, out double MajorRadius, out double MinorRadius);
-    void PutTorusData(out double[] CenterPoint, out double[] AxisVector, double MajorRadius, double MinorRadius);
+    void GetTorusData(ref double[] CenterPoint, ref double[] AxisVector, out double MajorRadius, out double MinorRadius);
+    void PutTorusData(ref double[] CenterPoint, ref double[] AxisVector, double MajorRadius, double MinorRadius);
 }
 ```
 

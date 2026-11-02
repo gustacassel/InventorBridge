@@ -32,7 +32,7 @@ interface UnfoldMethod
     void Delete();
     void DeleteEquation(int Index);
     void GetEquation(int Index, out string Equation, out string MinimumValue, out ComparisonTypeEnum MinimumCompareCondition, out string BoundedVariable, out string MaximumValue, out ComparisonTypeEnum MaximumCompareCondition);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SaveToGlobal();
     void SetEquation(int Index, UnfoldMethodEquationTypeEnum EquationType, string Equation, string MinimumValue = "0 deg", ComparisonTypeEnum MinimumCompareCondition = ComparisonTypeEnum.kLessThanOrEqualToComparisonType, string BoundedVariable = "Angle", string MaximumValue = "180 deg", ComparisonTypeEnum MaximumCompareCondition = ComparisonTypeEnum.kLessThanOrEqualToComparisonType);
     void UpdateFromGlobal();

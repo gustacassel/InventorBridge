@@ -30,10 +30,10 @@ interface LineStripGraphics
     // Methods
     void Delete();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
-    void GetStripLengths(out int[] StripLengths);
+    void GetStripLengths(ref int[] StripLengths);
     void GetTransformBehavior(out Point TextAnchor, out DisplayTransformBehaviorEnum BehaviorType, out double PixelScale);
     void GetViewSpaceAnchor(out Point Origin, out Point2d Anchor, out ViewLayoutEnum AnchorRelativeTo);
-    void PutStripLengths(out int[] StripLengths);
+    void PutStripLengths(ref int[] StripLengths);
     void RemoveViewSpaceAnchor();
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
     void SetTransformBehavior(Point Anchor, DisplayTransformBehaviorEnum BehaviorType, double PixelScale = 1);

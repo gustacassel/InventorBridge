@@ -13,7 +13,7 @@ interface _DocPerformanceMonitor
     _SegPerformanceMonitor SegmentItem[object Index] { get; }
     // Methods
     void DontSaveIdentifiedMTLeaks(bool dontSave);
-    void GetGraphicsLOD(out int NumberOfLODs, out double[] LODTolerances);
+    void GetGraphicsLOD(out int NumberOfLODs, ref double[] LODTolerances);
     void GetMemoryInUse(out int Committed, out int Reserved, out int InActiveUse);
     void SetDetectLeaks(bool detect);
     void SetGraphicsLOD(int NumberOfLODs);

@@ -112,7 +112,7 @@ interface DetailDrawingView
     Color GetComponentLineColor(object Component); // since 2025
     HiddenLinesStatusEnum GetHiddenLinesStatus(object Component);
     bool GetIncludeStatus(object Object);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     bool GetVisibility(object Object);
     void GetWeldmentState(out WeldmentStateEnum WeldmentState, out object Component);
     void InsertInModelSpace();

@@ -16,7 +16,7 @@ interface MeasureTools
     int GetAnglePrecision(Document Document);
     int GetLengthPrecision(Document Document);
     double GetLoopLength(object Curves);
-    double GetMinimumDistance(object EntityOne, object EntityTwo, InferredTypeEnum EntityOneInferredType = InferredTypeEnum.kNoInference, InferredTypeEnum EntityTwoInferredType = InferredTypeEnum.kNoInference, out object Context = Missing);
+    double GetMinimumDistance(object EntityOne, object EntityTwo, InferredTypeEnum EntityOneInferredType = InferredTypeEnum.kNoInference, InferredTypeEnum EntityTwoInferredType = InferredTypeEnum.kNoInference, ref object Context = Missing);
     int SetAnglePrecision(Document Document, int Precision);
     int SetLengthPrecision(Document Document, int Precision);
 }

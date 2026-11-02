@@ -45,7 +45,7 @@ interface SketchEquationCurveProxy
     void Delete();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
     void GetEquation(out CurveEquationTypeEnum EquationType, out CoordinateSystemTypeEnum CoordinateSystemType, out string XValueOrRadius, out string YValueOrTheta, out Parameter MinValue, out Parameter MaxValue);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
     void SetEquation(CurveEquationTypeEnum EquationType, CoordinateSystemTypeEnum CoordinateSystemType, string XValueOrRadius, string YValueOrTheta, object MinValue, object MaxValue);
 }

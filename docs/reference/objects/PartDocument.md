@@ -107,7 +107,7 @@ interface PartDocument
     void GetMissingAddInBehavior(out string ClientId, out CommandTypesEnum DisabledCommandTypesEnum, out ObjectCollection DisabledCommands);
     object GetPrivateStorage(string StorageName, bool CreateIfNecessary);
     object GetPrivateStream(string StreamName, bool CreateIfNecessary);
-    void GetSelectedObject(GenericObject Selection, out ObjectTypeEnum ObjectType, out NameValueMap AdditionalData, out ComponentOccurrence ContainingOccurrence, out object SelectedObject = Missing);
+    void GetSelectedObject(GenericObject Selection, out ObjectTypeEnum ObjectType, out NameValueMap AdditionalData, out ComponentOccurrence ContainingOccurrence, ref object SelectedObject = Missing);
     bool HasPrivateStorage(string StorageName);
     bool HasPrivateStream(string StreamName);
     void PutGraphicsLevelsOfDetail(int LevelsOfDetail);

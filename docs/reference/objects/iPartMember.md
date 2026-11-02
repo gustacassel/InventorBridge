@@ -28,7 +28,7 @@ interface iPartMember
     void BreakLinkToFile();
     void ChangeRow(object NewRow, object CustomInput = Missing);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetEndOfPart(bool Before);
 }
 ```

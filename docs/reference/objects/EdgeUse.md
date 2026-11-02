@@ -25,7 +25,7 @@ interface EdgeUse
     ObjectTypeEnum Type { get; }
     Wire Wire { get; }
     // Methods
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

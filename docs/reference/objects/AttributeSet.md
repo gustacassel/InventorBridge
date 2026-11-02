@@ -23,7 +23,7 @@ interface AttributeSet
     AttributesEnumerator AddAttributes(ref string[] AttributeNames, ref ValueTypeEnum[] ValueTypes, ref object[] Values, bool ReplaceExisting);
     AttributeSet CopyTo(object Object, bool ReplaceExisting = false);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

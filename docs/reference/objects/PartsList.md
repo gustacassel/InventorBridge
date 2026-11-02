@@ -42,7 +42,7 @@ interface PartsList
     PartsList CopyTo(Sheet TargetSheet);
     void Delete();
     void Export(string FileName, PartsListFileFormatEnum FileFormat, object Options = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void Renumber();
     void ReplaceBOMView(PartsListLevelEnum Level, object NumberingScheme = Missing, object MinimumDigitsOrDelimiter = Missing, object IgnoreOverrides = Missing); // since 2027
     void SaveItemOverridesToBOM();

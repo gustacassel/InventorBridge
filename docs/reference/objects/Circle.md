@@ -14,8 +14,8 @@ interface Circle
     double Radius { get; set; }
     // Methods
     Circle Copy();
-    void GetCircleData(out double[] Center, out double[] AxisVector, out double Radius);
-    void PutCircleData(out double[] Center, out double[] AxisVector, double Radius);
+    void GetCircleData(ref double[] Center, ref double[] AxisVector, out double Radius);
+    void PutCircleData(ref double[] Center, ref double[] AxisVector, double Radius);
 }
 ```
 

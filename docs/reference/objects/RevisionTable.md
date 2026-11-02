@@ -39,7 +39,7 @@ interface RevisionTable
     RevisionTable CopyTo(Sheet TargetSheet);
     void Delete();
     void Export(string FileName, FileFormatEnum FileFormat, object Options = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void Sort(string PrimaryColumnTitle, bool PrimaryColumnAscending = true, string SecondaryColumnTitle = "", bool SecondaryColumnAscending = true, string TertiaryColumnTitle = "", bool TertiaryColumnAscending = true);
 }
 ```

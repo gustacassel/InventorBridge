@@ -31,7 +31,7 @@ interface SketchPoint3DProxy
     // Methods
     void ConnectTo(object ConstrainingPoint);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void MoveBy(Vector Vector);
     void MoveTo(Point Point);
 }

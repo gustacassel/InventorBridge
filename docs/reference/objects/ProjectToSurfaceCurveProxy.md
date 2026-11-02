@@ -26,7 +26,7 @@ interface ProjectToSurfaceCurveProxy
     void BreakLink();
     void Delete();
     ProjectToSurfaceCurve Edit(ObjectCollection Faces, ObjectCollection Curves, object ProjectionType = Missing, object ProjectDirection = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

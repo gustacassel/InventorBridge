@@ -15,9 +15,9 @@ interface Box
     Box Copy();
     void Expand(double Distance);
     void Extend(Point Point);
-    void GetBoxData(out double[] MinPoint, out double[] MaxPoint);
+    void GetBoxData(ref double[] MinPoint, ref double[] MaxPoint);
     bool IsDisjoint(Box Box);
-    void PutBoxData(out double[] MinPoint, out double[] MaxPoint);
+    void PutBoxData(ref double[] MinPoint, ref double[] MaxPoint);
 }
 ```
 

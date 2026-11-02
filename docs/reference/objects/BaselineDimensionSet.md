@@ -23,7 +23,7 @@ interface BaselineDimensionSet
     void ArrangeText();
     void Delete();
     void DetachMember(LinearGeneralDimension Member);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

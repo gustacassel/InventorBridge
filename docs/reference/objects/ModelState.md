@@ -28,7 +28,7 @@ interface ModelState
     ModelState Copy(string NewName = "");
     DesignViewRepresentation CopyComponentSuppressionToVisibility(string NewName = "");
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void RemoveChildModelStates(); // since 2026
 }
 ```

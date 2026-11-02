@@ -14,8 +14,8 @@ interface Cylinder
     double Radius { get; set; }
     // Methods
     Cylinder Copy();
-    void GetCylinderData(out double[] BasePoint, out double[] AxisVector, out double Radius);
-    void PutCylinderData(out double[] BasePoint, out double[] AxisVector, double Radius);
+    void GetCylinderData(ref double[] BasePoint, ref double[] AxisVector, out double Radius);
+    void PutCylinderData(ref double[] BasePoint, ref double[] AxisVector, double Radius);
 }
 ```
 

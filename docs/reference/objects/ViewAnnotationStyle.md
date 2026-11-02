@@ -25,7 +25,7 @@ interface ViewAnnotationStyle
     Style ConvertToLocal(); // since 2025
     Style Copy(string Name); // since 2025
     void Delete(); // since 2025
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0); // since 2025
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0); // since 2025
     void SaveToGlobal(); // since 2025
     void UpdateFromGlobal(); // since 2025
 }

@@ -19,12 +19,12 @@ interface Vector
     Vector Copy();
     Vector CrossProduct(Vector Argument);
     double DotProduct(Vector Argument);
-    void GetVectorData(out double[] Coords);
+    void GetVectorData(ref double[] Coords);
     bool IsEqualTo(Vector Argument, double Tolerance = 0);
     bool IsParallelTo(Vector Argument, double Tolerance = 0);
     bool IsPerpendicularTo(Vector Argument, double Tolerance = 0);
     void Normalize();
-    void PutVectorData(out double[] Coords);
+    void PutVectorData(ref double[] Coords);
     void ScaleBy(double Scale);
     void SubtractVector(Vector Argument);
     void TransformBy(Matrix Matrix);

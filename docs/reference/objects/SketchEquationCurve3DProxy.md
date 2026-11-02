@@ -33,7 +33,7 @@ interface SketchEquationCurve3DProxy
     // Methods
     void Delete();
     void GetEquation(out CoordinateSystemTypeEnum CoordinateSystemType, out string XValueOrRadius, out string YValueOrTheta, out string ZValueOrPhi, out Parameter MinValue, out Parameter MaxValue);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetEquation(CoordinateSystemTypeEnum CoordinateSystemType, string XValueOrRadius, string YValueOrTheta, string ZValueOrPhi, object MinValue, object MaxValue);
 }
 ```

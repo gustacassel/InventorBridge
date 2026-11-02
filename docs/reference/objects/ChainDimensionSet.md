@@ -22,7 +22,7 @@ interface ChainDimensionSet
     GeneralDimensionsEnumerator AddMembers(object DimensionOrGeometry);
     void Arrange(LinearGeneralDimension BaseDimension);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void MergeMembers(LinearGeneralDimension MemberOne, LinearGeneralDimension MemberTwo);
 }
 ```

@@ -21,7 +21,7 @@ interface BorderDefinition
     void Delete();
     void Edit(out DrawingSketch Sketch);
     void ExitEdit(bool SaveChanges = true, object SaveAsName = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

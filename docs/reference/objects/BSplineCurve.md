@@ -13,9 +13,9 @@ interface BSplineCurve
     // Methods
     BSplineCurve Copy();
     BSplineCurve ExtractPartial(double StartParam, double EndParam);
-    void GetBSplineData(out double[] Poles, out double[] Knots, out double[] Weights);
-    void GetBSplineInfo(out int Order, out int NumPoles, out int NumKnots, out bool IsRational, out bool IsPeriodic, out bool IsClosed, out bool IsPlanar, out double[] PlaneVector);
-    void PutBSplineInfoAndData(int Order, out double[] Poles, out double[] Knots, out double[] Weights, bool IsPeriodic);
+    void GetBSplineData(ref double[] Poles, ref double[] Knots, ref double[] Weights);
+    void GetBSplineInfo(out int Order, out int NumPoles, out int NumKnots, out bool IsRational, out bool IsPeriodic, out bool IsClosed, out bool IsPlanar, ref double[] PlaneVector);
+    void PutBSplineInfoAndData(int Order, ref double[] Poles, ref double[] Knots, ref double[] Weights, bool IsPeriodic);
     void Split(double SplitParam, out BSplineCurve CurveOne, out BSplineCurve CurveTwo);
 }
 ```

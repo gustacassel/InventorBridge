@@ -14,7 +14,7 @@ interface TranslatorAddInServer
     void Deactivate();
     void ExecuteCommand(int CommandID);
     object GetThumbnail(DataMedium SourceData);
-    void Open(DataMedium SourceData, TranslationContext Context, NameValueMap Options, out object TargetObject);
+    void Open(DataMedium SourceData, TranslationContext Context, NameValueMap Options, ref object TargetObject);
     void SaveCopyAs(object SourceObject, TranslationContext Context, NameValueMap Options, DataMedium TargetData);
     void ShowOpenOptions(DataMedium SourceData, TranslationContext Context, NameValueMap ChosenOptions);
     void ShowSaveCopyAsOptions(object SourceObject, TranslationContext Context, NameValueMap ChosenOptions);

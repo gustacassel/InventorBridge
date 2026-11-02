@@ -74,7 +74,7 @@ interface ComponentOccurrenceProxy
     void ExitEdit(ExitTypeEnum ExitTo);
     void GetDegreesOfFreedom(out int TranslationDegreesCount, out ObjectsEnumerator TranslationDegreesVectors, out int RotationDegreesCount, out ObjectsEnumerator RotationDegreesVectors, out Point DOFCenter);
     DisplayModeEnum GetDisplayMode(out DisplayModeSourceTypeEnum DisplayModeSourceType);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void Replace(string FileName, bool ReplaceAll);
     void Replace2(string FileName, bool ReplaceAll, object SaveEdits = Missing, object KeepAdaptivity = Missing);
     void SetDesignViewRepresentation(string Representation, string Reserved = "", bool Associative = false);

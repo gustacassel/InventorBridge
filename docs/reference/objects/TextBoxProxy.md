@@ -47,7 +47,7 @@ interface TextBoxProxy
     SketchEntitiesEnumerator ConvertToGeometry(string SHXFont, object UseBigFont = Missing, object BigFont = Missing);
     void Delete();
     void GetFacetsInfo(out int VertexCount, out int FacetCount, out double[] VertexCoordinates, out int[] VertexIndices);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

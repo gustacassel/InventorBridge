@@ -20,7 +20,7 @@ interface RevisionCloud
     // Methods
     RevisionCloud CopyTo(Sheet TargetSheet, object NewName = Missing, object Position = Missing);
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
 }
 ```
 

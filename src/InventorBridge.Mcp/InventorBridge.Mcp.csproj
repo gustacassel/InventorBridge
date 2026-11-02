@@ -28,6 +28,11 @@
     </Reference>
   </ItemGroup>
 
+  <!-- The guides, read by the guide tool. Copied to bin\...\guides\. -->
+  <ItemGroup>
+    <None Include="..\..\docs\guides\*.md" Link="guides\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
   <!-- The generated API reference, read by api_lookup. Copied to bin\...\reference\. -->
   <ItemGroup>
     <None Include="..\..\docs\reference\members.tsv" Link="reference\members.tsv" CopyToOutputDirectory="PreserveNewest" Visible="false" />

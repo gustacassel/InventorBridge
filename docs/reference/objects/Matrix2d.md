@@ -14,12 +14,12 @@ interface Matrix2d
     // Methods
     Matrix2d Copy();
     void GetCoordinateSystem(out Point2d Origin, out Vector2d XAxis, out Vector2d YAxis);
-    void GetMatrixData(out double[] Cells);
+    void GetMatrixData(ref double[] Cells);
     void Invert();
     bool IsEqualTo(Matrix2d Matrix2d, double Tolerance = 0);
     void PostMultiplyBy(Matrix2d Matrix2d);
     void PreMultiplyBy(Matrix2d Matrix2d);
-    void PutMatrixData(out double[] Cells);
+    void PutMatrixData(ref double[] Cells);
     void SetCoordinateSystem(Point2d Origin, Vector2d XAxis, Vector2d YAxis);
     void SetToAlignCoordinateSystems(Point2d FromOrigin, Vector2d FromXAxis, Vector2d FromYAxis, Point2d ToOrigin, Vector2d ToXAxis, Vector2d ToYAxis);
     void SetToIdentity();

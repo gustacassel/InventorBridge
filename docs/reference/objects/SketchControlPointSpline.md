@@ -47,7 +47,7 @@ interface SketchControlPointSpline
     SketchSpline ConvertToSpline();
     void Delete();
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void InsertKnot(double Position);
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
 }

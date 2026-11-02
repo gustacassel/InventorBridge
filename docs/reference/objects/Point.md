@@ -14,9 +14,9 @@ interface Point
     // Methods
     Point Copy();
     double DistanceTo(Point Point);
-    void GetPointData(out double[] Coords);
+    void GetPointData(ref double[] Coords);
     bool IsEqualTo(Point Point, double Tolerance = 0);
-    void PutPointData(out double[] Coords);
+    void PutPointData(ref double[] Coords);
     void TransformBy(Matrix Matrix);
     void TranslateBy(Vector Vector);
     Vector VectorTo(Point Point);

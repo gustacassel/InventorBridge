@@ -19,7 +19,7 @@ interface PositionalRepresentation
     void ClearRelationshipOverrides(object Relationship);
     PositionalRepresentation Copy(string NewName = "");
     void Delete();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     bool IsFlexibleOverridden(ComponentOccurrence Occurrence, out bool Flexible);
     bool IsGroundingOverridden(ComponentOccurrence Occurrence, out bool Grounded);
     bool IsPatternAngleOffsetOverridden(CircularOccurrencePattern Pattern, out string AngleOffset);

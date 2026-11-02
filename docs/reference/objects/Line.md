@@ -15,10 +15,10 @@ interface Line
     // Methods
     Line Copy();
     double DistanceTo(Point Point);
-    void GetLineData(out double[] RootPoint, out double[] Direction);
+    void GetLineData(ref double[] RootPoint, ref double[] Direction);
     ObjectsEnumerator IntersectWithCurve(object Curve, double Tolerance = 0);
     ObjectsEnumerator IntersectWithSurface(object Surface, double Tolerance = 0);
-    void PutLineData(out double[] RootPoint, out double[] Direction);
+    void PutLineData(ref double[] RootPoint, ref double[] Direction);
 }
 ```
 

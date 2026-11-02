@@ -24,7 +24,7 @@ interface SurfaceBody
     FaceShells FaceShells { get; }
     Faces Faces { get; }
     int GeometryForm { get; }
-    ContainmentEnum IsPointInside[out double[] Point, bool UseBox = true] { get; }
+    ContainmentEnum IsPointInside[ref double[] Point, bool UseBox = true] { get; }
     bool IsSolid { get; }
     bool IsTransient { get; }
     SurfaceBodyMassProperties MassProperties { get; }
@@ -55,8 +55,8 @@ interface SurfaceBody
     void GetExistingStrokeTolerances(out int ToleranceCount, out double[] ExistingTolerances);
     void GetExistingStrokes(double ToleranceIndex, out int VertexCount, out double[] VertexCoordinates, out int PolylineCount, out int[] PolylineLengths);
     ObjectCollection GetFaceColors(object Faces = Missing);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
-    bool IsEntityValid(object EntityToCheck = Missing, int CheckLevel = 3, out object ProblemEntities = Missing);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
+    bool IsEntityValid(object EntityToCheck = Missing, int CheckLevel = 3, ref object ProblemEntities = Missing);
     object LocateUsingPoint(ObjectTypeEnum ObjectType, Point PointOnObject, object ProximityTolerance = Missing);
     void SetAppearanceTextureMappingData(TextureMappingTypeEnum TextureMappingType, object TextureMappingAlignment = Missing);
 }

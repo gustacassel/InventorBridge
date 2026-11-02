@@ -42,7 +42,7 @@ interface NonParametricBaseFeatureProxy
     void DeleteFaces(ObjectCollection Faces);
     void Edit();
     void ExitEdit();
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     bool GetSuppressionCondition(out Parameter Parameter, out ComparisonTypeEnum ComparisonType, out object Expression);
     void Redefine(object BRepEntities);
     void RemoveParticipant(ComponentOccurrence Occurrence);

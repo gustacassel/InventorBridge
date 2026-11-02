@@ -15,7 +15,7 @@ interface CustomDictionary
     // Methods
     void AddWord(string Word);
     void DeleteWord(string Word);
-    void GetWords(out string[] Words);
+    void GetWords(ref string[] Words);
     void ImportWordsFromExistingDictionary(string FullFileName);
     void Remove();
 }

@@ -17,12 +17,12 @@ interface Vector2d
     UnitVector2d AsUnitVector();
     Vector2d Copy();
     double DotProduct(Vector2d Vector);
-    void GetVectorData(out double[] Coords);
+    void GetVectorData(ref double[] Coords);
     bool IsEqualTo(Vector2d Vector, double Tolerance = 0);
     bool IsParallelTo(Vector2d Vector, double Tolerance = 0);
     bool IsPerpendicularTo(Vector2d Vector, double Tolerance = 0);
     void Normalize();
-    void PutVectorData(out double[] Coords);
+    void PutVectorData(ref double[] Coords);
     void ScaleBy(double Value);
     void SubtractVector(Vector2d Value);
     void TransformBy(Matrix2d Value);

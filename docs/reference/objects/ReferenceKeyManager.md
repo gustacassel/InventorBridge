@@ -12,14 +12,14 @@ interface ReferenceKeyManager
     object Parent { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    object BindKeyToObject(out byte[] ReferenceKey, int KeyContext = 0, out object MatchType = Missing);
-    bool CanBindKeyToObject(out byte[] ReferenceKey, int KeyContext = 0, out object Object = Missing, out object Context = Missing);
+    object BindKeyToObject(ref byte[] ReferenceKey, int KeyContext = 0, out object MatchType = Missing);
+    bool CanBindKeyToObject(ref byte[] ReferenceKey, int KeyContext = 0, out object Object = Missing, out object Context = Missing);
     int CreateKeyContext();
-    string KeyToString(out byte[] ReferenceKey);
-    int LoadContextFromArray(out byte[] ContextData);
+    string KeyToString(ref byte[] ReferenceKey);
+    int LoadContextFromArray(ref byte[] ContextData);
     void ReleaseKeyContext(int KeyContext);
-    void SaveContextToArray(int KeyContext, out byte[] Result);
-    void StringToKey(string ReferenceKeyString, out byte[] ReferenceKey);
+    void SaveContextToArray(int KeyContext, ref byte[] Result);
+    void StringToKey(string ReferenceKeyString, ref byte[] ReferenceKey);
 }
 ```
 

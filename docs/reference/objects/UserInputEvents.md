@@ -21,9 +21,9 @@ interface UserInputEvents
     event OnDrag(DragStateEnum DragState, ShiftStateEnum ShiftKeys, Point ModelPosition, Point2d ViewPosition, View View, NameValueMap AdditionalInfo, out HandlingCodeEnum HandlingCode);
     event OnLinearMarkingMenu(ObjectsEnumerator SelectedEntities, SelectionDeviceEnum SelectionDevice, CommandControls LinearMenu, NameValueMap AdditionalInfo);
     event OnMarkTutorialCommand(string CommandID, NameValueMap Context, out HandlingCodeEnum HandlingCode);
-    event OnPreSelect(out object PreSelectEntity, out bool DoHighlight, out ObjectCollection MorePreSelectEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, View View);
+    event OnPreSelect(ref object PreSelectEntity, out bool DoHighlight, ref ObjectCollection MorePreSelectEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, View View);
     event OnRadialMarkingMenu(ObjectsEnumerator SelectedEntities, SelectionDeviceEnum SelectionDevice, RadialMarkingMenu RadialMenu, NameValueMap AdditionalInfo);
-    event OnSelect(ObjectsEnumerator JustSelectedEntities, out ObjectCollection MoreSelectedEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, View View);
+    event OnSelect(ObjectsEnumerator JustSelectedEntities, ref ObjectCollection MoreSelectedEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, View View);
     event OnStartCommand(CommandIDEnum CommandID);
     event OnStopCommand(CommandIDEnum CommandID);
     event OnStopPreSelect(Point ModelPosition, Point2d ViewPosition, View View);

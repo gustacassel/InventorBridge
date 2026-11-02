@@ -18,10 +18,12 @@ namespace InventorBridge.Mcp
         private const string ServerVersion = "0.1.0";
 
         private const string Instructions =
-            "Tools to work with the Autodesk Inventor running on the user's computer. Start with inventor_status. " +
-            "Before using a type, member or enum value you are not sure about, look it up with api_lookup instead of " +
-            "guessing. Make changes with run_csharp (C# against the Inventor API, in cm and radians), then check them " +
-            "with inspect and screenshot. The user watches the same Inventor window, so explain what you are about to do.";
+            "Tools to work with the Autodesk Inventor running on the user's computer. Read guide('workflow') once, then " +
+            "start with inventor_status. Before using a type, member or enum value you are not sure about, look it up " +
+            "with api_lookup instead of guessing. Make changes with run_csharp (C# against the Inventor API, in cm and " +
+            "radians) in small steps, passing 'expect' when you know the numbers; pick faces and edges with topology; " +
+            "check the result with inspect and screenshot. The user watches the same Inventor window, so explain what " +
+            "you are about to do.";
 
         private static async Task Main(string[] args)
         {
@@ -33,7 +35,9 @@ namespace InventorBridge.Mcp
             builder.Services.AddSingleton<StaDispatcher>();
             builder.Services.AddSingleton<InventorSession>();
             builder.Services.AddSingleton<ScriptRunner>();
+            builder.Services.AddSingleton<ScriptMonitor>();
             builder.Services.AddSingleton<ApiReference>();
+            builder.Services.AddSingleton<GuideLibrary>();
 
             builder.Services
                 .AddMcpServer(options =>

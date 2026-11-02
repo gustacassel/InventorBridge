@@ -28,7 +28,7 @@ A bridge between AI agents (Claude Code, Codex and other MCP clients) and Autode
   - a `// since 20xx` mark on members that do not exist in every version;
   - [`members.tsv`](docs/reference/members.tsv), one member per line, for `grep`.
 - **The reference generator** (`src/InventorBridge.ReferenceGenerator`).
-- **MCP server** (`src/InventorBridge.Mcp`, first version): connects Claude Code, Codex or any MCP client to the Inventor running on your computer. The agent writes C# against the Inventor API, the server runs it inside Inventor, and you watch the result in your own Inventor window. The agent looks up the API with `api_lookup` instead of guessing names.
+- **MCP server** (`src/InventorBridge.Mcp`, first version): connects Claude Code, Codex or any MCP client to the Inventor running on your computer. The agent writes C# against the Inventor API, the server runs it inside Inventor, and you watch the result in your own Inventor window. The agent looks up the API with `api_lookup` instead of guessing names, and reads short guides served by the server.
 
 The full plan is in [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -54,10 +54,13 @@ Requirements: Windows, Autodesk Inventor 2024 or later, and the [.NET 8 SDK](htt
 |---|---|
 | `inventor_status` | Connects to the Inventor you have open: version, active project and workspace folder, default templates, open documents |
 | `inventor_start` | Starts Inventor (visible) when it is not running, and waits until it is ready |
-| `run_csharp` | Compiles and runs a C# script against the Inventor API. It runs as one undo step on the active document and is rolled back on an error; compilation errors come back with line and column |
+| `run_csharp` | Compiles and runs a C# script against the Inventor API. It runs as one undo step on the active document and is rolled back on an error; compilation errors come back with line and column. The result lists what changed (documents, features, occurrences, constraints), and an optional `expect` checks volume, size, bodies, occurrences or free degrees of freedom |
+| `script_result` | Waits for a script that was still running after 60 s and returns its result |
 | `inspect` | Structured summary of the active document: features and parameters of a part, occurrences, constraints and free degrees of freedom of an assembly, sheets of a drawing |
+| `topology` | Faces and edges of a part or of one occurrence, with positions, cylinder axes and circle centers in mm, so a script can pick them; split cylinders are merged with their ends |
 | `screenshot` | An image of the Inventor view, so the agent sees what you see |
 | `api_lookup` | Looks up the API reference: an object's or enum's page, some members of a type, or a search by name. It hides members that the running Inventor version does not have, and works without Inventor |
+| `guide` | Short guides: the workflow, parts, assemblies and constraints, API pitfalls |
 
 Inventor must stay open while the agent works: the server talks to it through COM, out of process, so nothing is installed inside Inventor.
 
@@ -85,7 +88,7 @@ src/InventorBridge.Mcp/
   Connection/  COM connection: STA thread, retry of busy calls, attaching to or starting Inventor
   Scripting/   compiling and running run_csharp scripts (Roslyn), transactions
   Reading/     inventor_status, inspect and screenshot
-  Reference/   api_lookup: searching the generated reference
+  Reference/   api_lookup and guide: serving the reference and the guides
   Tools/       the MCP tools
 src/InventorBridge.ReferenceGenerator/
   Reading/     reading the DLLs and inheritance.txt
@@ -94,6 +97,7 @@ src/InventorBridge.ReferenceGenerator/
   Output/      Markdown pages, index, members.tsv and JSON
   inheritance.txt   derived/base pairs extracted from the object model poster legend
 docs/reference/     generated output (do not edit by hand)
+docs/guides/        hand-written guides served by the guide tool
 assets/             logo and social preview (SVG sources and PNG)
 docs/cover.svg      README and portfolio image (rendered to docs/cover.png)
 ```

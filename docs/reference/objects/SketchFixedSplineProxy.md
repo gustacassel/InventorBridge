@@ -46,7 +46,7 @@ interface SketchFixedSplineProxy
     void Delete();
     void Edit(BSplineCurve2d SplineCurve, object StartPoint = Missing, object EndPoint = Missing);
     void GetCustomLineType(out string LineTypeName, out string LineTypeDescription);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);
 }
 ```

@@ -38,7 +38,7 @@ interface WeldSymbolStyle
     ContourSymbolVariationTypeEnum GetContourSymbolFilterVariationType(ContourSymbolTypeEnum ContourSymbolFilter);
     void GetContourSymbolsFilter(out ContourSymbolTypeEnum[] ContourSymbolFilter);
     LineTypeEnum GetIdentificationLineCustomLineType(out string LineTypeName, out string LineTypeDescription);
-    void GetReferenceKey(out byte[] ReferenceKey, int KeyContext = 0);
+    void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);
     WeldSymbolVariationTypeEnum GetWeldingSymbolFilterVariationType(WeldSymbolTypeEnum WeldingSymbolFilter);
     void GetWeldingSymbolsFilter(out WeldSymbolTypeEnum[] WeldingSymbolFilter);
     void SaveToGlobal();
