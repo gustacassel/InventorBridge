@@ -64,6 +64,25 @@ Now only the second tube's own rotation is left, so `freeDegreesOfFreedom` is 1.
 ## Notes
 
 - Occurrence names are "{file name}:{n}", as listed by `inspect` or the `changes` part of the result.
-- `Occurrences.ItemByName[...]` finds top-level occurrences only. For nested ones, look in `Occurrences.AllLeafOccurrences`.
+- `Occurrences.ItemByName[...]` finds top-level occurrences only. For nested ones, walk `SubOccurrences` (`topology` takes the same path, such as `"Frame:1/Bracket:2"`, and prints the code), or look in `Occurrences.AllLeafOccurrences`.
 - Constraint offsets and angles are `object`: a number in cm or radians, or an expression string such as `"10 mm"`.
 - If a constraint fails or becomes sick, `inspect` shows its health. Try the other solution: flip `AxesOpposed`, or use `AddMateConstraint` instead of flush.
+
+## Changing a size in an existing assembly
+
+A size is rarely one parameter. Making a 1000 mm rail 1500 mm long took, on a real assembly:
+
+1. The length parameter in each part that runs along the rail.
+2. The hole and slot patterns in those parts: their spacing was 800 mm so that the end holes sat 100 mm from each end, so it had to become 1300 mm.
+3. A component pattern in a subassembly that placed the second support 800 mm from the first.
+4. `Rebuild()` of the top assembly: bolts inserted into holes at the moved end only followed after it.
+
+Before changing anything, list what depends on the size: the parameters of each part (`get_Units()` gives their units), the patterns (`RectangularPatternFeature.XSpacing`, `RectangularOccurrencePattern.ColumnOffset`) and the constraint offsets. After the change, call `Update()` on each changed part and subassembly, then `Update()` and `Rebuild()` on the top assembly, and read `constraintsWithProblems` with `inspect`.
+
+Changing a part that other assemblies use changes it everywhere. Files from a vault are read-only until they are checked out (`inspect` says `readOnlyFile`), so tell the user before saving.
+
+## Large assemblies
+
+- Every property read is a call into Inventor's process, about 0.4 to 1 ms. Reading only the names of 4,200 parts takes about 4 s; a loop that reads ten properties per part takes over a minute.
+- Ask Inventor for what it already computes instead of looping: `MassProperties.Mass`, `RangeBox`, the BOM (`bom`), `Occurrences.AllLeafOccurrences.Count`.
+- `bom` walks every level to add up the totals: about 20 s for 4,200 parts in 718 part numbers.

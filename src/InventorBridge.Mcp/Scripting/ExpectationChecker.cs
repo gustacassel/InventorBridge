@@ -14,6 +14,9 @@ namespace InventorBridge.Mcp.Scripting
         private const double MillimetersPerCentimeter = 10.0;
         private const double CubicMillimetersPerCubicCentimeter = 1000.0;
 
+        // Reading every part's precise box costs about a dozen COM calls per part.
+        private const int MaxPreciseSizeParts = 1000;
+
         /// <summary>One line per checked value; <paramref name="allMet"/> is false if any value is off.</summary>
         public static List<string> Check(Application application, ScriptExpectation expectation, out bool allMet)
         {
@@ -39,12 +42,19 @@ namespace InventorBridge.Mcp.Scripting
 
             if (expectation.SizeMm is { Length: 3 } size)
             {
-                var measured = ReadSizeMm(document);
+                var (measured, approximate) = ReadSizeMm(document);
+                var unit = approximate ? "mm, Inventor's range box" : "mm";
                 var axes = new[] { "X", "Y", "Z" };
                 for (var axis = 0; axis < 3; axis++)
                 {
                     var allowed = Math.Max(SizeToleranceMm, Math.Abs(size[axis]) * tolerance);
-                    allMet &= AddLine(lines, $"size {axes[axis]} (mm)", size[axis], measured?[axis], allowed);
+                    allMet &= AddLine(lines, $"size {axes[axis]} ({unit})", size[axis], measured?[axis], allowed);
+                }
+
+                if (approximate)
+                {
+                    lines.Add($"size: more than {MaxPreciseSizeParts} parts, so Inventor's range box was used; it can be " +
+                        "larger than the parts when some are rotated");
                 }
             }
             else if (expectation.SizeMm is not null)
@@ -104,8 +114,12 @@ namespace InventorBridge.Mcp.Scripting
             }
         }
 
-        /// <summary>Size of the union of the bodies' precise range boxes (RangeBox alone can be loose).</summary>
-        private static double[]? ReadSizeMm(Document document)
+        /// <summary>
+        /// Size of the union of the bodies' precise range boxes (RangeBox alone can be loose when parts are rotated).
+        /// Above <see cref="MaxPreciseSizeParts"/> parts that would take too long, so the assembly's RangeBox is used
+        /// and the size is marked approximate.
+        /// </summary>
+        private static (double[]? Size, bool Approximate) ReadSizeMm(Document document)
         {
             var bodies = new List<SurfaceBody>();
 
@@ -118,6 +132,9 @@ namespace InventorBridge.Mcp.Scripting
                     }
 
                     break;
+                case AssemblyDocument assembly when assembly.ComponentDefinition.Occurrences.AllLeafOccurrences.Count > MaxPreciseSizeParts:
+                    var range = assembly.ComponentDefinition.RangeBox;
+                    return (SizeOf(range), true);
                 case AssemblyDocument assembly:
                     foreach (ComponentOccurrence occurrence in assembly.ComponentDefinition.Occurrences.AllLeafOccurrences)
                     {
@@ -137,7 +154,7 @@ namespace InventorBridge.Mcp.Scripting
 
             if (bodies.Count == 0)
             {
-                return null;
+                return (null, false);
             }
 
             var box = bodies[0].PreciseRangeBox.Copy();
@@ -148,6 +165,11 @@ namespace InventorBridge.Mcp.Scripting
                 box.Extend(bodyBox.MaxPoint);
             }
 
+            return (SizeOf(box), false);
+        }
+
+        private static double[] SizeOf(Box box)
+        {
             return
             [
                 (box.MaxPoint.X - box.MinPoint.X) * MillimetersPerCentimeter,

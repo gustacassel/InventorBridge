@@ -16,7 +16,7 @@ namespace InventorBridge.Mcp.Reading
                 ready = application.Ready,
                 project = ReadProject(application),
                 templates = ReadTemplates(application),
-                activeDocument = application.ActiveDocument?.FullFileName,
+                activeDocument = application.ActiveDocument?.DisplayName,
                 openDocuments = ReadOpenDocuments(application),
                 units = "The API always uses centimeters and radians, regardless of document units. Use Mm() and Deg() in scripts.",
             };

@@ -17,8 +17,10 @@ Use one `run_csharp` call per meaningful step: one part, one group of features, 
 
 ## Check the result
 
-- `inspect`: features and their health, parameters, occurrences, constraints and free degrees of freedom.
+- `inspect`: iProperties, features and their health, parameters, mass, occurrences, constraints and free degrees of freedom; for a drawing, sheets, views, parts lists and dimensions. `featuresWithProblems` and `constraintsWithProblems` are the first thing to read after a change. When `truncated` is there, a list was cut: raise `maxItems`.
+- `bom`: what an assembly is made of, with total quantities per part number.
 - `topology`: faces and edges with their positions, to choose what to constrain or modify next.
+- `inspect`'s `boundingBoxMm` for an assembly is Inventor's range box, which can be larger than the parts when some are rotated. To check a size, use `expect: {"sizeMm": [...]}`, which measures the bodies.
 - `screenshot`: at the end of a part or an assembly, or whenever orientation matters. Use `view: "iso"` for an overview.
 
 ## Pick geometry by name

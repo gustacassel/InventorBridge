@@ -176,10 +176,15 @@ namespace InventorBridge.Mcp.Tools
         [McpServerTool(Name = "inspect", Title = "Inspect the active document",
             ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
-            "Structured summary of the active document, to check work without a screenshot. Part: features (type, " +
-            "suppressed, health), parameters, solid bodies, bounding box (mm), volume (mm3). Assembly: occurrences " +
-            "(file, grounded, free translations and rotations left), constraints (type, health), parameters, " +
-            "bounding box. Drawing: sheets and views.")]
+            "Structured summary of the active document, to check work without a screenshot. Every document: iProperties " +
+            "(part number, description, stock number, revision, custom ones), unsaved changes, whether it needs an " +
+            "update and whether its file is read-only. Part: model state, features (type, suppressed, health) and the " +
+            "ones with problems, parameters, solid bodies, bounding box (mm), volume (mm3), mass (kg), material, and " +
+            "thickness and flat pattern size of sheet metal. Assembly: model state, design view, occurrence counts, " +
+            "occurrences (file, subassembly, grounded, free translations and rotations left), constraints and the ones " +
+            "with problems, parameters, bounding box, mass. Drawing: referenced models; per sheet the size, border, " +
+            "title block, views (type, scale, model, style, center), parts lists, balloons, dimensions (and how many " +
+            "are detached) and notes. 'truncated' lists what maxItems cut.")]
         public Task<CallToolResult> InspectAsync(
             [Description("Maximum number of items per list (features, occurrences...).")] int maxItems = DefaultMaxItems)
         {
@@ -190,6 +195,26 @@ namespace InventorBridge.Mcp.Tools
             });
         }
 
+        [McpServerTool(Name = "bom", Title = "Bill of materials",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
+        [Description(
+            "Bill of materials of the active assembly, with quantities rolled up through the levels: 'rows' is the " +
+            "tree (level, path of part numbers, quantity per parent, total for one assembly, BOM structure, file) and " +
+            "'totals' adds up each part number across the whole assembly, the list of what to make or buy. Follows the " +
+            "BOM rules: phantoms are replaced by their children, references are left out, purchased components are not " +
+            "expanded. Reads the Model Data view, so the document is not changed. Part numbers and descriptions come " +
+            "from the iProperties; a file without a part number shows its file name.")]
+        public Task<CallToolResult> GetBomAsync(
+            [Description("Deepest level to list in 'rows' (1 = only the assembly's direct components). Totals always cover every level.")] int? maxLevels = null,
+            [Description("Maximum number of rows and of totals.")] int maxItems = 500)
+        {
+            return RunAsync(() =>
+            {
+                var application = session.GetApplication();
+                return Text(ToJson(BomReader.Read(application, maxLevels, maxItems)));
+            });
+        }
+
         [McpServerTool(Name = "topology", Title = "Faces and edges",
             ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
@@ -197,10 +222,10 @@ namespace InventorBridge.Mcp.Tools
             "script can pick them: 1-based index, type, a point on it, normal of planes, axis and radius of cylinders, " +
             "center and axis of circular edges, all in mm. For an occurrence, coordinates are in the assembly and the " +
             "entities are proxies, ready for constraints. faces='cylinders' merges cylinders split into several faces " +
-            "and gives the centers of their circular edges (the open ends of a tube, for example). Entities named with " +
-            "Name() show their name.")]
+            "and gives the centers of their circular edges or arcs (the open ends of a tube, the ends of a hole or a " +
+            "slot), and lists tori (bends) with the centers of their ends. Entities named with Name() show their name.")]
         public Task<CallToolResult> GetTopologyAsync(
-            [Description("In an assembly: the occurrence to read, such as 'Tube:1'.")] string? occurrence = null,
+            [Description("In an assembly: the occurrence to read, such as 'Tube:1', or a path into subassemblies, such as 'Frame:1/Bracket:2'.")] string? occurrence = null,
             [Description("Only the body with this name (default: every body).")] string? body = null,
             [Description("Faces to list: all, cylinders (merged, with their ends) or none.")] string faces = "all",
             [Description("Edges to list: all, circles (circles and arcs only) or none.")] string edges = "all",

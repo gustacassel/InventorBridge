@@ -150,6 +150,11 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
      - A script that closes the document its transaction is on is no longer reported as failed.
      - The change list tells created, opened and saved documents apart, counts referenced documents instead of listing them, says when `Close()` only closed a window, and makes no claim about documents it does not track above 300.
      - Scripts run with the invariant culture (numbers with a dot) and can use `dynamic`.
+   - Done (2026-11-13), reading:
+     - `inspect` reads the iProperties by internal property set name (the same in every language), the file state (needs an update, read-only file), model state, mass, material, sheet metal thickness and flat pattern size, the features and constraints with problems, and for drawings the sheets, views, parts lists, balloons and dimensions. It says which lists `maxItems` cut.
+     - `bom`: the bill of materials from the Model Data view (reading it changes nothing, unlike enabling the structured view), with quantities rolled up and totals per part number.
+     - `topology` takes paths into subassemblies, reports the ends of holes and slots whose edges are arcs, and lists tori (bends) with their ends.
+     - `expect` sizeMm falls back to the assembly's range box above 1000 parts, marked as approximate. A part's own range box can be much larger than its body when it is rotated: on a real sheet metal support it was 146 mm wide for a 70 mm body.
    - To do: one Inventor crash, while a script closed parts before the assembly and drawing that referenced them, did not happen again in three tries.
 3. **Documentation:** 5 guides + 10 tested recipes + `inventor-api` skill. Measure the improvement: the same tasks with and without docs.
    - Started (2026-11-02): `docs/guides` with `workflow`, `parts`, `assemblies` and `api-pitfalls`, served by the `guide` tool; the server instructions tell the agent to read `workflow` first. Their C# blocks compile against the 2024 interop but have not run on Inventor yet.

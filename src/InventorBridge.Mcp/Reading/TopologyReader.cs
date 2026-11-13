@@ -41,18 +41,21 @@ namespace InventorBridge.Mcp.Reading
                 ?? throw new InvalidOperationException("No document is open.");
 
             var (bodies, occurrence) = FindBodies(document, occurrenceName);
+            var occurrencePath = occurrence is null
+                ? null
+                : string.Join("/", occurrence.OccurrencePath.Cast<ComponentOccurrence>().Select(step => step.Name));
 
             var result = new Dictionary<string, object?>
             {
                 ["document"] = document.DisplayName,
-                ["occurrence"] = occurrence?.Name,
+                ["occurrence"] = occurrencePath,
                 ["coordinates"] = occurrence is null ? "part, mm" : "assembly, mm",
                 ["howToUse"] = occurrence is null
                     ? "In a script: var body = ((PartDocument)ActiveDocument).ComponentDefinition.SurfaceBodies[b]; " +
                       "body.Faces[i], body.Edges[i] (1-based). Indices hold while the geometry does not change; name " +
                       "the entities you will reuse with Name(entity, \"name\")."
-                    : $"In a script: var body = occurrence.SurfaceBodies[b], with the occurrence named \"{occurrence.Name}\"; " +
-                      "body.Faces[i], body.Edges[i] (1-based) are proxies in the assembly, ready for constraints. " +
+                    : $"In a script: {OccurrenceLookupCode(occurrencePath!)} var body = occurrence.SurfaceBodies[b]; " +
+                      "body.Faces[i], body.Edges[i] (1-based) are proxies in the top assembly, ready for constraints. " +
                       "Indices hold while the geometry does not change; Named(occurrence, \"name\") finds named entities.",
             };
 
@@ -96,16 +99,40 @@ namespace InventorBridge.Mcp.Reading
 
                     var occurrence = FindOccurrence(occurrences, occurrenceName)
                         ?? throw new InvalidOperationException(
-                            $"There is no occurrence named \"{occurrenceName}\". Top-level occurrences: " + ListNames(occurrences));
+                            $"There is no occurrence named \"{occurrenceName}\". Top-level occurrences: " + ListNames(occurrences) +
+                            ". Inside a subassembly, give the path: \"Sub:1/Part:2\".");
+
+                    if (occurrence.DefinitionDocumentType == DocumentTypeEnum.kAssemblyDocumentObject)
+                    {
+                        throw new InvalidOperationException(
+                            $"\"{occurrenceName}\" is a subassembly, which has no bodies of its own. Read one of its parts with a path: " +
+                            string.Join(", ", ChildNames(occurrence).Select(child => $"\"{occurrenceName}/{child}\"")));
+                    }
+
                     return (occurrence.SurfaceBodies, occurrence);
                 default:
                     throw new InvalidOperationException("Topology can only be read from a part or an assembly.");
             }
         }
 
-        /// <summary>A top-level occurrence by name, or else the first leaf occurrence with that name.</summary>
+        /// <summary>
+        /// An occurrence by path ("Sub:1/Part:2", each step a child of the previous one), by top-level name, or else
+        /// the first leaf occurrence with that name.
+        /// </summary>
         private static ComponentOccurrence? FindOccurrence(ComponentOccurrences occurrences, string name)
         {
+            if (name.Contains('/'))
+            {
+                var steps = name.Split('/', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                var current = FindByName(occurrences.Cast<ComponentOccurrence>(), steps[0]);
+                foreach (var step in steps.Skip(1))
+                {
+                    current = current is null ? null : FindByName(current.SubOccurrences.Cast<ComponentOccurrence>(), step);
+                }
+
+                return current;
+            }
+
             foreach (ComponentOccurrence occurrence in occurrences)
             {
                 if (string.Equals(occurrence.Name, name, StringComparison.OrdinalIgnoreCase))
@@ -123,6 +150,40 @@ namespace InventorBridge.Mcp.Reading
             }
 
             return null;
+        }
+
+        /// <summary>C# that gets the occurrence in a script, following the path step by step.</summary>
+        private static string OccurrenceLookupCode(string path)
+        {
+            var steps = path.Split('/', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var code = $"var occurrence = ((AssemblyDocument)ActiveDocument).ComponentDefinition.Occurrences.ItemByName[\"{steps[0]}\"];";
+            foreach (var step in steps.Skip(1))
+            {
+                code += $" occurrence = occurrence.SubOccurrences.Cast<ComponentOccurrence>().First(o => o.Name == \"{step}\");";
+            }
+
+            return code;
+        }
+
+        private static ComponentOccurrence? FindByName(IEnumerable<ComponentOccurrence> occurrences, string name)
+        {
+            return occurrences.FirstOrDefault(occurrence => string.Equals(occurrence.Name, name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static List<string> ChildNames(ComponentOccurrence subassembly)
+        {
+            var names = new List<string>();
+            foreach (ComponentOccurrence child in subassembly.SubOccurrences)
+            {
+                if (names.Count >= MaxNamesInError)
+                {
+                    break;
+                }
+
+                names.Add(child.Name);
+            }
+
+            return names;
         }
 
         private static string ListNames(ComponentOccurrences occurrences)
@@ -160,6 +221,12 @@ namespace InventorBridge.Mcp.Reading
                     break;
                 case FaceDetail.Cylinders:
                     entry["cylinders"] = ReadCylinders(body, maxItems);
+                    var tori = ReadTori(body, maxItems);
+                    if (tori.Count > 0)
+                    {
+                        entry["tori"] = tori;
+                    }
+
                     break;
             }
 
@@ -198,6 +265,12 @@ namespace InventorBridge.Mcp.Reading
                             entry["axisOriginMm"] = ToMillimeters(cylinder.BasePoint);
                             entry["axis"] = ToVector(cylinder.AxisVector);
                             entry["radiusMm"] = Round(cylinder.Radius * MillimetersPerCentimeter);
+                            break;
+                        case Torus torus:
+                            entry["centerMm"] = ToMillimeters(torus.CenterPoint);
+                            entry["axis"] = ToVector(torus.AxisVector);
+                            entry["majorRadiusMm"] = Round(torus.MajorRadius * MillimetersPerCentimeter);
+                            entry["minorRadiusMm"] = Round(torus.MinorRadius * MillimetersPerCentimeter);
                             break;
                     }
 
@@ -293,6 +366,48 @@ namespace InventorBridge.Mcp.Reading
             }
 
             return groups.Take(maxItems).Select(group => group.ToEntry()).ToList();
+        }
+
+        /// <summary>
+        /// One entry per torus (faces sharing center, axis and radii), such as a bent tube, with the centers of the
+        /// circular edges at its ends and the direction the tube leaves through them.
+        /// </summary>
+        private static List<object> ReadTori(SurfaceBody body, int maxItems)
+        {
+            var groups = new List<TorusGroup>();
+            var faceCount = body.Faces.Count;
+
+            for (var index = 1; index <= faceCount; index++)
+            {
+                var face = body.Faces[index];
+                if (face.SurfaceType != SurfaceTypeEnum.kTorusSurface || face.Geometry is not Torus torus)
+                {
+                    continue;
+                }
+
+                var group = groups.FirstOrDefault(candidate => candidate.Matches(torus));
+                if (group is null)
+                {
+                    group = new TorusGroup(torus);
+                    groups.Add(group);
+                }
+
+                group.FaceIndices.Add(index);
+                group.AddEnds(face);
+            }
+
+            return groups.Take(maxItems).Select(group => group.ToEntry()).ToList();
+        }
+
+        /// <summary>Center, radius and normal of a circle or circular arc edge; null for any other edge.</summary>
+        private static (Point Center, double Radius, UnitVector Normal)? CircularEdge(Edge edge)
+        {
+            return edge.Geometry switch
+            {
+                Circle circle => (circle.Center, circle.Radius, circle.Normal),
+                Arc3d arc => (arc.Center, arc.Radius, arc.Normal),
+                _ => null,
+            };
         }
 
         /// <summary>Runs one entity's read; a COM error becomes { index, error } instead of failing the whole list.</summary>
@@ -393,17 +508,20 @@ namespace InventorBridge.Mcp.Reading
                     && IsOnAxis(otherOrigin);
             }
 
-            /// <summary>Adds the centers of the face's circular edges that lie on this cylinder's axis.</summary>
+            /// <summary>
+            /// Adds the centers of the face's circular edges that lie on this cylinder's axis. A hole split into two
+            /// faces, or the round end of a slot, has arcs instead of full circles.
+            /// </summary>
             public void AddEndCenters(Face face)
             {
                 foreach (Edge edge in face.Edges)
                 {
-                    if (edge.Geometry is not Circle circle || Math.Abs(circle.Radius - radius) > GeometryTolerance)
+                    if (CircularEdge(edge) is not var (edgeCenter, edgeRadius, _) || Math.Abs(edgeRadius - radius) > GeometryTolerance)
                     {
                         continue;
                     }
 
-                    var center = ToArray(circle.Center);
+                    var center = ToArray(edgeCenter);
                     if (IsOnAxis(center) && !endCenters.Any(known => Distance(known, center) < GeometryTolerance))
                     {
                         endCenters.Add(center);
@@ -431,22 +549,82 @@ namespace InventorBridge.Mcp.Reading
                 var perpendicular = new[] { offset[0] - along * axis[0], offset[1] - along * axis[1], offset[2] - along * axis[2] };
                 return Math.Sqrt(Dot(perpendicular, perpendicular)) < GeometryTolerance;
             }
+        }
 
-            private static double Dot(double[] a, double[] b)
+        /// <summary>Torus faces that lie on the same torus (same center, axis and radii), in cm.</summary>
+        private sealed class TorusGroup
+        {
+            private readonly double[] center;
+            private readonly double[] axis;
+            private readonly double majorRadius;
+            private readonly double minorRadius;
+            private readonly List<(double[] Center, double[] Normal)> ends = [];
+
+            public TorusGroup(Torus torus)
             {
-                return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+                center = ToArray(torus.CenterPoint);
+                axis = ToArray(torus.AxisVector);
+                majorRadius = torus.MajorRadius;
+                minorRadius = torus.MinorRadius;
             }
 
-            private static double Distance(double[] a, double[] b)
+            public List<int> FaceIndices { get; } = [];
+
+            public bool Matches(Torus torus)
             {
-                var difference = new[] { a[0] - b[0], a[1] - b[1], a[2] - b[2] };
-                return Math.Sqrt(Dot(difference, difference));
+                return Math.Abs(torus.MajorRadius - majorRadius) < GeometryTolerance
+                    && Math.Abs(torus.MinorRadius - minorRadius) < GeometryTolerance
+                    && Distance(ToArray(torus.CenterPoint), center) < GeometryTolerance
+                    && Math.Abs(Math.Abs(Dot(ToArray(torus.AxisVector), axis)) - 1) < GeometryTolerance;
             }
 
-            private static double[] Scale(double[] values, double factor, int decimals)
+            /// <summary>Adds the face's circular edges with the tube's radius: the ends of the bend.</summary>
+            public void AddEnds(Face face)
             {
-                return [Round(values[0] * factor, decimals), Round(values[1] * factor, decimals), Round(values[2] * factor, decimals)];
+                foreach (Edge edge in face.Edges)
+                {
+                    if (CircularEdge(edge) is not var (edgeCenter, edgeRadius, normal) || Math.Abs(edgeRadius - minorRadius) > GeometryTolerance)
+                    {
+                        continue;
+                    }
+
+                    var endCenter = ToArray(edgeCenter);
+                    if (!ends.Any(known => Distance(known.Center, endCenter) < GeometryTolerance))
+                    {
+                        ends.Add((endCenter, ToArray(normal)));
+                    }
+                }
             }
+
+            public object ToEntry()
+            {
+                return new
+                {
+                    majorRadiusMm = Round(majorRadius * MillimetersPerCentimeter),
+                    minorRadiusMm = Round(minorRadius * MillimetersPerCentimeter),
+                    minorDiameterMm = Round(2 * minorRadius * MillimetersPerCentimeter),
+                    centerMm = Scale(center, MillimetersPerCentimeter, 3),
+                    axis = Scale(axis, 1, 4),
+                    faces = FaceIndices,
+                    ends = ends.Select(end => new { centerMm = Scale(end.Center, MillimetersPerCentimeter, 3), axis = Scale(end.Normal, 1, 4) }).ToList(),
+                };
+            }
+        }
+
+        private static double Dot(double[] a, double[] b)
+        {
+            return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
+
+        private static double Distance(double[] a, double[] b)
+        {
+            var difference = new[] { a[0] - b[0], a[1] - b[1], a[2] - b[2] };
+            return Math.Sqrt(Dot(difference, difference));
+        }
+
+        private static double[] Scale(double[] values, double factor, int decimals)
+        {
+            return [Round(values[0] * factor, decimals), Round(values[1] * factor, decimals), Round(values[2] * factor, decimals)];
         }
     }
 }
