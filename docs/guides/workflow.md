@@ -36,10 +36,23 @@ Names are the same ones as Inventor's "Assign Name" command, so the user can see
 - Never overwrite an existing file without asking the user. Check with `System.IO.File.Exists` first.
 - A part must be saved before it is placed in an assembly, because `ComponentOccurrences.Add` takes a file path.
 
+## Dialogs
+
+Scripts run with `App.SilentOperation` on: Inventor answers its own dialogs with the default choice, such as updating an assembly when it opens or reporting a file error, and the call throws instead of waiting for the user. Add-in dialogs ignore it. With Vault Data Standard installed, saving a new file opens its "New file" dialog and the script waits until the user fills it in or cancels; a cancel makes `SaveAs` throw.
+
+When Inventor keeps a window open while a script is blocked, `run_csharp` returns "still running" after about 2 s with the window's title. Tell the user what it is and ask them to answer or cancel it in Inventor, then call `script_result`.
+
 ## Undo and failures
 
-- The transaction covers only the document that was active when the script started. Documents the script creates are not rolled back.
+- The transaction covers only the document that was active when the script started. Documents the script creates, and changes to other documents (the parts of the active assembly, for example), are not covered.
+- Pass `undoable: false` to scripts that only read. Otherwise each one leaves an empty step in the user's undo list.
 - If a script that creates documents fails halfway, the `changes` part lists what was left. Close those documents with `Close(true)` in the next script, or tell the user.
+
+## Closing documents
+
+- `Close()` on a document that another open document references (a part of an open assembly, the model of an open drawing) only closes its window: the document stays loaded. The `changes` part says "closed the window of ...".
+- Close from the top down: drawings first, then assemblies, then parts. Then `App.Documents.CloseAll(true)` unloads what nothing references any more.
+- `Close(true)` closes without saving. Use it for files you only read.
 
 ## Long scripts
 

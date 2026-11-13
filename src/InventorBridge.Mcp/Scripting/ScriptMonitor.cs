@@ -17,6 +17,17 @@ namespace InventorBridge.Mcp.Scripting
         private Task<CallToolResult>? task;
         private string description = "";
         private DateTime startedUtc;
+        private IntPtr inventorWindow;
+
+        /// <summary>
+        /// Inventor's main window, recorded by the script before it starts, so the windows Inventor opens while the
+        /// script is blocked can be found without COM.
+        /// </summary>
+        public IntPtr InventorWindow
+        {
+            get { lock (gate) { return inventorWindow; } }
+            set { lock (gate) { inventorWindow = value; } }
+        }
 
         /// <summary>Description of the running script and how long it has run, or null when none is running.</summary>
         public string? DescribeRunning()

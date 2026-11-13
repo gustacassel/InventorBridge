@@ -54,7 +54,7 @@ Requirements: Windows, Autodesk Inventor 2024 or later, and the [.NET 8 SDK](htt
 |---|---|
 | `inventor_status` | Connects to the Inventor you have open: version, active project and workspace folder, default templates, open documents |
 | `inventor_start` | Starts Inventor (visible) when it is not running, and waits until it is ready |
-| `run_csharp` | Compiles and runs a C# script against the Inventor API. It runs as one undo step on the active document and is rolled back on an error; compilation errors come back with line and column. The result lists what changed (documents, features, occurrences, constraints), and an optional `expect` checks volume, size, bodies, occurrences or free degrees of freedom |
+| `run_csharp` | Compiles and runs a C# script against the Inventor API. It runs as one undo step on the active document and is rolled back on an error (`undoable: false` skips the undo step for scripts that only read), with Inventor's own dialogs silenced; if an add-in's dialog holds the script, the call returns with its title. Compilation errors come back with line and column. The result lists what changed (documents, features, occurrences, constraints), and an optional `expect` checks volume, size, bodies, occurrences or free degrees of freedom |
 | `script_result` | Waits for a script that was still running after 60 s and returns its result |
 | `inspect` | Structured summary of the active document: features and parameters of a part, occurrences, constraints and free degrees of freedom of an assembly, sheets of a drawing |
 | `topology` | Faces and edges of a part or of one occurrence, with positions, cylinder axes and circle centers in mm, so a script can pick them; split cylinders are merged with their ends |

@@ -48,3 +48,15 @@ return $"{normals[0]}, {normals[1]}, {normals[2]}";
 - `COMException` with `E_INVALIDARG` (0x80070057) usually means a wrong argument: a part entity used instead of a proxy, a wrong enum value, or a value in mm instead of cm.
 - `E_FAIL` (0x80004005) often means the geometry could not be built: a profile that is not closed, or an extent that does not reach anything. Check the sketch and the numbers.
 - A failed feature can leave a sketch behind. The transaction rolls it back only in the document that was active when the script started.
+- `E_INVALIDARG` comes through as `ArgumentException`, not `COMException`. A name that is not there, such as `Occurrences.ItemByName["Missing:1"]` or `Documents.ItemByName[path]` for a document that is not loaded, throws it.
+- `DrawingViews.AddBaseView` fails with `E_FAIL` when the model has never been saved: save the part or assembly first.
+
+## Inventor in another language
+
+- Names Inventor generates follow its language: "Extrusão1", "Inserir:1", a BOM view called "Estruturada". Find objects by type, not by name: `BOMViews` by `ViewType == BOMViewTypeEnum.kStructuredBOMViewType`, features by `Type` or with `is ExtrudeFeature`.
+- Units come back in that language too, such as "grau" for degrees in `Parameter.Expression`. Expressions you write may use English unit names ("10 deg", "10.5 mm"): Inventor accepts them in every language, with a dot or a comma.
+- `Parameter.Units` has a getter and a setter of different types, which C# cannot use as a property: call `parameter.get_Units()`.
+
+## Files
+
+- Inventor keeps the path you pass. `SaveAs("C:/Work/Tube.ipt")` stores forward slashes, and `Documents.ItemByName` then needs the same spelling. Build paths with `System.IO.Path.Combine` and backslashes.

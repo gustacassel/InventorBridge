@@ -32,6 +32,16 @@ namespace InventorBridge.Mcp.Tests
         }
 
         [Fact]
+        public void DynamicCompilesForLateBoundComObjects()
+        {
+            const string code =
+                "dynamic automation = App.ApplicationAddIns.ItemById[\"{3BDD8D79-2179-4B11-8A5A-257B1C0263AC}\"].Automation;\n" +
+                "return (string)automation.Rules(ActiveDocument)[1].Name;";
+
+            Assert.Empty(runner.GetCompilationErrors(code));
+        }
+
+        [Fact]
         public void ACompilationErrorStopsBeforeInventorIsTouched()
         {
             // No Inventor here: a null application would throw if the runner used it.

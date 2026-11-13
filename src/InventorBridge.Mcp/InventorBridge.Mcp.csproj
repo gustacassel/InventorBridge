@@ -22,6 +22,11 @@
     <None Include="..\..\docs\reference\enums\*.md" Link="reference\enums\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
 
+  <!-- The tests build snapshots without Inventor through internal members. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="InventorBridge.Mcp.Tests" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.9.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.14" />

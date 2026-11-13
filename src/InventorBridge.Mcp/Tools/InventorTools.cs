@@ -26,6 +26,10 @@ namespace InventorBridge.Mcp.Tools
         private static readonly TimeSpan StartTimeout = TimeSpan.FromMinutes(5);
         private static readonly TimeSpan ScriptWaitLimit = TimeSpan.FromSeconds(60);
 
+        // While a script runs, Inventor's windows are checked this often; one that stays open this long ends the wait.
+        private static readonly TimeSpan WindowPollInterval = TimeSpan.FromSeconds(1);
+        private static readonly TimeSpan DialogGrace = TimeSpan.FromSeconds(2);
+
         private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
         private readonly StaDispatcher dispatcher;
@@ -88,19 +92,27 @@ namespace InventorBridge.Mcp.Tools
             "System, System.Collections.Generic, System.Linq, Inventor. System.IO is not imported because Inventor has " +
             "its own File and Path types: write System.IO.Path.Combine.\n" +
             "Rules: all lengths are in cm and angles in radians; do not use await; a value after a final 'return' is " +
-            "sent back. Save new files under WorkspacePath. Create documents with App.Documents.Add(type, template) " +
+            "sent back. Scripts run with the invariant culture, so numbers format with a dot; 'dynamic' works for " +
+            "late-bound COM objects such as the iLogic add-in's Automation. Save new files under WorkspacePath. Create documents with App.Documents.Add(type, template) " +
             "using the templates from inventor_status. Check names, signatures and enum values with api_lookup first.\n" +
             "The script runs in a transaction on the document that is active when it starts: on success it is one " +
-            "undo step in Inventor, on an exception it is rolled back. Documents created by the script are not covered.\n" +
-            "The result lists what changed (documents created or saved, features, sketches, occurrences and " +
-            "constraints added). Pass 'expect' to have the result checked (volume, size, bodies, occurrences, free " +
+            "undo step in Inventor, on an exception it is rolled back. Documents created by the script are not covered. " +
+            "Pass undoable=false for scripts that only read, so they leave no empty undo step.\n" +
+            "It runs with App.SilentOperation on, so Inventor answers its own dialogs (update an assembly on open, " +
+            "file errors) with the default choice instead of waiting for the user. Add-in dialogs, such as Vault Data " +
+            "Standard's on saving a new file, can still appear and hold the script.\n" +
+            "The result lists what changed (documents created, opened, saved or closed, features, sketches, " +
+            "occurrences and constraints added). Closing a document that another open document references only closes " +
+            "its window; the result says so. Pass 'expect' to have the result checked (volume, size, bodies, occurrences, free " +
             "degrees of freedom of the active document): a mismatch comes back as an error, with the changes kept.\n" +
             "Compilation errors come back with line and column; fix them and call again. A script still running after " +
-            "60 s keeps running: the call returns 'still running' and script_result gives its result later.")]
+            "60 s keeps running: the call returns 'still running' and script_result gives its result later. If Inventor " +
+            "opens a window while the script waits, the call returns sooner with that window's title.")]
         public async Task<CallToolResult> RunCSharpAsync(
             [Description("The C# script. Statements run top to bottom; 'return x;' at the end sends x back.")] string code,
             [Description("Short description of what the script does; it becomes the undo step name in Inventor.")] string description,
-            [Description("Optional values to check on the active document after the script, such as {\"volumeMm3\": 12345, \"bodies\": 1}.")] ScriptExpectation? expect = null)
+            [Description("Optional values to check on the active document after the script, such as {\"volumeMm3\": 12345, \"bodies\": 1}.")] ScriptExpectation? expect = null,
+            [Description("False for a script that only reads: it runs without a transaction, so it leaves no empty undo step in Inventor, and an error rolls nothing back.")] bool undoable = true)
         {
             var running = scriptMonitor.DescribeRunning();
             if (running is not null)
@@ -113,16 +125,18 @@ namespace InventorBridge.Mcp.Tools
             var scriptTask = RunAsync(() =>
             {
                 var application = session.GetApplication();
-                var result = scriptRunner.Run(application, code, description, StatusReader.WorkspacePath(application), expect);
+                scriptMonitor.InventorWindow = new IntPtr(application.MainFrameHWND);
+                var result = scriptRunner.Run(application, code, description, StatusReader.WorkspacePath(application), expect, undoable);
                 return result.IsError ? Error(result.ToText()) : Text(result.ToText());
             });
             scriptMonitor.Track(scriptTask, description);
 
-            if (await Task.WhenAny(scriptTask, Task.Delay(ScriptWaitLimit)) != scriptTask)
+            var windows = await WaitForScriptAsync(scriptTask, ScriptWaitLimit);
+            if (!scriptTask.IsCompleted)
             {
-                return Text(
-                    $"still running after {ScriptWaitLimit.TotalSeconds:0} s: \"{description}\". The script keeps running; " +
-                    "call script_result to wait for its result. The other Inventor tools answer \"busy\" until it finishes.");
+                return Text(StillRunningMessage(windows) +
+                    " The script keeps running; call script_result to wait for its result. The other Inventor tools " +
+                    "answer \"busy\" until it finishes.");
             }
 
             scriptMonitor.Clear(scriptTask);
@@ -146,12 +160,13 @@ namespace InventorBridge.Mcp.Tools
             }
 
             var wait = TimeSpan.FromSeconds(Math.Clamp(waitSeconds, 0, MaxResultWaitSeconds));
-            if (await Task.WhenAny(scriptTask, Task.Delay(wait)) != scriptTask)
+            var windows = await WaitForScriptAsync(scriptTask, wait);
+            if (!scriptTask.IsCompleted)
             {
-                return Text(
-                    $"still running: {scriptMonitor.DescribeRunning()}. Call script_result again to keep waiting. If it " +
-                    "never ends (an endless loop, for example), ask the user to restart the InventorBridge MCP server " +
-                    "(in Claude Code: /mcp); what the script already did in Inventor stays.");
+                return Text(StillRunningMessage(windows) + " Call script_result again to keep waiting." +
+                    (windows.Count > 0 ? "" :
+                        " If it never ends (an endless loop, for example), ask the user to restart the InventorBridge " +
+                        "MCP server (in Claude Code: /mcp); what the script already did in Inventor stays."));
             }
 
             scriptMonitor.Clear(scriptTask);
@@ -371,9 +386,68 @@ namespace InventorBridge.Mcp.Tools
             }
         }
 
-        private static string BusyMessage(string running)
+        /// <summary>
+        /// Waits for the script up to the limit, returning early when Inventor keeps another window open (a dialog
+        /// waiting for the user, most likely) for <see cref="DialogGrace"/>. Returns the titles of those windows.
+        /// </summary>
+        private async Task<IReadOnlyList<string>> WaitForScriptAsync(Task scriptTask, TimeSpan limit)
         {
-            return $"Inventor is busy with a script ({running}). Call script_result to wait for it.";
+            var deadline = DateTime.UtcNow + limit;
+            DateTime? windowsSinceUtc = null;
+
+            while (true)
+            {
+                var remaining = deadline - DateTime.UtcNow;
+                if (remaining <= TimeSpan.Zero)
+                {
+                    return scriptTask.IsCompleted ? [] : InventorWindows.FindOtherWindowTitles(scriptMonitor.InventorWindow);
+                }
+
+                var step = remaining < WindowPollInterval ? remaining : WindowPollInterval;
+                if (await Task.WhenAny(scriptTask, Task.Delay(step)) == scriptTask)
+                {
+                    return [];
+                }
+
+                var windows = InventorWindows.FindOtherWindowTitles(scriptMonitor.InventorWindow);
+                if (windows.Count == 0)
+                {
+                    windowsSinceUtc = null;
+                    continue;
+                }
+
+                windowsSinceUtc ??= DateTime.UtcNow;
+                if (DateTime.UtcNow - windowsSinceUtc >= DialogGrace)
+                {
+                    return windows;
+                }
+            }
+        }
+
+        /// <summary>"still running: ..." and, when Inventor shows other windows, what to tell the user.</summary>
+        private string StillRunningMessage(IReadOnlyList<string> windows)
+        {
+            var message = $"still running: {scriptMonitor.DescribeRunning() ?? "the script"}.";
+            if (windows.Count > 0)
+            {
+                message += $" Inventor shows a window that is probably waiting for the user: {QuoteTitles(windows)}. " +
+                    "Scripts run with SilentOperation, so it most likely comes from an add-in (such as Vault Data " +
+                    "Standard's dialog on saving a new file). Tell the user to answer or cancel it in Inventor.";
+            }
+
+            return message;
+        }
+
+        private string BusyMessage(string running)
+        {
+            var windows = InventorWindows.FindOtherWindowTitles(scriptMonitor.InventorWindow);
+            var dialog = windows.Count == 0 ? "" : $" Inventor shows {QuoteTitles(windows)}, which may be waiting for the user.";
+            return $"Inventor is busy with a script ({running}).{dialog} Call script_result to wait for it.";
+        }
+
+        private static string QuoteTitles(IReadOnlyList<string> titles)
+        {
+            return string.Join(", ", titles.Select(title => $"\"{title}\""));
         }
 
         /// <summary>The previous script's unread result followed by the new one; an error if either is.</summary>

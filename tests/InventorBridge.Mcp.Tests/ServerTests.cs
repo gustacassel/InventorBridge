@@ -36,6 +36,19 @@ namespace InventorBridge.Mcp.Tests
         }
 
         [Fact]
+        public async Task RunCSharpTakesAnOptionalUndoableFlag()
+        {
+            await using var client = await StartServerAsync();
+
+            var tools = await client.ListToolsAsync();
+            var schema = tools.Single(tool => tool.Name == "run_csharp").ProtocolTool.InputSchema;
+
+            var undoable = schema.GetProperty("properties").GetProperty("undoable");
+            Assert.Equal("boolean", undoable.GetProperty("type").GetString());
+            Assert.DoesNotContain("undoable", schema.GetProperty("required").EnumerateArray().Select(item => item.GetString()));
+        }
+
+        [Fact]
         public async Task GuideAndApiLookupWorkWithoutInventor()
         {
             await using var client = await StartServerAsync();

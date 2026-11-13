@@ -2,7 +2,7 @@
 
 > Placing saved parts, connecting them with constraints through named edges and proxies, checking degrees of freedom.
 
-Status: the scripts below compile against the Inventor 2024 interop but have not yet been run on a real Inventor.
+Status: the scripts below ran on Inventor 2024.4 (2026-11-13), saved to a folder outside the project because an add-in intercepted saving there; the guide tests also compile them against the 2024 interop.
 
 ## The pattern
 

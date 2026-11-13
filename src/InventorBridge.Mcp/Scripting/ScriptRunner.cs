@@ -30,11 +30,14 @@ namespace InventorBridge.Mcp.Scripting
         private static readonly Regex ScriptLinePattern = new(@"Submission#\d+.*:line (\d+)", RegexOptions.Compiled);
 
         private readonly ScriptOptions options = ScriptOptions.Default
-            .AddReferences(typeof(Application).Assembly, typeof(ScriptGlobals).Assembly)
+            .AddReferences(typeof(Application).Assembly, typeof(ScriptGlobals).Assembly,
+                typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly) // 'dynamic', for late-bound COM such as iLogic's automation
             .AddImports(Imports)
             .WithEmitDebugInformation(true);
 
-        public ScriptResult Run(Application application, string code, string description, string? workspacePath, ScriptExpectation? expectation)
+        /// <param name="undoable">False runs the script without a transaction: no undo step, and no rollback on an error.</param>
+        public ScriptResult Run(Application application, string code, string description, string? workspacePath,
+            ScriptExpectation? expectation, bool undoable = true)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -52,17 +55,41 @@ namespace InventorBridge.Mcp.Scripting
                 };
             }
 
+            // Inventor's own dialogs (update an assembly on open, file errors...) would wait for the user and
+            // hold the script. Silent operation answers them with the default choice; the script may still turn it off.
+            // The invariant culture makes numbers come out with a dot whatever the Windows language, in the output,
+            // in the return value and in expressions the script builds ("10.5 mm"), which Inventor accepts everywhere.
+            var thread = Thread.CurrentThread;
+            var (culture, uiCulture) = (thread.CurrentCulture, thread.CurrentUICulture);
+            var wasSilent = application.SilentOperation;
+            application.SilentOperation = true;
+            thread.CurrentCulture = CultureInfo.InvariantCulture;
+            thread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            try
+            {
+                return RunSilently(application, script, description, workspacePath, expectation, undoable, stopwatch);
+            }
+            finally
+            {
+                thread.CurrentCulture = culture;
+                thread.CurrentUICulture = uiCulture;
+                RestoreSilentOperation(application, wasSilent);
+            }
+        }
+
+        /// <summary>The script itself: snapshot, transaction, run, expectation and changes.</summary>
+        private static ScriptResult RunSilently(Application application, Script<object> script, string description,
+            string? workspacePath, ScriptExpectation? expectation, bool undoable, Stopwatch stopwatch)
+        {
             var globals = new ScriptGlobals(application, workspacePath);
             var before = TakeSnapshot(application);
-            var document = application.ActiveDocument;
-            var transaction = document is null
-                ? null
-                : application.TransactionManager.StartTransaction(document, TransactionPrefix + description);
+            var transaction = ScriptTransaction.Start(application, TransactionPrefix + description, undoable);
 
             try
             {
                 var state = script.RunAsync(globals).GetAwaiter().GetResult();
-                transaction?.End();
+                var transactionNote = transaction.Commit(application);
 
                 var expectationLines = new List<string>();
                 var expectationMet = expectation is null || expectation.IsEmpty
@@ -71,7 +98,7 @@ namespace InventorBridge.Mcp.Scripting
                 return new ScriptResult
                 {
                     Outcome = expectationMet ? ScriptOutcome.Succeeded : ScriptOutcome.ExpectationFailed,
-                    TransactionNote = DescribeCommittedTransaction(transaction, document),
+                    TransactionNote = transactionNote,
                     Elapsed = stopwatch.Elapsed,
                     Output = globals.Output,
                     ReturnValue = FormatReturnValue(state.ReturnValue),
@@ -81,7 +108,7 @@ namespace InventorBridge.Mcp.Scripting
             }
             catch (Exception exception)
             {
-                var rollbackNote = RollBack(transaction, document);
+                var rollbackNote = transaction.RollBack(application);
 
                 return new ScriptResult
                 {
@@ -137,11 +164,29 @@ namespace InventorBridge.Mcp.Scripting
 
             try
             {
-                return DocumentSnapshot.Compare(before, after);
+                return DocumentSnapshot.Compare(before, after, fullFileName => IsLoaded(application, fullFileName));
             }
             catch (COMException exception)
             {
                 return [$"could not list the changes ({exception.Message})"];
+            }
+        }
+
+        /// <summary>Whether a document with this file is still loaded, with or without a window.</summary>
+        private static bool IsLoaded(Application application, string fullFileName)
+        {
+            try
+            {
+                _ = application.Documents.ItemByName[fullFileName];
+                return true;
+            }
+            catch (COMException)
+            {
+                return false;
+            }
+            catch (ArgumentException)
+            {
+                return false;
             }
         }
 
@@ -168,31 +213,15 @@ namespace InventorBridge.Mcp.Scripting
             return $"({position.Line + 1},{position.Character + 1}): {diagnostic.Id}: {message}";
         }
 
-        private static string DescribeCommittedTransaction(Transaction? transaction, Document? document)
+        /// <summary>Gives Inventor back the user's setting; a closed or crashed Inventor has nothing to restore.</summary>
+        private static void RestoreSilentOperation(Application application, bool wasSilent)
         {
-            if (transaction is null || document is null)
-            {
-                return "none: no document was open when the script started, so nothing can be undone as one step";
-            }
-
-            return $"committed on \"{document.DisplayName}\" (one Ctrl+Z in Inventor undoes it; documents created by the script are not covered)";
-        }
-
-        private static string RollBack(Transaction? transaction, Document? document)
-        {
-            if (transaction is null || document is null)
-            {
-                return "none: no document was open when the script started, so changes made before the error remain";
-            }
-
             try
             {
-                transaction.Abort();
-                return $"rolled back: changes to \"{document.DisplayName}\" were undone (documents created or saved by the script remain)";
+                application.SilentOperation = wasSilent;
             }
-            catch (COMException exception)
+            catch (COMException)
             {
-                return $"rollback failed ({exception.Message}); check the document state";
             }
         }
 
