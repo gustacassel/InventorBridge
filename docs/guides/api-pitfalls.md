@@ -50,6 +50,7 @@ return $"{normals[0]}, {normals[1]}, {normals[2]}";
 - A failed feature can leave a sketch behind. The transaction rolls it back only in the document that was active when the script started.
 - `E_INVALIDARG` comes through as `ArgumentException`, not `COMException`. A name that is not there, such as `Occurrences.ItemByName["Missing:1"]` or `Documents.ItemByName[path]` for a document that is not loaded, throws it.
 - `DrawingViews.AddBaseView` fails with `E_FAIL` when the model has never been saved: save the part or assembly first.
+- A feature whose health is `kBeyondStopNodeHealth` is below the End of Part marker: it is not broken, just not computed.
 
 ## Inventor in another language
 
@@ -60,3 +61,4 @@ return $"{normals[0]}, {normals[1]}, {normals[2]}";
 ## Files
 
 - Inventor keeps the path you pass. `SaveAs("C:/Work/Tube.ipt")` stores forward slashes, and `Documents.ItemByName` then needs the same spelling. Build paths with `System.IO.Path.Combine` and backslashes.
+- Drawing DWG and DXF: `SaveAs(path, true)` opens Inventor's export options dialog even with `SilentOperation` on. The translator add-ins take the options in the call, and the DWG one needs a configuration file (`Export_Acad_IniFile`). The ones Inventor installs in `Design Data\DWG-DXF` pack the output into a zip (`USE TRANSMITTAL=Yes`). The `export` tool handles all this.

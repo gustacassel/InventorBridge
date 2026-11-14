@@ -13,7 +13,7 @@ namespace InventorBridge.Mcp.Tests
         private static readonly string[] ExpectedTools =
         [
             "inventor_status", "inventor_start", "run_csharp", "script_result", "inspect",
-            "topology", "screenshot", "api_lookup", "guide", "bom",
+            "topology", "screenshot", "api_lookup", "guide", "bom", "export", "check", "undo_last",
         ];
 
         [Fact]

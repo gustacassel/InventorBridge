@@ -58,6 +58,9 @@ Requirements: Windows, Autodesk Inventor 2024 or later, and the [.NET 8 SDK](htt
 | `script_result` | Waits for a script that was still running after 60 s and returns its result |
 | `inspect` | Structured summary of the active document: iProperties and file state of any document; features, parameters, mass, material and sheet metal flat pattern of a part; occurrences, constraints and free degrees of freedom of an assembly; sheets, views, parts lists and dimensions of a drawing. Says which lists were cut |
 | `bom` | Bill of materials of the active assembly with quantities rolled up through the levels, plus the totals per part number; read from the Model Data view, so the document is not changed |
+| `export` | Writes an open document to STEP, IGES, STL or SAT, a sheet metal flat pattern to DXF, or a drawing to PDF, DWG or DXF, without changing the document; never replaces a file unless told to |
+| `check` | Finds what is broken in a document and everything it references: missing files, features and constraints with errors, documents that need an update, broken flat patterns, detached dimensions and balloons |
+| `undo_last` | Undoes the last script like Ctrl+Z, only when the last step in Inventor's undo list is a script's |
 | `topology` | Faces and edges of a part or of one occurrence (also inside subassemblies, by path), with positions, cylinder axes and circle centers in mm, so a script can pick them; split cylinders are merged with their ends, and bends (tori) are listed with theirs |
 | `screenshot` | An image of the Inventor view, so the agent sees what you see |
 | `api_lookup` | Looks up the API reference: an object's or enum's page, some members of a type, or a search by name. It hides members that the running Inventor version does not have, and works without Inventor |

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using InventorBridge.Mcp.Connection;
+using InventorBridge.Mcp.Files;
 using InventorBridge.Mcp.Reading;
 using InventorBridge.Mcp.Reference;
 using InventorBridge.Mcp.Scripting;
@@ -88,13 +89,16 @@ namespace InventorBridge.Mcp.Tools
             "points, vectors, matrices), Objects (TransientObjects: collections), WorkspacePath (project workspace " +
             "folder), Mm(x) and Deg(x) (convert millimeters and degrees to the API units: cm and radians), Log(x) " +
             "(writes to the output), Name(entity, name) and Named(document or occurrence, name) (name a face, edge or " +
-            "vertex and find it again; Named(occurrence, ...) returns the proxy constraints need). Imported namespaces: " +
+            "vertex and find it again; Named(occurrence, ...) returns the proxy constraints need), " +
+            "CreateDocument(type, path) (a new file copied from the default template, opened, part number set to the " +
+            "file name; save it with Save()). Imported namespaces: " +
             "System, System.Collections.Generic, System.Linq, Inventor. System.IO is not imported because Inventor has " +
             "its own File and Path types: write System.IO.Path.Combine.\n" +
             "Rules: all lengths are in cm and angles in radians; do not use await; a value after a final 'return' is " +
             "sent back. Scripts run with the invariant culture, so numbers format with a dot; 'dynamic' works for " +
-            "late-bound COM objects such as the iLogic add-in's Automation. Save new files under WorkspacePath. Create documents with App.Documents.Add(type, template) " +
-            "using the templates from inventor_status. Check names, signatures and enum values with api_lookup first.\n" +
+            "late-bound COM objects such as the iLogic add-in's Automation. Create files to keep with CreateDocument " +
+            "under WorkspacePath and save them with Save(): a first SaveAs of a document made with App.Documents.Add " +
+            "can open an add-in's dialog. Check names, signatures and enum values with api_lookup first.\n" +
             "The script runs in a transaction on the document that is active when it starts: on success it is one " +
             "undo step in Inventor, on an exception it is rolled back. Documents created by the script are not covered. " +
             "Pass undoable=false for scripts that only read, so they leave no empty undo step.\n" +
@@ -114,6 +118,20 @@ namespace InventorBridge.Mcp.Tools
             [Description("Optional values to check on the active document after the script, such as {\"volumeMm3\": 12345, \"bodies\": 1}.")] ScriptExpectation? expect = null,
             [Description("False for a script that only reads: it runs without a transaction, so it leaves no empty undo step in Inventor, and an error rolls nothing back.")] bool undoable = true)
         {
+            return await RunTrackedAsync(description, application =>
+            {
+                var result = scriptRunner.Run(application, code, description, StatusReader.WorkspacePath(application), expect, undoable);
+                return result.IsError ? Error(result.ToText()) : Text(result.ToText());
+            });
+        }
+
+        /// <summary>
+        /// Runs work that can take long or hit a dialog (a script, an export, a check of a large assembly) the way
+        /// run_csharp does: it is tracked, the call returns after 60 s or as soon as Inventor keeps a window open,
+        /// and script_result picks up the result later.
+        /// </summary>
+        private async Task<CallToolResult> RunTrackedAsync(string description, Func<Inventor.Application, CallToolResult> work)
+        {
             var running = scriptMonitor.DescribeRunning();
             if (running is not null)
             {
@@ -122,25 +140,24 @@ namespace InventorBridge.Mcp.Tools
 
             var unreported = await TakeUnreportedResultAsync();
 
-            var scriptTask = RunAsync(() =>
+            var task = RunAsync(() =>
             {
                 var application = session.GetApplication();
                 scriptMonitor.InventorWindow = new IntPtr(application.MainFrameHWND);
-                var result = scriptRunner.Run(application, code, description, StatusReader.WorkspacePath(application), expect, undoable);
-                return result.IsError ? Error(result.ToText()) : Text(result.ToText());
+                return work(application);
             });
-            scriptMonitor.Track(scriptTask, description);
+            scriptMonitor.Track(task, description);
 
-            var windows = await WaitForScriptAsync(scriptTask, ScriptWaitLimit);
-            if (!scriptTask.IsCompleted)
+            var windows = await WaitForScriptAsync(task, ScriptWaitLimit);
+            if (!task.IsCompleted)
             {
                 return Text(StillRunningMessage(windows) +
-                    " The script keeps running; call script_result to wait for its result. The other Inventor tools " +
+                    " It keeps running; call script_result to wait for its result. The other Inventor tools " +
                     "answer \"busy\" until it finishes.");
             }
 
-            scriptMonitor.Clear(scriptTask);
-            var finished = await scriptTask;
+            scriptMonitor.Clear(task);
+            var finished = await task;
 
             return unreported is null ? finished : Combine(unreported, finished);
         }
@@ -148,7 +165,8 @@ namespace InventorBridge.Mcp.Tools
         [McpServerTool(Name = "script_result", Title = "Result of a long script",
             ReadOnly = true, Destructive = false, Idempotent = false, OpenWorld = false)]
         [Description(
-            "Waits for the run_csharp script that was still running when its call returned, and returns its result. " +
+            "Waits for the run_csharp script (or export, check or bom) that was still running when its call returned, " +
+            "and returns its result. " +
             "If it is still running when the wait ends, says so; call it again to keep waiting.")]
         public async Task<CallToolResult> GetScriptResultAsync(
             [Description("How long to wait for the script, in seconds (up to 300).")] int waitSeconds = DefaultResultWaitSeconds)
@@ -208,10 +226,61 @@ namespace InventorBridge.Mcp.Tools
             [Description("Deepest level to list in 'rows' (1 = only the assembly's direct components). Totals always cover every level.")] int? maxLevels = null,
             [Description("Maximum number of rows and of totals.")] int maxItems = 500)
         {
+            return RunTrackedAsync("read the bill of materials",
+                application => Text(ToJson(BomReader.Read(application, maxLevels, maxItems))));
+        }
+
+        [McpServerTool(Name = "export", Title = "Export to another format",
+            ReadOnly = false, Destructive = true, Idempotent = true, OpenWorld = false)]
+        [Description(
+            "Exports an open document to a file; the extension of 'path' picks the format. Part or assembly: .stp/.step, " +
+            ".igs/.iges, .stl, .sat. Sheet metal part: .dxf writes its flat pattern. Drawing: .pdf, .dwg, .dxf (with the " +
+            "translator's default options; a drawing with several sheets can give one file per sheet, all listed). " +
+            "The document itself is not changed or renamed. An existing file is only replaced with overwrite: true; ask " +
+            "the user before passing it. Missing folders are created.")]
+        public Task<CallToolResult> ExportAsync(
+            [Description("Full path of the file to write, such as C:\\Exports\\Bracket.stp.")] string path,
+            [Description("The document to export: its name or file as listed by inventor_status. Default: the active document.")] string? document = null,
+            [Description("Replace the file if it exists. Only after the user agreed.")] bool overwrite = false,
+            [Description("Flat pattern DXF only: options after the '?' of Inventor's DXF format string, such as 'AcadVersion=2010&OuterProfileLayer=OUTER'. Default: AcadVersion=2018.")] string? dxfOptions = null,
+            [Description("Drawing DWG or DXF only: an export configuration (.ini) saved from Inventor's DWG/DXF export dialog, with the company's layers and version. Default: the one Inventor installs in Design Data\\DWG-DXF.")] string? configFile = null)
+        {
+            return RunTrackedAsync($"export to {path}",
+                application => Text(DocumentExporter.Export(application, path, document, overwrite, dxfOptions, configFile)));
+        }
+
+        [McpServerTool(Name = "check", Title = "Check for problems",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
+        [Description(
+            "Checks a document and every document it references for what is broken: missing files, documents that " +
+            "need an update, features and assembly constraints with errors (in every part and subassembly), broken " +
+            "flat patterns, and dimensions or balloons of a drawing that lost their geometry. Reads only. On a large " +
+            "assembly it stops at the time limit and says how many documents it checked.")]
+        public Task<CallToolResult> CheckAsync(
+            [Description("The document to check: its name or file as listed by inventor_status. Default: the active document.")] string? document = null,
+            [Description("Maximum number of problems listed.")] int maxItems = DefaultMaxItems,
+            [Description("Seconds to spend before stopping (up to 300).")] int timeLimitSeconds = 45)
+        {
+            return RunTrackedAsync("check for problems", application =>
+            {
+                var target = OpenDocuments.Find(application, document);
+                var limit = TimeSpan.FromSeconds(Math.Clamp(timeLimitSeconds, 1, MaxResultWaitSeconds));
+                return Text(ToJson(IntegrityChecker.Check(application, target, maxItems, limit)));
+            });
+        }
+
+        [McpServerTool(Name = "undo_last", Title = "Undo the last script",
+            ReadOnly = false, Destructive = true, Idempotent = false, OpenWorld = false)]
+        [Description(
+            "Undoes the last run_csharp script, like Ctrl+Z in Inventor. Only when the last step in Inventor's undo " +
+            "list is a script's: if the user did something by hand since, nothing is undone and the step is named. " +
+            "Documents the script created or saved stay. Call it again to undo the script before.")]
+        public Task<CallToolResult> UndoLastAsync()
+        {
             return RunAsync(() =>
             {
                 var application = session.GetApplication();
-                return Text(ToJson(BomReader.Read(application, maxLevels, maxItems)));
+                return Text(ScriptUndo.UndoLast(application));
             });
         }
 

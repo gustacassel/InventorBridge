@@ -215,7 +215,7 @@ namespace InventorBridge.Mcp.Reading
             foreach (PartFeature feature in definition.Features)
             {
                 var health = feature.HealthStatus;
-                if (health is not (HealthStatusEnum.kUpToDateHealth or HealthStatusEnum.kSuppressedHealth))
+                if (health is not (HealthStatusEnum.kUpToDateHealth or HealthStatusEnum.kSuppressedHealth or HealthStatusEnum.kBeyondStopNodeHealth))
                 {
                     problems.Add($"{feature.Name}: {health}");
                 }
@@ -341,7 +341,7 @@ namespace InventorBridge.Mcp.Reading
             foreach (AssemblyConstraint constraint in definition.Constraints)
             {
                 var health = constraint.HealthStatus;
-                if (health is not (HealthStatusEnum.kUpToDateHealth or HealthStatusEnum.kSuppressedHealth))
+                if (health is not (HealthStatusEnum.kUpToDateHealth or HealthStatusEnum.kSuppressedHealth or HealthStatusEnum.kBeyondStopNodeHealth))
                 {
                     problems.Add($"{constraint.Name}: {health}");
                 }

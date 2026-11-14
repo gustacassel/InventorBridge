@@ -75,6 +75,17 @@ namespace InventorBridge.Mcp.Scripting
             return proxy;
         }
 
+        /// <summary>
+        /// Creates a new document file at <paramref name="path"/> by copying a template (the default one for the
+        /// type, or <paramref name="template"/>), opens it and sets its part number to the file name. Save it with
+        /// Save(): unlike SaveAs of a never-saved document, that opens no "New file" dialog of add-ins such as
+        /// Vault Data Standard. Fails if the file exists.
+        /// </summary>
+        public Document CreateDocument(DocumentTypeEnum type, string path, string? template = null, bool visible = true)
+        {
+            return InventorBridge.Mcp.Files.TemplateDocuments.Create(App, type, path, template, visible);
+        }
+
         /// <summary>Writes a line to the output returned to the agent.</summary>
         public void Log(object? value)
         {

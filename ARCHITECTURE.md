@@ -155,6 +155,13 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
      - `bom`: the bill of materials from the Model Data view (reading it changes nothing, unlike enabling the structured view), with quantities rolled up and totals per part number.
      - `topology` takes paths into subassemblies, reports the ends of holes and slots whose edges are arcs, and lists tori (bends) with their ends.
      - `expect` sizeMm falls back to the assembly's range box above 1000 parts, marked as approximate. A part's own range box can be much larger than its body when it is rotated: on a real sheet metal support it was 146 mm wide for a 70 mm body.
+   - Done (2026-11-13), files and safety:
+     - `export`: STEP, IGES, STL and SAT through `SaveAs(path, true)`, where the extension picks the translator; the flat pattern of sheet metal through `DataIO`; drawings to PDF, and to DWG and DXF through the translator add-ins, because `SaveAs` opens an options dialog for those even when silent. The DWG translator needs a configuration file, and the ones Inventor installs zip the output, so a copy with `USE TRANSMITTAL=No` is used.
+     - `CreateDocument` (script global): a new file copied from the template, opened and saved later with `Save()`, because a first `SaveAs` makes Vault Data Standard open its dialog. Copies keep the template's internal name, as with the RGO add-in, which does the same in production; the change list tells such twins apart by file.
+     - `check`: missing files, features and constraints with errors, documents that need an update, broken flat patterns, detached dimensions and balloons, across every referenced document (790 documents in 22 s).
+     - `undo_last`: Ctrl+Z for the last script only.
+     - A server that stops while a script is held by a dialog leaves the script's transaction open in Inventor; every later change nests in it and Inventor's undo stays disabled. This happened once in testing. The next script, or `undo_last`, now ends such a transaction and says so.
+     - `export`, `check` and `bom` run like scripts: tracked, returning after 60 s or as soon as Inventor keeps a dialog open.
    - To do: one Inventor crash, while a script closed parts before the assembly and drawing that referenced them, did not happen again in three tries.
 3. **Documentation:** 5 guides + 10 tested recipes + `inventor-api` skill. Measure the improvement: the same tasks with and without docs.
    - Started (2026-11-02): `docs/guides` with `workflow`, `parts`, `assemblies` and `api-pitfalls`, served by the `guide` tool; the server instructions tell the agent to read `workflow` first. Their C# blocks compile against the 2024 interop but have not run on Inventor yet.

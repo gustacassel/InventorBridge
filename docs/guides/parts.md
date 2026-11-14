@@ -6,12 +6,12 @@ Status: the scripts below ran on Inventor 2024.4 (2026-11-13), saved to a folder
 
 ## The pattern
 
-1. Create the document from the part template.
+1. Create the file with `CreateDocument(DocumentTypeEnum.kPartDocumentObject, path)`, under `WorkspacePath`. It copies the default template, opens the copy and sets the part number to the file name.
 2. Draw a sketch on a work plane. Sketch coordinates are 2D and in cm.
 3. Make a `Profile` from the sketch with `Profiles.AddForSolid()`. Concentric circles give a ring.
 4. Add a feature: extrusion, revolution, sweep...
 5. Name the faces or edges that a later step needs.
-6. Save under `WorkspacePath`.
+6. Save with `part.Save()`. Unlike `Documents.Add` followed by `SaveAs`, this opens no "New file" dialog of add-ins that intercept saving (Vault Data Standard does).
 
 Origin planes and axes: `WorkPlanes[1]` is YZ, `[2]` is XZ, `[3]` is XY. `WorkAxes[1]` is X, `[2]` is Y, `[3]` is Z. On the XY plane, the sketch's X and Y are the model's X and Y.
 
@@ -22,8 +22,9 @@ Outer diameter 50 mm, wall 3 mm, length 500 mm, along +Z from the origin. A matc
 ```csharp
 double outerRadius = Mm(25), innerRadius = Mm(22), length = Mm(500);
 
-string template = App.FileManager.GetTemplateFile(DocumentTypeEnum.kPartDocumentObject);
-var part = (PartDocument)App.Documents.Add(DocumentTypeEnum.kPartDocumentObject, template, true);
+string path = System.IO.Path.Combine(WorkspacePath ?? "", "Tube-50x3x500.ipt");
+// Copies the part template to the new file (it fails if the file exists) and opens it.
+var part = (PartDocument)CreateDocument(DocumentTypeEnum.kPartDocumentObject, path);
 PartComponentDefinition definition = part.ComponentDefinition;
 
 PlanarSketch sketch = definition.Sketches.Add(definition.WorkPlanes[3]);
@@ -44,13 +45,7 @@ foreach (Edge edge in definition.SurfaceBodies[1].Edges)
     }
 }
 
-string path = System.IO.Path.Combine(WorkspacePath ?? "", "Tube-50x3x500.ipt");
-if (System.IO.File.Exists(path))
-{
-    throw new InvalidOperationException(path + " already exists: ask the user before overwriting it.");
-}
-
-part.SaveAs(path, false);
+part.Save();
 return path;
 ```
 
@@ -61,8 +56,9 @@ Same tube section, 100 mm bend radius to the centerline. The ring is drawn on th
 ```csharp
 double outerRadius = Mm(25), innerRadius = Mm(22), bendRadius = Mm(100);
 
-string template = App.FileManager.GetTemplateFile(DocumentTypeEnum.kPartDocumentObject);
-var part = (PartDocument)App.Documents.Add(DocumentTypeEnum.kPartDocumentObject, template, true);
+string path = System.IO.Path.Combine(WorkspacePath ?? "", "Bend-50x3-R100.ipt");
+// Copies the part template to the new file (it fails if the file exists) and opens it.
+var part = (PartDocument)CreateDocument(DocumentTypeEnum.kPartDocumentObject, path);
 PartComponentDefinition definition = part.ComponentDefinition;
 
 PlanarSketch sketch = definition.Sketches.Add(definition.WorkPlanes[3]);
@@ -81,13 +77,7 @@ foreach (Edge edge in definition.SurfaceBodies[1].Edges)
     }
 }
 
-string path = System.IO.Path.Combine(WorkspacePath ?? "", "Bend-50x3-R100.ipt");
-if (System.IO.File.Exists(path))
-{
-    throw new InvalidOperationException(path + " already exists: ask the user before overwriting it.");
-}
-
-part.SaveAs(path, false);
+part.Save();
 return path;
 ```
 

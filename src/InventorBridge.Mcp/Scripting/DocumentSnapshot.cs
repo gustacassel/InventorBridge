@@ -53,23 +53,38 @@ namespace InventorBridge.Mcp.Scripting
             var states = new Dictionary<string, DocumentState>();
             foreach (Document document in loaded.VisibleDocuments)
             {
-                var state = DocumentState.Read(document, hasWindow: true);
-                states[state.Key] = state;
+                Add(states, DocumentState.Read(document, hasWindow: true));
             }
 
             if (loadedCount <= MaxTrackedDocuments)
             {
                 foreach (Document document in loaded)
                 {
-                    var key = document.InternalName;
-                    if (!states.ContainsKey(key))
+                    if (!states.ContainsKey(KeyOf(states, document.InternalName, document.FullFileName ?? "")))
                     {
-                        states[key] = DocumentState.Read(document, hasWindow: false);
+                        Add(states, DocumentState.Read(document, hasWindow: false));
                     }
                 }
             }
 
             return new DocumentSnapshot(states.Values, loadedCount, takenUtc);
+        }
+
+        /// <summary>
+        /// The key of a document: its internal name, which stays the same through SaveAs. Files copied from one
+        /// another (or from the same template) share it, so a second one is told apart by its file.
+        /// </summary>
+        private static string KeyOf(Dictionary<string, DocumentState> states, string internalName, string fullFileName)
+        {
+            return states.TryGetValue(internalName, out var known) && known.FullFileName != fullFileName
+                ? internalName + "|" + fullFileName
+                : internalName;
+        }
+
+        private static void Add(Dictionary<string, DocumentState> states, DocumentState state)
+        {
+            state.Key = KeyOf(states, state.Key, state.FullFileName);
+            states[state.Key] = state;
         }
 
         /// <summary>A snapshot built from states made without Inventor, for tests.</summary>
@@ -177,7 +192,7 @@ namespace InventorBridge.Mcp.Scripting
 
             private Document? document;
 
-            public string Key { get; private init; } = "";
+            public string Key { get; set; } = "";
 
             public string DisplayName { get; private init; } = "";
 

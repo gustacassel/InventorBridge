@@ -19,6 +19,7 @@ Use one `run_csharp` call per meaningful step: one part, one group of features, 
 
 - `inspect`: iProperties, features and their health, parameters, mass, occurrences, constraints and free degrees of freedom; for a drawing, sheets, views, parts lists and dimensions. `featuresWithProblems` and `constraintsWithProblems` are the first thing to read after a change. When `truncated` is there, a list was cut: raise `maxItems`.
 - `bom`: what an assembly is made of, with total quantities per part number.
+- `check`: what is broken in a document and everything it references (missing files, features and constraints with errors, documents to update, detached dimensions). Run it before and after changing an existing model, to tell your problems from the ones that were already there.
 - `topology`: faces and edges with their positions, to choose what to constrain or modify next.
 - `inspect`'s `boundingBoxMm` for an assembly is Inventor's range box, which can be larger than the parts when some are rotated. To check a size, use `expect: {"sizeMm": [...]}`, which measures the bodies.
 - `screenshot`: at the end of a part or an assembly, or whenever orientation matters. Use `view: "iso"` for an overview.
@@ -35,6 +36,9 @@ Names are the same ones as Inventor's "Assign Name" command, so the user can see
 ## Files
 
 - Save new files under `WorkspacePath`, with `System.IO.Path.Combine`.
+- Create a file to keep with `CreateDocument(type, path)` and save it with `Save()`. `Documents.Add` is fine for a document that will not be saved, but its first `SaveAs` can open an add-in's "New file" dialog.
+- Copies made by `CreateDocument` keep the template's internal name, like files copied in Windows. Inventor handles them, also several in one assembly.
+- To hand a file to someone else (STEP, PDF, DWG, flat pattern DXF), use `export`, not `SaveAs`: it writes a copy and leaves the document as it was.
 - Never overwrite an existing file without asking the user. Check with `System.IO.File.Exists` first.
 - A part must be saved before it is placed in an assembly, because `ComponentOccurrences.Add` takes a file path.
 
@@ -48,6 +52,8 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 
 - The transaction covers only the document that was active when the script started. Documents the script creates, and changes to other documents (the parts of the active assembly, for example), are not covered.
 - Pass `undoable: false` to scripts that only read. Otherwise each one leaves an empty step in the user's undo list.
+- `undo_last` undoes the last script, like Ctrl+Z, and refuses when the last step in Inventor's undo list was the user's.
+- If the MCP server stops while a script runs (restarted while a dialog held it), Inventor keeps that script's transaction open, every later change nests inside it and Inventor's own undo stays disabled. The next script closes it and says so.
 - If a script that creates documents fails halfway, the `changes` part lists what was left. Close those documents with `Close(true)` in the next script, or tell the user.
 
 ## Closing documents

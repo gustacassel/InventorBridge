@@ -22,7 +22,7 @@ namespace InventorBridge.Mcp.Scripting
     /// </remarks>
     public sealed class ScriptRunner
     {
-        private const string TransactionPrefix = "InventorBridge: ";
+        internal const string TransactionPrefix = "InventorBridge: ";
 
         // System.IO is left out on purpose: Inventor also has File and Path types, which would be ambiguous.
         private static readonly string[] Imports = ["System", "System.Collections.Generic", "System.Linq", "Inventor"];
