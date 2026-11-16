@@ -22,7 +22,7 @@ Use one `run_csharp` call per meaningful step: one part, one group of features, 
 - `check`: what is broken in a document and everything it references (missing files, features and constraints with errors, documents to update, detached dimensions). Run it before and after changing an existing model, to tell your problems from the ones that were already there.
 - `topology`: faces and edges with their positions, to choose what to constrain or modify next.
 - `inspect`'s `boundingBoxMm` for an assembly is Inventor's range box, which can be larger than the parts when some are rotated. To check a size, use `expect: {"sizeMm": [...]}`, which measures the bodies.
-- `screenshot`: at the end of a part or an assembly, or whenever orientation matters. Use `view: "iso"` for an overview.
+- `screenshot`: at the end of a part or an assembly, or whenever orientation matters. Use `view: "iso"` for an overview. Work planes and sketches are hidden unless `hideHelpers: false`. On a drawing, `zoomTo: "partsList"`, `"titleBlock"` or a view's name (or `regionMm`) makes small text readable.
 
 ## Pick geometry by name
 
@@ -66,3 +66,11 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 
 - Every property read is a call into another process. Avoid loops over thousands of faces or occurrences: filter first, and keep values in local variables.
 - After 60 s, `run_csharp` returns "still running". Call `script_result` to wait for the result. The other tools answer "busy" until the script ends.
+
+## iLogic
+
+- A rule runs inside Inventor's process, so a loop over thousands of parts or faces that would take minutes in `run_csharp` takes seconds as a rule. Write it with `ilogic_set` (it is not run) and run it with `ilogic_run`.
+- Rules return nothing to the agent: `Logger` writes to iLogic's log window. Write results into a parameter or an iProperty and read them with `inspect`, or into a file.
+- A rule that fails, or shows a `MessageBox`, opens a dialog in Inventor. `ilogic_run` returns with its title; tell the user to close it.
+- Rules may already exist in the user's documents: read them with `ilogic_list` (`withText: true`) before replacing one.
+

@@ -14,6 +14,15 @@ namespace InventorBridge.ReferenceGenerator.Output
 
             switch (member.Kind)
             {
+                // C# rejects a property whose getter and setter types differ: show the accessors it accepts instead.
+                case ApiMemberKind.Property when member.SetterType is not null && member.Parameters.Count == 0:
+                    return $"{member.ReturnType} get_{member.Name}(); void set_{member.Name}({member.SetterType} value); " +
+                        "// not usable as a property in C#";
+
+                case ApiMemberKind.Property when member.SetterType is not null:
+                    return $"{member.ReturnType} get_{member.Name}({parameters}); void set_{member.Name}({parameters}, " +
+                        $"{member.SetterType} value); // not usable as a property in C#";
+
                 case ApiMemberKind.Property when member.Parameters.Count == 0:
                     return $"{member.ReturnType} {member.Name} {{ {FormatAccessors(member)} }}";
 

@@ -19,7 +19,8 @@ namespace InventorBridge.Mcp
 
         private const string Instructions =
             "Tools to work with the Autodesk Inventor running on the user's computer. Read guide('workflow') once, then " +
-            "start with inventor_status. Before using a type, member or enum value you are not sure about, look it up " +
+            "start with inventor_status. On an existing model, run check before changing it. Before using a type, member " +
+            "or enum value you are not sure about, look it up " +
             "with api_lookup instead of guessing. Make changes with run_csharp (C# against the Inventor API, in cm and " +
             "radians) in small steps, passing 'expect' when you know the numbers; pick faces and edges with topology; " +
             "check the result with inspect and screenshot. The user watches the same Inventor window, so explain what " +

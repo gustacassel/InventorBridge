@@ -133,7 +133,7 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
    - Done (2026-10-28): reference for 2024, 2025, 2026 and 2027, with a "since 20xx" mark per member. The 2024 interop comes from the Inventor installation; 2025+ come from Autodesk's interop downloads page (2025 v29.3, 2026 v30.2, 2027 v31.0).
    - Done (2026-10-29): `api_lookup` in the MCP server. The build copies the object and enum pages and `members.tsv` next to the server; the tool returns a page without links, the members of a type that match a text, or a name search, hiding members that the running Inventor version does not have. Enums longer than 100 values are cut short and searched by name instead.
    - Fixed (2026-11-02): `[In, Out]` parameters (arrays the call fills, such as `CurveEvaluator.GetPointAtParam`) are shown as `ref`, as C# needs, instead of `out`.
-   - To do: properties whose getter and setter have different types (e.g. `Parameter.Units`: string getter, object setter) cannot be used as properties from C#; the reference should show them as `get_Units()` / `set_Units(object)`.
+   - Done in the generator (2026-11-16): properties whose getter and setter have different types (`Parameter.Units`: string getter, object setter; 18 such members in 2024) cannot be used as properties from C#, so the reference shows them as `string get_Units(); void set_Units(object value);`. Checked on a 2024-only run; `docs/reference` still has to be regenerated with the four interops.
 2. **Proof of concept:** MCP server with `inventor_status`, `inspect`, `run_csharp`, `screenshot`, tested on Inventor 2024. Validate the "agent writes a script, runs it, checks it" loop with Claude Code. Measure typical script times.
    - Done (2026-10-28): `src/InventorBridge.Mcp` with `inventor_status`, `inventor_start`, `run_csharp`, `inspect` and `screenshot`. Verified without Inventor: the MCP handshake, tool listing, the "Inventor is not running" errors, and that Roslyn compiles scripts against the 2024 interop on .NET 8 (including a full sketch-and-extrude tube script).
    - Inventor transactions belong to one document (there is no global transaction), so `run_csharp` wraps the script in a transaction on the document that is active when it starts; documents the script creates are not covered.
@@ -162,10 +162,18 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
      - `undo_last`: Ctrl+Z for the last script only.
      - A server that stops while a script is held by a dialog leaves the script's transaction open in Inventor; every later change nests in it and Inventor's undo stays disabled. This happened once in testing. The next script, or `undo_last`, now ends such a transaction and says so.
      - `export`, `check` and `bom` run like scripts: tracked, returning after 60 s or as soon as Inventor keeps a dialog open.
+   - Done (2026-11-16):
+     - `screenshot` hides work planes, axes, points and sketches for the capture (object visibility and the document's unsaved-changes flag are put back), and on drawings zooms to a view, the parts list, the title block or a sheet region, then puts the user's camera back.
+     - `inventor_status` lists other Inventor processes: Windows hands any running Inventor to a client, so with two the user may be watching the other one, and one without a window is usually left over from a crash.
+     - Window detection also reports Windows' standard dialogs without a title (a `MessageBox` without a caption).
    - To do: one Inventor crash, while a script closed parts before the assembly and drawing that referenced them, did not happen again in three tries.
 3. **Documentation:** 5 guides + 10 tested recipes + `inventor-api` skill. Measure the improvement: the same tasks with and without docs.
    - Started (2026-11-02): `docs/guides` with `workflow`, `parts`, `assemblies` and `api-pitfalls`, served by the `guide` tool; the server instructions tell the agent to read `workflow` first. Their C# blocks compile against the 2024 interop but have not run on Inventor yet.
+   - Done (2026-11-16): `skills/inventor-api/SKILL.md`, a short skill for agents using the tools, pointing to the guides the server serves; `AGENTS.md` at the root, for agents changing this repository (build, tests, testing against a real Inventor, conventions). For Codex users, the README says to put the skill's text in their own project's `AGENTS.md`.
 4. **iLogic:** `ilogic_*` tools and temporary-rule execution for heavy tasks; `undo_last`.
+   - Done (2026-11-16): `ilogic_list`, `ilogic_set` and `ilogic_run` through the iLogic add-in's automation, late-bound. `AddRule` runs a new rule at once, whatever `RulesEnabled` says, so `ilogic_set` adds a comment and then sets the text with rules disabled, which does not run it. A run goes through the script transaction (`undo_last` undoes it) and is tracked like a script: a rule's `MessageBox` or iLogic's error dialog comes back by title. The orphaned-transaction recovery was confirmed here: a server stopped while iLogic's error dialog held a rule, and the next script closed the rule's transaction.
+   - `undo_last`: done in phase 2 (see above).
+   - To do: temporary external rules for heavy loops (write a rule file, run it, read its result file).
 5. **Company standards:** support for each company's private standards and skills (`docs/company`), iProperties checks and part number cross-checks against the ERP (read-only).
 6. **Our own add-in:** only if the measurements from phases 2 and 4 show it is needed.
 

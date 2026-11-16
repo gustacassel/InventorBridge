@@ -42,6 +42,17 @@ namespace InventorBridge.Mcp.Tests
         }
 
         [Fact]
+        public void PropertiesWithMixedAccessorTypesWorkThroughTheirAccessors()
+        {
+            // The reference shows Parameter.Units as get_Units() / set_Units(object): the property form does not compile.
+            const string accessors = "Parameter p = null!; string units = p.get_Units(); p.set_Units(\"mm\"); return units;";
+            const string property = "Parameter p = null!; return p.Units;";
+
+            Assert.Empty(runner.GetCompilationErrors(accessors));
+            Assert.Contains(runner.GetCompilationErrors(property), error => error.Contains("CS1545"));
+        }
+
+        [Fact]
         public void ACompilationErrorStopsBeforeInventorIsTouched()
         {
             // No Inventor here: a null application would throw if the runner used it.

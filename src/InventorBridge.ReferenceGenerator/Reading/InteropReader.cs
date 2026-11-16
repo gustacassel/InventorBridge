@@ -197,6 +197,10 @@ namespace InventorBridge.ReferenceGenerator.Reading
             var accessor = property.GetMethod ?? property.SetMethod;
             var isHidden = IsFunctionHidden(property) || (accessor is not null && IsFunctionHidden(accessor));
 
+            // The setter's last parameter is the value; when its type differs from the getter's, C# needs the accessors.
+            var setterValueType = property.GetMethod is not null ? property.SetMethod?.GetParameters().LastOrDefault()?.ParameterType : null;
+            var setterType = setterValueType is not null && setterValueType != property.PropertyType ? GetTypeName(setterValueType) : null;
+
             return new ApiMember
             {
                 Name = property.Name,
@@ -204,6 +208,7 @@ namespace InventorBridge.ReferenceGenerator.Reading
                 ReturnType = GetTypeName(property.PropertyType),
                 CanRead = property.CanRead,
                 CanWrite = property.CanWrite,
+                SetterType = setterType,
                 IsHidden = isHidden,
                 Parameters = property.GetIndexParameters().Select(ReadParameter).ToList(),
             };

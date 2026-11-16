@@ -19,7 +19,68 @@ namespace InventorBridge.Mcp.Reading
                 activeDocument = application.ActiveDocument?.DisplayName,
                 openDocuments = ReadOpenDocuments(application),
                 units = "The API always uses centimeters and radians, regardless of document units. Use Mm() and Deg() in scripts.",
+                otherInventorProcesses = ReadOtherInstances(application),
             };
+        }
+
+        /// <summary>
+        /// Inventor processes other than the one this server talks to, or null when there are none. Windows gives
+        /// a running Inventor to any client that asks, so with two of them the user may be watching the other one;
+        /// one without a window is usually left over from a crash.
+        /// </summary>
+        private static object? ReadOtherInstances(Application application)
+        {
+            var connectedId = InventorBridge.Mcp.Connection.InventorWindows.ProcessIdOf(new IntPtr(application.MainFrameHWND));
+            var others = new List<object>();
+
+            foreach (var process in System.Diagnostics.Process.GetProcessesByName("Inventor"))
+            {
+                using (process)
+                {
+                    if (process.Id == connectedId)
+                    {
+                        continue;
+                    }
+
+                    var hasWindow = process.MainWindowHandle != IntPtr.Zero;
+                    others.Add(new
+                    {
+                        processId = process.Id,
+                        hasWindow,
+                        started = TryRead(() => process.StartTime.ToString("yyyy-MM-dd HH:mm")),
+                    });
+                }
+            }
+
+            if (others.Count == 0)
+            {
+                return null;
+            }
+
+            return new
+            {
+                connectedProcessId = connectedId,
+                others,
+                note = "This server works with the Inventor in process " + connectedId + ". Tell the user, so they look at " +
+                    "the right window. An Inventor with no window is usually left over from a crash and still holds " +
+                    "memory and possibly a license: the user can end it in Task Manager.",
+            };
+        }
+
+        private static string? TryRead(Func<string> read)
+        {
+            try
+            {
+                return read();
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                return null;
+            }
         }
 
         public static string WorkspacePath(Application application)

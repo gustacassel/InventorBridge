@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using InventorBridge.Mcp.Connection;
 using InventorBridge.Mcp.Files;
+using InventorBridge.Mcp.ILogic;
 using InventorBridge.Mcp.Reading;
 using InventorBridge.Mcp.Reference;
 using InventorBridge.Mcp.Scripting;
@@ -284,6 +285,54 @@ namespace InventorBridge.Mcp.Tools
             });
         }
 
+        [McpServerTool(Name = "ilogic_list", Title = "List iLogic rules",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
+        [Description(
+            "Lists the iLogic rules stored in a document (name, active, and their text with withText: true) and the " +
+            "external rule folders configured in iLogic.")]
+        public Task<CallToolResult> ListILogicRulesAsync(
+            [Description("The document: its name or file as listed by inventor_status. Default: the active document.")] string? document = null,
+            [Description("Also return each rule's text.")] bool withText = false,
+            [Description("Maximum number of rules listed.")] int maxItems = DefaultMaxItems)
+        {
+            return RunAsync(() =>
+            {
+                var application = session.GetApplication();
+                return Text(ToJson(ILogicRules.List(application, document, withText, maxItems)));
+            });
+        }
+
+        [McpServerTool(Name = "ilogic_set", Title = "Write an iLogic rule",
+            ReadOnly = false, Destructive = true, Idempotent = true, OpenWorld = false)]
+        [Description(
+            "Adds an iLogic rule (VB.NET, iLogic syntax) to a document, or replaces the text of the rule with that name. " +
+            "It does not run it and does not save the document. Replacing a rule the user wrote loses its old text: " +
+            "read it with ilogic_list first and ask.")]
+        public Task<CallToolResult> SetILogicRuleAsync(
+            [Description("Rule name.")] string name,
+            [Description("The rule's full text, in iLogic's VB.NET.")] string text,
+            [Description("The document: its name or file as listed by inventor_status. Default: the active document.")] string? document = null)
+        {
+            return RunTrackedAsync($"write iLogic rule {name}", application => Text(ILogicRules.Set(application, document, name, text)));
+        }
+
+        [McpServerTool(Name = "ilogic_run", Title = "Run an iLogic rule",
+            ReadOnly = false, Destructive = true, Idempotent = false, OpenWorld = true)]
+        [Description(
+            "Runs an iLogic rule inside Inventor: a rule stored in the document (name) or an external rule file " +
+            "(externalFile). Like run_csharp it runs in a transaction (undo_last undoes it; an error rolls it back), " +
+            "returns early with the title when the rule shows a message box, and script_result picks up a long run. " +
+            "Rules run in Inventor's process, so loops over thousands of entities are much faster than in run_csharp. " +
+            "Logger output goes to iLogic's log window, not here: return values through a parameter or iProperty.")]
+        public Task<CallToolResult> RunILogicRuleAsync(
+            [Description("Name of a rule stored in the document.")] string? name = null,
+            [Description("Full path of an external rule file (.iLogicVb, .vb or .txt), instead of a name.")] string? externalFile = null,
+            [Description("The document to run it on: its name or file as listed by inventor_status. Default: the active document.")] string? document = null)
+        {
+            return RunTrackedAsync($"iLogic rule {name ?? externalFile}",
+                application => Text(ILogicRules.Run(application, document, name, externalFile)));
+        }
+
         [McpServerTool(Name = "topology", Title = "Faces and edges",
             ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
@@ -321,12 +370,18 @@ namespace InventorBridge.Mcp.Tools
             ReadOnly = false, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Captures the active Inventor view as an image, so you can see what the user sees. With view other than " +
-            "'current', the camera is turned to that view and zoomed to fit first, which also changes the user's view.")]
+            "'current', the camera is turned to that view and zoomed to fit first, which also changes the user's view. " +
+            "Work planes, axes, points and sketches are hidden for the capture unless hideHelpers is false. On a " +
+            "drawing, zoomTo ('sheet', 'partsList', 'titleBlock' or a view's name) or regionMm zooms into the active " +
+            "sheet to read details; the user's camera is put back afterwards.")]
         public Task<CallToolResult> ScreenshotAsync(
             [Description("Camera before capturing: current, iso, front, top or right.")] string view = "current",
             [Description("Zoom to fit before capturing (only used with view 'current').")] bool fit = false,
             [Description("Image width in pixels.")] int width = DefaultScreenshotWidth,
-            [Description("Image height in pixels.")] int height = DefaultScreenshotHeight)
+            [Description("Image height in pixels.")] int height = DefaultScreenshotHeight,
+            [Description("Hide work planes, axes, points, coordinate systems and sketches during the capture.")] bool hideHelpers = true,
+            [Description("Drawings: zoom to 'sheet', 'partsList', 'titleBlock' or a view's name, such as 'VIEW1', on the active sheet.")] string? zoomTo = null,
+            [Description("Drawings: zoom to this region of the active sheet, [minX, minY, maxX, maxY] in mm from its lower left corner.")] double[]? regionMm = null)
         {
             if (!Enum.TryParse<CaptureOrientation>(view, ignoreCase: true, out var orientation))
             {
@@ -336,7 +391,7 @@ namespace InventorBridge.Mcp.Tools
             return RunAsync(() =>
             {
                 var application = session.GetApplication();
-                var png = ViewCapture.CapturePng(application, width, height, orientation, fit);
+                var png = ViewCapture.CapturePng(application, width, height, orientation, fit, hideHelpers, zoomTo, regionMm);
 
                 return new CallToolResult
                 {

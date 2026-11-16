@@ -50,6 +50,13 @@ namespace InventorBridge.ReferenceGenerator.Model
         public bool CanRead { get; init; }
         public bool CanWrite { get; init; }
 
+        /// <summary>
+        /// For a property whose setter takes another type than its getter returns (Parameter.Units: a string getter,
+        /// an object setter), the setter's type. C# cannot use such a property as a property, only through
+        /// get_Name() and set_Name(value). Null for every other member.
+        /// </summary>
+        public string? SetterType { get; init; }
+
         /// <summary>Marked hidden or restricted in the type library: obsolete or internal, must not be used.</summary>
         public bool IsHidden { get; init; }
 

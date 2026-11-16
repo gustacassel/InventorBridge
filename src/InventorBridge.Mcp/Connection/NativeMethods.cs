@@ -32,5 +32,8 @@ namespace InventorBridge.Mcp.Connection
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern int GetWindowText(IntPtr window, System.Text.StringBuilder text, int maxCount);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        internal static extern int GetClassName(IntPtr window, System.Text.StringBuilder className, int maxCount);
     }
 }

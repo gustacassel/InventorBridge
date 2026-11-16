@@ -48,11 +48,13 @@ Requirements: Windows, Autodesk Inventor 2024 or later, and the [.NET 8 SDK](htt
    claude mcp add inventor --scope user -- C:\path\to\InventorBridge\src\InventorBridge.Mcp\bin\Release\net8.0-windows\InventorBridge.Mcp.exe
    ```
 
-3. Open Inventor, open Claude Code and ask, for example: *"create a new assembly with two tubes and a 90° bend, and connect the three"*.
+3. Optionally, install the skill that tells the agent how to work with these tools, by copying `skills/inventor-api` to `%USERPROFILE%\.claude\skills\inventor-api`. With Codex or another agent, put the text of `skills/inventor-api/SKILL.md` in your project's `AGENTS.md`. The server also sends short instructions of its own and serves the guides through the `guide` tool.
+
+4. Open Inventor, open Claude Code and ask, for example: *"create a new assembly with two tubes and a 90° bend, and connect the three"*.
 
 | Tool | What it does |
 |---|---|
-| `inventor_status` | Connects to the Inventor you have open: version, active project and workspace folder, default templates, open documents |
+| `inventor_status` | Connects to the Inventor you have open: version, active project and workspace folder, default templates, open documents, and other Inventor processes running (such as one left over from a crash) |
 | `inventor_start` | Starts Inventor (visible) when it is not running, and waits until it is ready |
 | `run_csharp` | Compiles and runs a C# script against the Inventor API. It runs as one undo step on the active document and is rolled back on an error (`undoable: false` skips the undo step for scripts that only read), with Inventor's own dialogs silenced; if an add-in's dialog holds the script, the call returns with its title. Compilation errors come back with line and column. The result lists what changed (documents, features, occurrences, constraints), and an optional `expect` checks volume, size, bodies, occurrences or free degrees of freedom |
 | `script_result` | Waits for a script that was still running after 60 s and returns its result |
@@ -61,8 +63,9 @@ Requirements: Windows, Autodesk Inventor 2024 or later, and the [.NET 8 SDK](htt
 | `export` | Writes an open document to STEP, IGES, STL or SAT, a sheet metal flat pattern to DXF, or a drawing to PDF, DWG or DXF, without changing the document; never replaces a file unless told to |
 | `check` | Finds what is broken in a document and everything it references: missing files, features and constraints with errors, documents that need an update, broken flat patterns, detached dimensions and balloons |
 | `undo_last` | Undoes the last script like Ctrl+Z, only when the last step in Inventor's undo list is a script's |
+| `ilogic_list`, `ilogic_set`, `ilogic_run` | List a document's iLogic rules, write one without running it, and run a rule or an external rule file inside Inventor (in a transaction, so `undo_last` undoes it) |
 | `topology` | Faces and edges of a part or of one occurrence (also inside subassemblies, by path), with positions, cylinder axes and circle centers in mm, so a script can pick them; split cylinders are merged with their ends, and bends (tori) are listed with theirs |
-| `screenshot` | An image of the Inventor view, so the agent sees what you see |
+| `screenshot` | An image of the Inventor view, so the agent sees what you see; work planes and sketches are hidden for the capture, and on a drawing it can zoom to a view, the parts list, the title block or a region |
 | `api_lookup` | Looks up the API reference: an object's or enum's page, some members of a type, or a search by name. It hides members that the running Inventor version does not have, and works without Inventor |
 | `guide` | Short guides: the workflow, parts, assemblies and constraints, API pitfalls |
 
@@ -110,6 +113,8 @@ src/InventorBridge.ReferenceGenerator/
   inheritance.txt   derived/base pairs extracted from the object model poster legend
 docs/reference/     generated output (do not edit by hand)
 docs/guides/        hand-written guides served by the guide tool
+skills/inventor-api/  skill telling an agent how to work with the tools
+AGENTS.md           instructions for agents changing this repository
 tests/InventorBridge.Mcp.Tests/   tests that run without Inventor
 InventorInterop.props             where the build finds Autodesk.Inventor.Interop.dll
 assets/             logo and social preview (SVG sources and PNG)
