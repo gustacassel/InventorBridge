@@ -354,7 +354,8 @@ public sealed class InventorTools
             Runs an iLogic rule inside Inventor: a rule stored in the document (name) or an external rule file
             (externalFile). Like run_csharp it runs in a transaction (undo_last undoes it; an error rolls it back),
             returns early with the title when the rule shows a message box, and script_result picks up a long run.
-            iLogic does not report a rule's errors to the caller: it shows its error dialog, so watch for one.
+            When iLogic opens its error dialog for the rule (a compilation or runtime error), the server reads it,
+            closes it and returns its text, which names the line, as an error.
             Logger output goes to iLogic's log window, not here: return values through a parameter or iProperty.
             """)]
     public Task<CallToolResult> RunILogicRuleAsync(
@@ -377,9 +378,10 @@ public sealed class InventorTools
             RuleArguments.Arguments.Value("Name") and returns values by setting RuleArguments.Arguments.Value("Result")
             = ... or adding new ones with RuleArguments.Arguments.Add("Name", value): numbers, booleans and strings
             (join lists into one string). ThisDoc.Document is the document. Like run_csharp it runs in a transaction
-            (undo_last undoes it, an error rolls it back; undoable=false for code that only reads), and returns early
-            with the title when iLogic shows a dialog, such as its error dialog for a compilation or runtime error,
-            which names the line. Code that stops before its end (an error) is reported as an error and rolled back.
+            (undo_last undoes it, an error rolls it back; undoable=false for code that only reads). No error dialog
+            reaches the user: a runtime error comes back with its stack trace, and a compilation error with iLogic's
+            message (its dialog is closed at once), both with line numbers as in your code. A message box the code
+            shows itself makes the call return early with its title.
             """)]
     public Task<CallToolResult> RunILogicScriptAsync(
         [Description("The rule's text, in iLogic's VB.NET: plain statements, or Sub Main() with other Subs and Functions.")] string code,
@@ -399,9 +401,9 @@ public sealed class InventorTools
             Reads the Autodesk Vault state of files through the vault connection the user's Inventor already has
             (through iLogic, so no password is asked for): for each file its vault path, version, revision, lifecycle
             state, category, who has it checked out, and whether the local copy matches the vault's latest version.
-            Default: the active document and every document it references. Reads only; check-out, check-in and
-            lifecycle changes are the user's to make in Vault. Use it before changing a file, to know whether it is
-            released, checked out by someone else, or out of date.
+            Default: the active document and every document it references. Reads only; vault_change checks out, checks
+            in and changes states. Use it before changing a file, to know whether it is released, checked out by
+            someone else, or out of date.
             """)]
     public Task<CallToolResult> GetVaultInfoAsync(
         [Description("Full paths of the files to read, instead of a document and its references.")] string[]? paths = null,
@@ -411,6 +413,36 @@ public sealed class InventorTools
     {
         return RunTrackedAsync("read vault state",
             application => Text(ToJson(VaultReader.Read(application, paths, document, withReferences, maxItems))));
+    }
+
+    [McpServerTool(Name = "vault_change", Title = "Change files in Vault",
+        ReadOnly = false, Destructive = true, Idempotent = false, OpenWorld = true)]
+    [Description(
+        """
+            Changes files in Autodesk Vault through the user's own vault connection in Inventor, with their rights.
+            Everyone using the vault sees the result, so do it only when the user asked for it. Actions:
+            checkout (gets the latest version and checks it out, so it can be changed and saved);
+            checkin (with a comment; adds files the vault does not have yet, creating their folders; sends the
+            references Inventor reads, so assemblies and drawings keep their dependencies; save in Inventor first);
+            undo_checkout (discards the local changes: the local copy becomes the vault's again);
+            get_latest (downloads the vault's latest version);
+            set_state (moves to a lifecycle state by its name in Vault; pass lifecycle to assign one first; writes a
+            new version, which is downloaded).
+            Files open in Inventor whose copy was rewritten are reopened. One result per file: done, skipped (with
+            why, such as checked out by someone else) or failed (with Vault's message). Call vault_info first to
+            see states and check-outs.
+            """)]
+    public Task<CallToolResult> ChangeVaultFilesAsync(
+        [Description("checkout, checkin, undo_checkout, get_latest or set_state.")] string action,
+        [Description("Full paths of the files, instead of a document.")] string[]? paths = null,
+        [Description("The document: its name or file as listed by inventor_status. Default: the active document.")] string? document = null,
+        [Description("Also every file the documents reference, children first. Needed to check in an assembly whose parts are new.")] bool withReferences = false,
+        [Description("checkin: what changed (required). set_state: the reason, kept in the vault's history.")] string? comment = null,
+        [Description("set_state: the state to move to, as Vault names it.")] string? state = null,
+        [Description("set_state: the lifecycle to assign, for a file without one or to change it.")] string? lifecycle = null)
+    {
+        return RunTrackedAsync($"vault {action}",
+            application => Text(ToJson(VaultWriter.Change(application, action, paths, document, withReferences, comment, state, lifecycle))));
     }
 
     [McpServerTool(Name = "topology", Title = "Faces and edges",

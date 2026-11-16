@@ -1,5 +1,3 @@
-using ModelContextProtocol.Client;
-using ModelContextProtocol.Protocol;
 using Xunit;
 
 namespace InventorBridge.Mcp.Tests;
@@ -14,13 +12,13 @@ public sealed class ServerTests
     [
         "inventor_status", "inventor_start", "run_csharp", "script_result", "inspect",
         "topology", "screenshot", "api_lookup", "guide", "bom", "export", "check", "undo_last",
-        "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info",
+        "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info", "vault_change",
     ];
 
     [Fact]
     public async Task TheServerDeclaresEveryToolWithAllFourHints()
     {
-        await using var client = await StartServerAsync();
+        await using var client = await TestServer.StartAsync();
 
         var tools = await client.ListToolsAsync();
 
@@ -39,7 +37,7 @@ public sealed class ServerTests
     [Fact]
     public async Task RunCSharpTakesAnOptionalUndoableFlag()
     {
-        await using var client = await StartServerAsync();
+        await using var client = await TestServer.StartAsync();
 
         var tools = await client.ListToolsAsync();
         var schema = tools.Single(tool => tool.Name == "run_csharp").ProtocolTool.InputSchema;
@@ -58,8 +56,8 @@ public sealed class ServerTests
 
         try
         {
-            await using var withGuides = await StartServerAsync(folder);
-            await using var without = await StartServerAsync();
+            await using var withGuides = await TestServer.StartAsync(folder);
+            await using var without = await TestServer.StartAsync();
 
             Assert.Contains("This organization has its own guides: acme-standards.", withGuides.ServerInstructions);
             Assert.DoesNotContain("own guides", without.ServerInstructions);
@@ -73,44 +71,25 @@ public sealed class ServerTests
     [Fact]
     public async Task GuideAndApiLookupWorkWithoutInventor()
     {
-        await using var client = await StartServerAsync();
+        await using var client = await TestServer.StartAsync();
 
         var guide = await client.CallToolAsync("guide", new Dictionary<string, object?> { ["name"] = "workflow" });
         var lookup = await client.CallToolAsync("api_lookup", new Dictionary<string, object?> { ["query"] = "ExtrudeFeatures.Add", ["version"] = 2024 });
 
         Assert.NotEqual(true, guide.IsError);
-        Assert.StartsWith("# Workflow", TextOf(guide));
+        Assert.StartsWith("# Workflow", TestServer.TextOf(guide));
         Assert.NotEqual(true, lookup.IsError);
-        Assert.Contains("ExtrudeFeature Add(ExtrudeDefinition Definition);", TextOf(lookup));
+        Assert.Contains("ExtrudeFeature Add(ExtrudeDefinition Definition);", TestServer.TextOf(lookup));
     }
 
     [Fact]
     public async Task ABadArgumentIsAnErrorResult()
     {
-        await using var client = await StartServerAsync();
+        await using var client = await TestServer.StartAsync();
 
         var result = await client.CallToolAsync("topology", new Dictionary<string, object?> { ["faces"] = "spheres" });
 
         Assert.True(result.IsError);
-        Assert.Contains("Use all, cylinders or none", TextOf(result));
-    }
-
-    private static async Task<McpClient> StartServerAsync(string? companyGuides = null)
-    {
-        var serverPath = Path.Combine(AppContext.BaseDirectory, "InventorBridge.Mcp.dll");
-        var transport = new StdioClientTransport(new StdioClientTransportOptions
-        {
-            Name = "InventorBridge",
-            Command = "dotnet",
-            Arguments = [serverPath],
-            EnvironmentVariables = new Dictionary<string, string?> { ["INVENTORBRIDGE_GUIDES"] = companyGuides },
-        });
-
-        return await McpClient.CreateAsync(transport);
-    }
-
-    private static string TextOf(CallToolResult result)
-    {
-        return string.Concat(result.Content.OfType<TextContentBlock>().Select(block => block.Text));
+        Assert.Contains("Use all, cylinders or none", TestServer.TextOf(result));
     }
 }

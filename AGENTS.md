@@ -12,6 +12,7 @@ Instructions for AI agents (and people) changing this repository. To *use* Inven
 
 Most behavior only shows on a running Inventor: dialogs, transactions, localized names, large assemblies. When one is available:
 
+- Run the integration tests: `INVENTORBRIDGE_INTEGRATION=1 dotnet test --filter InventorIntegrationTests`. They start the server, build parts and a drawing in a new folder under `%TEMP%` (or `INVENTORBRIDGE_TEST_FOLDER`), check rollback, undo and hole notes, then close what they opened and delete the folder. Without the variable they are skipped.
 - Drive the built server over stdio with a small MCP client (initialize, then `tools/call`), and test each change on real documents.
 - Save test files outside the user's project workspace, and never save over the user's files: open them, read them, close them with `Close(true)`.
 - Add-ins can open dialogs that hold a call (Vault Data Standard on every save of a new file). Check for Inventor's windows when a call hangs, and say what you closed.

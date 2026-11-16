@@ -65,8 +65,8 @@ public static class VaultReader
             truncated,
             elapsedSeconds = run.ElapsedSeconds,
             note = """
-                Read through the user's own Vault connection in Inventor. Check-out, check-in and lifecycle
-                changes are the user's to make in Vault.
+                Read through the user's own Vault connection in Inventor. vault_change checks out, checks in and
+                changes states, when the user asks for it.
                 """,
         };
     }
@@ -143,7 +143,7 @@ public static class VaultReader
     }
 
     /// <summary>The folder of the Vault add-in's assemblies, which the rule references.</summary>
-    private static string AddInFolder(Application application)
+    internal static string AddInFolder(Application application)
     {
         ApplicationAddIn addIn;
         try

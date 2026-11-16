@@ -123,23 +123,44 @@ public static class ILogicRules
         var stopwatch = Stopwatch.StartNew();
         var transaction = ScriptTransaction.Start(application, ScriptRunner.TransactionPrefix + label, undoable: true);
 
-        try
+        // iLogic's dialogs name the rule followed by a comma: "Error on Line 3 in rule: name, in document: ..."
+        // for a runtime error, "Rule Compile Errors in name, in ..." for a compilation error.
+        var ruleName = name ?? System.IO.Path.GetFileNameWithoutExtension(externalFile!);
+        using (var watcher = new ErrorDialogWatcher(InventorProcessId(application), $" {ruleName}, "))
         {
-            if (name is not null)
+            try
             {
-                automation.RunRule(document, name);
+                if (name is not null)
+                {
+                    automation.RunRule(document, name);
+                }
+                else
+                {
+                    automation.RunExternalRule(document, externalFile);
+                }
             }
-            else
+            catch (Exception exception) when (exception is COMException or Microsoft.CSharp.RuntimeBinder.RuntimeBinderException
+                or System.Reflection.TargetInvocationException)
             {
-                automation.RunExternalRule(document, externalFile);
+                var note = transaction.RollBack(application);
+                var message = (exception.InnerException ?? exception).Message;
+                throw new InvalidOperationException($"{label} failed: {message}. Transaction: {note}");
             }
-        }
-        catch (Exception exception) when (exception is COMException or Microsoft.CSharp.RuntimeBinder.RuntimeBinderException
-            or System.Reflection.TargetInvocationException)
-        {
-            var note = transaction.RollBack(application);
-            var message = (exception.InnerException ?? exception).Message;
-            throw new InvalidOperationException($"{label} failed: {message}. Transaction: {note}");
+
+            // iLogic's generated copy of the rule; it writes a new one on every run.
+            TryDelete(GeneratedFile(name is not null ? $"{document.DisplayName}.{name}" : ruleName));
+
+            var dialogs = watcher.Texts;
+            if (dialogs.Count > 0)
+            {
+                var note = transaction.RollBack(application);
+                throw new InvalidOperationException(
+                    $"""
+                        {label} failed; iLogic reported (its dialog was closed):
+                        {string.Join("\n\n", dialogs)}
+                        Transaction: {note}.
+                        """);
+            }
         }
 
         var committed = transaction.Commit(application);
@@ -208,95 +229,147 @@ public static class ILogicRules
             map.Add(ResultName, "");
         }
 
-        map.Add(FinishedName, false);
+        map.Add(RuleWrapper.FinishedName, false);
+        map.Add(RuleWrapper.ErrorName, "");
 
         var folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "InventorBridge");
         System.IO.Directory.CreateDirectory(folder);
-        // iLogic names the file in its error dialogs, so the name carries the description.
-        var path = System.IO.Path.Combine(folder, $"{FileNamePart(description)}-{Guid.NewGuid().ToString("N")[..6]}.iLogicVb");
-        System.IO.File.WriteAllText(path, WithFinishMarker(code));
+        RemoveLeftovers(folder);
+        // iLogic names the file in its dialogs, so the name carries the description, and the watcher finds them by it.
+        var ruleName = $"{FileNamePart(description)}-{Guid.NewGuid().ToString("N")[..6]}";
+        var path = System.IO.Path.Combine(folder, $"{ruleName}.iLogicVb");
+        var wrapped = RuleWrapper.Wrap(code);
+        System.IO.File.WriteAllText(path, wrapped.Code);
 
         var label = $"iLogic script: {description}";
         var stopwatch = Stopwatch.StartNew();
         var transaction = ScriptTransaction.Start(application, ScriptRunner.TransactionPrefix + label, undoable);
+        IReadOnlyList<string> dialogs;
 
-        try
+        using (var watcher = new ErrorDialogWatcher(InventorProcessId(application), ruleName))
         {
-            automation.RunExternalRuleWithArguments(document, path, map);
-        }
-        catch (Exception exception) when (exception is COMException or Microsoft.CSharp.RuntimeBinder.RuntimeBinderException
-            or System.Reflection.TargetInvocationException)
-        {
-            var note = transaction.RollBack(application);
-            var message = (exception.InnerException ?? exception).Message;
-            throw new InvalidOperationException($"{label} failed: {message}. Transaction: {note}");
-        }
-        finally
-        {
-            TryDelete(path);
+            try
+            {
+                automation.RunExternalRuleWithArguments(document, path, map);
+            }
+            catch (Exception exception) when (exception is COMException or Microsoft.CSharp.RuntimeBinder.RuntimeBinderException
+                or System.Reflection.TargetInvocationException)
+            {
+                var note = transaction.RollBack(application);
+                var message = (exception.InnerException ?? exception).Message;
+                throw new InvalidOperationException($"{label} failed: {message}. Transaction: {note}");
+            }
+            finally
+            {
+                TryDelete(path);
+            }
+
+            dialogs = watcher.Texts;
         }
 
         var values = new Dictionary<string, object?>();
         var finished = false;
+        var error = "";
         for (var index = 1; index <= map.Count; index++)
         {
             var name = map.Name[index];
-            if (name == FinishedName)
+            if (name == RuleWrapper.FinishedName)
             {
                 finished = map.Value[name] is true;
-                continue;
             }
-
-            values[name] = FromComValue(map.Value[name]);
+            else if (name == RuleWrapper.ErrorName)
+            {
+                error = map.Value[name] as string ?? "";
+            }
+            else
+            {
+                values[name] = FromComValue(map.Value[name]);
+            }
         }
 
         if (!finished)
         {
-            // iLogic does not report a rule's error to the caller: it shows its error dialog and returns.
             var note = transaction.RollBack(application);
+            var reason = error.Length > 0
+                ? $"it threw:\n{wrapped.MapStackTrace(ShortStackTrace(error), GeneratedLines(ruleName))}"
+                : dialogs.Count > 0
+                    ? $"iLogic reported (its dialog was closed; lines numbered as in your code):\n{wrapped.MapLines(string.Join("\n\n", dialogs))}"
+                    : "iLogic did not run it, most likely a compilation error that iLogic did not show; check the syntax and names.";
+            TryDelete(GeneratedFile(ruleName));
             throw new ScriptNotFinishedException(
                 $"""
-                    {label} stopped before its end: iLogic hit an error (its error dialog names the line, numbered as in
-                    your code; for a compilation error it lists them) or Main left early with Exit Sub or Return.
+                    {label} stopped before its end: {reason}
                     Transaction: {note}. Values set before it stopped: {System.Text.Json.JsonSerializer.Serialize(values)}
                     """);
         }
 
+        TryDelete(GeneratedFile(ruleName));
         return new ScriptRun(document.DisplayName, Math.Round(stopwatch.Elapsed.TotalSeconds, 2), transaction.Commit(application), values);
     }
 
+    /// <summary>
+    /// The .vb file iLogic generates in %TEMP%\iLogic Rules each time it runs a rule, named after the rule file,
+    /// or after the document and the rule for a rule stored in a document. Its stack traces number its lines.
+    /// </summary>
+    private static string GeneratedFile(string ruleName)
+    {
+        return System.IO.Path.Combine(System.IO.Path.GetTempPath(), "iLogic Rules", $"{ruleName}.vb");
+    }
+
+    /// <summary>
+    /// Deletes the temporary rule files of earlier runs, and the files iLogic generated from them. A run cleans up
+    /// after itself, but not when the server stopped while the run waited on a dialog. Runs are one at a time, so
+    /// no other run is using these files.
+    /// </summary>
+    private static void RemoveLeftovers(string folder)
+    {
+        foreach (var path in System.IO.Directory.EnumerateFiles(folder, "*.iLogicVb"))
+        {
+            TryDelete(GeneratedFile(System.IO.Path.GetFileNameWithoutExtension(path)));
+            TryDelete(path);
+        }
+    }
+
+    /// <summary>The lines of the generated file, then the file is deleted; none when iLogic did not write it.</summary>
+    private static IReadOnlyList<string> GeneratedLines(string ruleName)
+    {
+        var path = GeneratedFile(ruleName);
+        try
+        {
+            var lines = System.IO.File.ReadAllLines(path);
+            TryDelete(path);
+            return lines;
+        }
+        catch (Exception exception) when (exception is System.IO.IOException or UnauthorizedAccessException)
+        {
+            return [];
+        }
+    }
+
     private const string ResultName = "Result";
-    private const string FinishedName = "InventorBridgeFinished";
 
     /// <summary>Thrown when iLogic code did not reach its end; the tool reports it as an error.</summary>
     public sealed class ScriptNotFinishedException(string message) : InvalidOperationException(message);
 
-    /// <summary>
-    /// The code with a last statement that records it reached its end: before the End Sub of Main when the code
-    /// has one, at the end otherwise. Earlier lines keep their numbers, so iLogic's error lines match the code.
-    /// </summary>
-    internal static string WithFinishMarker(string code)
+    /// <summary>An exception's text without the frames of iLogic's own machinery, which say nothing about the code.</summary>
+    internal static string ShortStackTrace(string exception)
     {
-        var marker = $"RuleArguments.Arguments.Value(\"{FinishedName}\") = True";
-        var lines = code.Replace("\r\n", "\n").Split('\n').ToList();
-        var main = lines.FindIndex(line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*(Public\s+)?Sub\s+Main\s*\(", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+        var lines = exception.Replace("\r\n", "\n").Split('\n')
+            .Where(line => !line.TrimStart().StartsWith("at ", StringComparison.Ordinal) && !line.TrimStart().StartsWith("em ", StringComparison.Ordinal)
+                || line.Contains("ThisRule", StringComparison.Ordinal) || line.Contains("LmiRuleScript", StringComparison.Ordinal));
+        return string.Join("\n", lines).Trim();
+    }
 
-        if (main < 0)
+    private static int InventorProcessId(Application application)
+    {
+        try
         {
-            lines.Add(marker);
+            return InventorBridge.Mcp.Connection.InventorWindows.ProcessIdOf(new IntPtr(application.MainFrameHWND));
         }
-        else
+        catch (COMException)
         {
-            var end = lines.FindIndex(main + 1, line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*End\s+Sub\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
-            if (end < 0)
-            {
-                throw new ArgumentException("The code has Sub Main() but no End Sub after it.");
-            }
-
-            lines.Insert(end, marker);
+            return 0;
         }
-
-        return string.Join("\r\n", lines);
     }
 
     private static string FileNamePart(string description)

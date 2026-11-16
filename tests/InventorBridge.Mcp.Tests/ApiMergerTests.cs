@@ -7,7 +7,7 @@ namespace InventorBridge.Mcp.Tests;
 
 public sealed class ApiMergerTests
 {
-    // BreakOperations.Add is the method on 2024; 2026 and later hide it in favor of newer ones.
+    // Like BreakOperations.Add, the method on 2024, which 2027 hides in favor of AddWithOptions.
     [Fact]
     public void KeepsAMemberHiddenOnlyInNewerVersions()
     {

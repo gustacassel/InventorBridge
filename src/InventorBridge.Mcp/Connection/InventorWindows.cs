@@ -65,4 +65,58 @@ public static class InventorWindows
 
         return titles;
     }
+
+    /// <summary>
+    /// Closes Inventor's visible windows whose title contains <paramref name="titlePart"/> and returns what each
+    /// said: the longest of its title and its controls' texts (an iLogic error dialog keeps its whole message,
+    /// title included, in an edit box).
+    /// </summary>
+    public static IReadOnlyList<string> CloseWindowsTitled(int processId, string titlePart)
+    {
+        var texts = new List<string>();
+        NativeMethods.EnumWindows((window, _) =>
+        {
+            if (NativeMethods.IsWindowVisible(window)
+                && NativeMethods.GetWindowThreadProcessId(window, out var owner) != 0
+                && owner == processId)
+            {
+                var title = TextOf(window);
+                if (title.Contains(titlePart, StringComparison.OrdinalIgnoreCase))
+                {
+                    var lines = new List<string> { title };
+                    NativeMethods.EnumChildWindows(window, (child, _) =>
+                    {
+                        var text = TextOf(child).Trim();
+                        if (text.Length > 0 && text != title && !lines.Contains(text))
+                        {
+                            lines.Add(text);
+                        }
+
+                        return true;
+                    }, IntPtr.Zero);
+
+                    NativeMethods.PostMessage(window, NativeMethods.WmClose, IntPtr.Zero, IntPtr.Zero);
+                    texts.Add(lines.MaxBy(line => line.Length)!.Replace("\r\n", "\n").Trim());
+                }
+            }
+
+            return true;
+        }, IntPtr.Zero);
+
+        return texts;
+    }
+
+    /// <summary>A window's text through WM_GETTEXT, which also reads edit boxes of other processes.</summary>
+    private static string TextOf(IntPtr window)
+    {
+        var length = (int)NativeMethods.SendMessage(window, NativeMethods.WmGetTextLength, IntPtr.Zero, IntPtr.Zero);
+        if (length <= 0)
+        {
+            return "";
+        }
+
+        var text = new StringBuilder(length + 1);
+        NativeMethods.SendMessage(window, NativeMethods.WmGetText, length + 1, text);
+        return text.ToString();
+    }
 }

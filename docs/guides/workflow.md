@@ -73,7 +73,10 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 - To store a rule in a document, write it with `ilogic_set` (it is not run) and run it with `ilogic_run`. A stored rule returns nothing to the agent: write results into a parameter or an iProperty and read them with `inspect`.
 - iLogic is not a way to speed up loops. Rules run inside Inventor, but an API call costs as much or more there: 1.2 ms against 0.4 ms from `run_csharp`, and a loop over 4,000 occurrences took about as long both ways. The time goes into Inventor itself.
 - `Logger` writes to iLogic's log window, not to the agent.
-- A rule that fails, or shows a `MessageBox`, opens a dialog in Inventor, and iLogic does not report the error to the caller. The tools return with the dialog's title; tell the user to close it.
+- iLogic does not report a rule's error to the caller: it opens an error dialog. The tools close the dialogs iLogic opens for the rules they run and return the error: for `ilogic_script`, a runtime error with its stack trace and a compilation error with iLogic's message, both with line numbers as in the code sent. Nothing is left open on the user's screen.
+- A compilation error sometimes stops a rule without any dialog (a variable declared twice, for example). The result then says the code did not run: check the syntax and the names.
+- A `MessageBox` the code shows itself still waits for the user: the call returns with its title.
+- iLogic writes a copy of every rule it runs to `%TEMP%\iLogic Rules`. The tools delete the copies of the rules they run, and their own temporary rule files, also those left by a run the server did not see finish.
 - Rules may already exist in the user's documents: read them with `ilogic_list` (`withText: true`) before replacing one.
 
 ## Vault
@@ -81,5 +84,11 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 - `vault_info` reads, for the active document and everything it references (or for given paths), the vault path, version, revision, lifecycle state, category, who has the file checked out, and whether the local copy matches the vault's latest version. It uses the vault connection the user's Inventor already has, through an iLogic rule, so no password is involved, and it acts with the user's own rights.
 - Read it before changing an existing file. A released file, or one checked out by someone else, needs the user's decision before you change it; a local copy older than the vault's needs a "Get latest" first.
 - The vault client's own status for a file can be stale, so `vault_info` also compares the local file's size with the vault's. When they differ, say so; do not decide which one is right.
-- It reads only. Check-out, check-in, lifecycle changes and new numbers are the user's to make in Vault.
+- `vault_change` checks out, checks in, undoes a check-out, gets the latest version and changes the lifecycle state, through the same connection and with the user's rights. Everyone using the vault sees the result: do it when the user asked for it, and give a comment that says what changed.
+- Check a file out before changing it. Changing a vault file that is not checked out makes the Vault add-in ask the user "check it out?", which holds the script.
+- Save in Inventor before a check-in: `vault_change` refuses files with unsaved changes, and refuses to overwrite them with a download.
+- A check-in sends the references Inventor reads, so the vault keeps an assembly's and a drawing's dependencies. Files the vault does not have yet are added, folders included; with `withReferences`, an assembly's new parts go in first. The vault's BOM data is not sent: items and BOM views in Vault need the user's check-in from Inventor.
+- A state change writes a new version in the vault, which is downloaded. Files whose local copy was rewritten are reopened in Inventor when they have a window; a file loaded only as a reference keeps the old copy until its assembly is reopened.
+- Each result says, per file, what was done, skipped (checked out by someone else, not checked out) or failed, with Vault's message. A state that does not exist comes back with the states the lifecycle has.
+- New numbers, Data Standard's dialogs and items stay the user's to handle in Vault.
 
