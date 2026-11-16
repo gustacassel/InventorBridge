@@ -38,18 +38,41 @@ namespace InventorBridge.Mcp
             builder.Services.AddSingleton<ScriptRunner>();
             builder.Services.AddSingleton<ScriptMonitor>();
             builder.Services.AddSingleton<ApiReference>();
-            builder.Services.AddSingleton<GuideLibrary>();
+            var guides = new GuideLibrary();
+            builder.Services.AddSingleton(guides);
 
             builder.Services
                 .AddMcpServer(options =>
                 {
                     options.ServerInfo = new Implementation { Name = "InventorBridge", Version = ServerVersion };
-                    options.ServerInstructions = Instructions;
+                    options.ServerInstructions = Instructions + CompanyGuidesInstruction(guides);
                 })
                 .WithStdioServerTransport()
                 .WithTools<InventorTools>();
 
             await builder.Build().RunAsync();
+        }
+
+        /// <summary>
+        /// Points the agent to the organization's own guides, when INVENTORBRIDGE_GUIDES names any, because they hold
+        /// the rules a general guide cannot know: file names, part numbers, templates, vault rules.
+        /// </summary>
+        private static string CompanyGuidesInstruction(GuideLibrary guides)
+        {
+            IReadOnlyList<string> names;
+            try
+            {
+                names = guides.CompanyGuideNames;
+            }
+            catch (InvalidOperationException)
+            {
+                return "";
+            }
+
+            return names.Count == 0
+                ? ""
+                : " This organization has its own guides: " + string.Join(", ", names) + ". Read them with guide before " +
+                  "creating, naming, saving or exporting files; where they differ from the general guides, they win.";
         }
     }
 }

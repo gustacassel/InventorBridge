@@ -435,7 +435,8 @@ namespace InventorBridge.Mcp.Tools
             ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
         [Description(
             "Short guides on working with Inventor through these tools: the workflow, modeling parts, assemblies and " +
-            "constraints, and API pitfalls. Call it without a name for the list. Read 'workflow' before the first change.")]
+            "constraints, and API pitfalls, plus the organization's own guides when it has any (its standards for file " +
+            "names, part numbers, templates...). Call it without a name for the list. Read 'workflow' before the first change.")]
         public CallToolResult GetGuide(
             [Description("Guide name, such as 'workflow'. Leave empty for the list.")] string? name = null)
         {

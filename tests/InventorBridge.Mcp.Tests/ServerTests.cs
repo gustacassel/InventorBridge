@@ -50,6 +50,27 @@ namespace InventorBridge.Mcp.Tests
         }
 
         [Fact]
+        public async Task TheInstructionsPointToTheCompanyGuides()
+        {
+            var folder = Path.Combine(Path.GetTempPath(), "inventorbridge-server-guides-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(folder);
+            File.WriteAllText(Path.Combine(folder, "acme-standards.md"), "# ACME standards\n\n> File names at ACME.\n");
+
+            try
+            {
+                await using var withGuides = await StartServerAsync(folder);
+                await using var without = await StartServerAsync();
+
+                Assert.Contains("This organization has its own guides: acme-standards.", withGuides.ServerInstructions);
+                Assert.DoesNotContain("own guides", without.ServerInstructions);
+            }
+            finally
+            {
+                Directory.Delete(folder, recursive: true);
+            }
+        }
+
+        [Fact]
         public async Task GuideAndApiLookupWorkWithoutInventor()
         {
             await using var client = await StartServerAsync();
@@ -74,7 +95,7 @@ namespace InventorBridge.Mcp.Tests
             Assert.Contains("Use all, cylinders or none", TextOf(result));
         }
 
-        private static async Task<McpClient> StartServerAsync()
+        private static async Task<McpClient> StartServerAsync(string? companyGuides = null)
         {
             var serverPath = Path.Combine(AppContext.BaseDirectory, "InventorBridge.Mcp.dll");
             var transport = new StdioClientTransport(new StdioClientTransportOptions
@@ -82,6 +103,7 @@ namespace InventorBridge.Mcp.Tests
                 Name = "InventorBridge",
                 Command = "dotnet",
                 Arguments = [serverPath],
+                EnvironmentVariables = new Dictionary<string, string?> { ["INVENTORBRIDGE_GUIDES"] = companyGuides },
             });
 
             return await McpClient.CreateAsync(transport);

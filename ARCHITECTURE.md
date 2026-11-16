@@ -175,6 +175,7 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
    - `undo_last`: done in phase 2 (see above).
    - To do: temporary external rules for heavy loops (write a rule file, run it, read its result file).
 5. **Company standards:** support for each company's private standards and skills (`docs/company`), iProperties checks and part number cross-checks against the ERP (read-only).
+   - Done (2026-11-16): company guides. The `guide` tool also serves Markdown guides from the folders in `INVENTORBRIDGE_GUIDES`, set where the server is registered, listed apart; a company guide cannot replace a general one, and the server instructions name the company guides and tell the agent to read them before creating, naming, saving or exporting files. The content stays in each company's repository.
 6. **Our own add-in:** only if the measurements from phases 2 and 4 show it is needed.
 
 ## 6. Open questions
