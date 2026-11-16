@@ -32,7 +32,7 @@ interface BreakOperation
 }
 ```
 
-**Returned by:** [BreakOperation](../objects/BreakOperation.md).SourceBreakOperation, [BreakOperations](../objects/BreakOperations.md).AddBySketch, [BreakOperations](../objects/BreakOperations.md).AddWithOptions, [BreakOperations](../objects/BreakOperations.md).Item
+**Returned by:** [BreakOperation](../objects/BreakOperation.md).SourceBreakOperation, [BreakOperations](../objects/BreakOperations.md).Add, [BreakOperations](../objects/BreakOperations.md).AddBySketch, [BreakOperations](../objects/BreakOperations.md).AddWithOptions, [BreakOperations](../objects/BreakOperations.md).Item
 
 **Referenced types:** [AttributeSets](../objects/AttributeSets.md), [BreakOrientationEnum](../enums/BreakOrientationEnum.md), [BreakStyleEnum](../enums/BreakStyleEnum.md), [DrawingCurve](../objects/DrawingCurve.md), [DrawingSketch](../objects/DrawingSketch.md), [DrawingView](../objects/DrawingView.md), [Layer](../objects/Layer.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [ObjectsEnumerator](../objects/ObjectsEnumerator.md), [Point2d](../objects/Point2d.md)
 

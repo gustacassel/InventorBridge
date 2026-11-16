@@ -10,5 +10,5 @@ enum BreakOrientationEnum
 }
 ```
 
-**Used by:** [BreakOperation](../objects/BreakOperation.md).Orientation, [BreakOperations](../objects/BreakOperations.md).AddWithOptions
+**Used by:** [BreakOperation](../objects/BreakOperation.md).Orientation, [BreakOperations](../objects/BreakOperations.md).Add, [BreakOperations](../objects/BreakOperations.md).AddWithOptions
 

@@ -45,6 +45,7 @@ interface InventorServer
     bool Ready { get; }
     RepresentationEvents RepresentationEvents { get; }
     SaveOptions SaveOptions { get; }
+    Sketch3DOptions Sketch3DOptions { get; } // hidden in 2026, 2027: there, prefer the newer members
     SketchEvents SketchEvents { get; }
     SketchOptions SketchOptions { get; }
     SoftwareVersion SoftwareVersion { get; }
@@ -70,7 +71,7 @@ interface InventorServer
 }
 ```
 
-46 hidden member(s) omitted: they are obsolete or internal and should not be used.
+45 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [ApplicationAddInSite](../objects/ApplicationAddInSite.md).InventorServer, [VbaApplication](../objects/VbaApplication.md).ThisServer
 

@@ -14,6 +14,7 @@ interface BrowserFolder
     bool AllowReorder { get; set; }
     object Application { get; }
     BrowserNode BrowserNode { get; }
+    string InternalName { get; } // hidden in 2027: there, prefer the newer members
     string Name { get; set; }
     object Parent { get; }
     bool PartFeatureFolder { get; } // since 2027
@@ -27,7 +28,7 @@ interface BrowserFolder
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [BrowserFoldersEnumerator](../objects/BrowserFoldersEnumerator.md).Item, [BrowserPane](../objects/BrowserPane.md).AddBrowserFolder, [BrowserPane](../objects/BrowserPane.md).AddBrowserFolderWithOptions
 

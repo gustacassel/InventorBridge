@@ -10,5 +10,5 @@ enum BreakStyleEnum
 }
 ```
 
-**Used by:** [BreakOperation](../objects/BreakOperation.md).BreakStyle, [BreakOperations](../objects/BreakOperations.md).AddBySketch
+**Used by:** [BreakOperation](../objects/BreakOperation.md).BreakStyle, [BreakOperations](../objects/BreakOperations.md).Add, [BreakOperations](../objects/BreakOperations.md).AddBySketch
 

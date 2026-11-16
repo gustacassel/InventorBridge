@@ -11,5 +11,5 @@ enum ShellDirectionEnum
 }
 ```
 
-**Used by:** [ShellDefinition](../objects/ShellDefinition.md).Direction, [ShellFeatures](../objects/ShellFeatures.md).CreateDefinition
+**Used by:** [ShellDefinition](../objects/ShellDefinition.md).Direction, [ShellFeatures](../objects/ShellFeatures.md).CreateDefinition, [ShellFeatures](../objects/ShellFeatures.md).CreateShellDefinition
 

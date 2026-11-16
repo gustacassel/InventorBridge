@@ -20,7 +20,7 @@ interface IntegerAssetValue
     ObjectTypeEnum Type { get; }
     int Value { get; set; }
     AssetValueTypeEnum ValueType { get; }
-    int[] Values { get; set; }
+    int[] get_Values(); void set_Values(int[] value); // not usable as a property in C#
     // Methods
     void GetLimits(out bool HasLowLimit, out int LowLimit, out bool HasHighLimit, out int HighLimit);
 }

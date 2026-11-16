@@ -13,8 +13,8 @@ interface CosmeticWelds
     CosmeticWeld Item[object Index] { get; }
     ObjectTypeEnum Type { get; }
     // Methods
-    CosmeticWeld Add(CosmeticWeldDefinition CosmeticWeldDefinition);
-    CosmeticWeldDefinition CreateDefinition(EdgeCollection Edges);
+    CosmeticWeld Add(CosmeticWeldDefinition CosmeticWeldDefinition); // hidden in 2024: there, prefer the newer members
+    CosmeticWeldDefinition CreateDefinition(EdgeCollection Edges); // hidden in 2024: there, prefer the newer members
 }
 ```
 

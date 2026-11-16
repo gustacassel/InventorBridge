@@ -23,7 +23,7 @@ interface Arc2d
 }
 ```
 
-**Returned by:** [Arc2d](../objects/Arc2d.md).Copy, [SketchArc](../objects/SketchArc.md).Geometry, [SketchArcProxy](../objects/SketchArcProxy.md).Geometry, [TransientGeometry](../objects/TransientGeometry.md).CreateArc2d, [TransientGeometry](../objects/TransientGeometry.md).CreateArc2dByThreePoints2
+**Returned by:** [Arc2d](../objects/Arc2d.md).Copy, [SketchArc](../objects/SketchArc.md).Geometry, [SketchArcProxy](../objects/SketchArcProxy.md).Geometry, [TransientGeometry](../objects/TransientGeometry.md).CreateArc2d, [TransientGeometry](../objects/TransientGeometry.md).CreateArc2dByThreePoints, [TransientGeometry](../objects/TransientGeometry.md).CreateArc2dByThreePoints2
 
 **Referenced types:** [Curve2dEvaluator](../objects/Curve2dEvaluator.md), [Point2d](../objects/Point2d.md)
 

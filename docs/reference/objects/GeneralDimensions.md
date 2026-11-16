@@ -23,12 +23,14 @@ interface GeneralDimensions
     LinearGeneralDimension AddLinearForeshortened(Point2d TextOrigin, GeometryIntent IntentOne, GeometryIntent IntentTwo, bool HideSecondArrowhead = false, object DimensionStyle = Missing, object Layer = Missing);
     LinearGeneralDimension AddLinearSum(Point2d TextOrigin, LinearGeneralDimension SpacingDimension, GeometryIntent IntentOne, object IntentTwo = Missing, bool ArrowheadsInside = true, object DimensionStyle = Missing, object Layer = Missing, object Reserved = Missing); // since 2026
     RadiusGeneralDimension AddRadius(Point2d TextOrigin, GeometryIntent Intent, bool ArrowheadsInside = false, bool LeaderFromCenter = false, bool Jogged = false, object DimensionStyle = Missing, object Layer = Missing);
+    ObjectCollection GetRetrievableDimensions(DrawingView View, object ModelObject = Missing); // hidden in 2025, 2026, 2027: there, prefer the newer members
+    GeneralDimensionsEnumerator Retrieve(object ViewOrSketch, object DimensionsToRetrieve = Missing); // hidden in 2025, 2026, 2027: there, prefer the newer members
 }
 ```
 
-3 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [DrawingDimensions](../objects/DrawingDimensions.md).GeneralDimensions
 
-**Referenced types:** [AngularGeneralDimension](../objects/AngularGeneralDimension.md), [DiameterGeneralDimension](../objects/DiameterGeneralDimension.md), [DimensionTypeEnum](../enums/DimensionTypeEnum.md), [GeneralDimension](../objects/GeneralDimension.md), [GeometryIntent](../objects/GeometryIntent.md), [LinearGeneralDimension](../objects/LinearGeneralDimension.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Point2d](../objects/Point2d.md), [RadiusGeneralDimension](../objects/RadiusGeneralDimension.md)
+**Referenced types:** [AngularGeneralDimension](../objects/AngularGeneralDimension.md), [DiameterGeneralDimension](../objects/DiameterGeneralDimension.md), [DimensionTypeEnum](../enums/DimensionTypeEnum.md), [DrawingView](../objects/DrawingView.md), [GeneralDimension](../objects/GeneralDimension.md), [GeneralDimensionsEnumerator](../objects/GeneralDimensionsEnumerator.md), [GeometryIntent](../objects/GeometryIntent.md), [LinearGeneralDimension](../objects/LinearGeneralDimension.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Point2d](../objects/Point2d.md), [RadiusGeneralDimension](../objects/RadiusGeneralDimension.md)
 

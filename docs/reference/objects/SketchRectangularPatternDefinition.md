@@ -16,7 +16,7 @@ interface SketchRectangularPatternDefinition
     bool HasBoundarySettingConfigured { get; set; } // since 2025
     bool NaturalXDirection { get; set; } // since 2025
     bool NaturalYDirection { get; set; } // since 2025
-    int[] SuppressedElements { get; set; } // since 2025
+    int[] get_SuppressedElements(); void set_SuppressedElements(int[] value); // not usable as a property in C# // since 2025
     ObjectTypeEnum Type { get; } // since 2025
     object XCount { get; set; } // since 2025
     object XDirectionEntity { get; set; } // since 2025

@@ -33,6 +33,7 @@ interface HoleFeatureProxy
     PartFeatureExtentEnum ExtentType { get; }
     Faces Faces { get; }
     FeatureDimensions FeatureDimensions { get; }
+    bool FlatBottom { get; } // hidden in 2025, 2026, 2027: there, prefer the newer members
     HealthStatusEnum HealthStatus { get; }
     ObjectCollection HoleCenterPoints { get; set; }
     Parameter HoleDiameter { get; }
@@ -67,17 +68,19 @@ interface HoleFeatureProxy
     void SetAffectedBodies(ObjectCollection Bodies);
     void SetCBore(object CBoreDiameter, object CBoreDepth);
     void SetCSink(object CSinkDiameter, object CSinkAngle);
+    void SetDistanceExtent(object Depth, PartFeatureExtentDirectionEnum ExtentDirection, bool FlatBottom = true, object BottomTipAngle = Missing); // hidden in 2025, 2026, 2027: there, prefer the newer members
     void SetDistanceExtent2(object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object DrillPointType = 126977, object BottomTipAngle = Missing); // since 2025
     void SetDrilled();
     void SetEndOfPart(bool Before);
     void SetSpotFace(object SpotFaceDiameter, object SpotFaceDepth);
     void SetSuppressionCondition(Parameter Parameter, ComparisonTypeEnum ComparisonType, object Expression);
     void SetThroughAllExtent(PartFeatureExtentDirectionEnum ExtentDirection);
+    void SetToFaceExtent(object ToFace, bool ExtendToFace); // hidden in 2025, 2026, 2027: there, prefer the newer members
     void SetToFaceExtent2(object ToFace, bool ExtendToFace, object DrillPointType = 126977, object BottomTipAngle = Missing); // since 2025
 }
 ```
 
-6 hidden member(s) omitted: they are obsolete or internal and should not be used.
+3 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Referenced types:** [AppearanceSourceTypeEnum](../enums/AppearanceSourceTypeEnum.md), [Asset](../objects/Asset.md), [AttributeSets](../objects/AttributeSets.md), [Box](../objects/Box.md), [ComparisonTypeEnum](../enums/ComparisonTypeEnum.md), [ComponentDefinition](../objects/ComponentDefinition.md), [ComponentOccurrence](../objects/ComponentOccurrence.md), [ComponentOccurrencesEnumerator](../objects/ComponentOccurrencesEnumerator.md), [Faces](../objects/Faces.md), [FeatureDimensions](../objects/FeatureDimensions.md), [HealthStatusEnum](../enums/HealthStatusEnum.md), [HoleClearanceInfo](../objects/HoleClearanceInfo.md), [HoleDrillPointTypeEnum](../enums/HoleDrillPointTypeEnum.md), [HoleFeature](../objects/HoleFeature.md), [HolePlacementDefinition](../objects/HolePlacementDefinition.md), [HolePlacementTypeEnum](../enums/HolePlacementTypeEnum.md), [HoleTypeEnum](../enums/HoleTypeEnum.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Parameter](../objects/Parameter.md), [ParametersEnumerator](../objects/ParametersEnumerator.md), [PartFeature](../objects/PartFeature.md), [PartFeatureExtent](../objects/PartFeatureExtent.md), [PartFeatureExtentDirectionEnum](../enums/PartFeatureExtentDirectionEnum.md), [PartFeatureExtentEnum](../enums/PartFeatureExtentEnum.md), [PlanarSketch](../objects/PlanarSketch.md), [SurfaceBodies](../objects/SurfaceBodies.md)
 

@@ -18,7 +18,7 @@ interface ReferencedOLEFileDescriptor
     string LogicalName { get; }
     OLEDocumentTypeEnum OLEDocumentType { get; }
     object Parent { get; }
-    IntPtr ReferenceMonitoring { get; set; }
+    IntPtr get_ReferenceMonitoring(); void set_ReferenceMonitoring(ReferenceMonitoringEnum value); // not usable as a property in C#
     ReferenceStatusEnum ReferenceStatus { get; }
     ObjectTypeEnum Type { get; }
     bool Visible { get; set; }

@@ -13,10 +13,16 @@ interface MeshFeatureEntityProxy
     object Application { get; }
     AttributeSets AttributeSets { get; }
     ColorBindingEnum ColorBinding { get; }
+    GraphicsIndexSet ColorIndexSet { get; } // hidden in 2026, 2027: there, prefer the newer members
+    GraphicsColorSet ColorSet { get; } // hidden in 2026, 2027: there, prefer the newer members
     ComponentOccurrence ContainingOccurrence { get; }
+    GraphicsIndexSet CoordinateIndexSet { get; } // hidden in 2026, 2027: there, prefer the newer members
+    GraphicsCoordinateSet CoordinateSet { get; } // hidden in 2026, 2027: there, prefer the newer members
     GraphicsDataSetsCollection GraphicsDataSetsCollection { get; } // since 2026
     MeshFeatureEntity NativeObject { get; }
     NormalBindingEnum NormalBinding { get; }
+    GraphicsIndexSet NormalIndexSet { get; } // hidden in 2026, 2027: there, prefer the newer members
+    GraphicsNormalSet NormalSet { get; } // hidden in 2026, 2027: there, prefer the newer members
     MeshFeature Parent { get; }
     ObjectTypeEnum Type { get; }
     // Methods
@@ -24,7 +30,5 @@ interface MeshFeatureEntityProxy
 }
 ```
 
-6 hidden member(s) omitted: they are obsolete or internal and should not be used.
-
-**Referenced types:** [AttributeSets](../objects/AttributeSets.md), [ColorBindingEnum](../enums/ColorBindingEnum.md), [ComponentOccurrence](../objects/ComponentOccurrence.md), [GraphicsDataSetsCollection](../objects/GraphicsDataSetsCollection.md), [MeshFeature](../objects/MeshFeature.md), [MeshFeatureEntity](../objects/MeshFeatureEntity.md), [NormalBindingEnum](../enums/NormalBindingEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
+**Referenced types:** [AttributeSets](../objects/AttributeSets.md), [ColorBindingEnum](../enums/ColorBindingEnum.md), [ComponentOccurrence](../objects/ComponentOccurrence.md), [GraphicsColorSet](../objects/GraphicsColorSet.md), [GraphicsCoordinateSet](../objects/GraphicsCoordinateSet.md), [GraphicsDataSetsCollection](../objects/GraphicsDataSetsCollection.md), [GraphicsIndexSet](../objects/GraphicsIndexSet.md), [GraphicsNormalSet](../objects/GraphicsNormalSet.md), [MeshFeature](../objects/MeshFeature.md), [MeshFeatureEntity](../objects/MeshFeatureEntity.md), [NormalBindingEnum](../enums/NormalBindingEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
 

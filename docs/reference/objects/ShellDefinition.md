@@ -27,7 +27,7 @@ interface ShellDefinition
 }
 ```
 
-**Returned by:** [ShellDefinition](../objects/ShellDefinition.md).Copy, [ShellFeature](../objects/ShellFeature.md).Definition, [ShellFeatureProxy](../objects/ShellFeatureProxy.md).Definition, [ShellFeatures](../objects/ShellFeatures.md).CreateDefinition
+**Returned by:** [ShellDefinition](../objects/ShellDefinition.md).Copy, [ShellFeature](../objects/ShellFeature.md).Definition, [ShellFeatureProxy](../objects/ShellFeatureProxy.md).Definition, [ShellFeatures](../objects/ShellFeatures.md).CreateDefinition, [ShellFeatures](../objects/ShellFeatures.md).CreateShellDefinition
 
 **Referenced types:** [FaceCollection](../objects/FaceCollection.md), [FeatureApproximationTypeEnum](../enums/FeatureApproximationTypeEnum.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Parameter](../objects/Parameter.md), [ShellDirectionEnum](../enums/ShellDirectionEnum.md), [ShellFeature](../objects/ShellFeature.md), [ShellMethodEnum](../enums/ShellMethodEnum.md), [ShellThicknessFaceSet](../objects/ShellThicknessFaceSet.md)
 

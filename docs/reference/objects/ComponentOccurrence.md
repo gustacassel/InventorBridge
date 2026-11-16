@@ -8,7 +8,7 @@ Inventor API object · versions: 2024+ · [index](../index.md)
 interface ComponentOccurrence
 {
     // Properties
-    string ActiveDesignViewRepresentation { get; }
+    string ActiveDesignViewRepresentation { get; } // hidden in 2024, 2025: there, prefer the newer members
     string ActiveModelState { get; set; }
     string ActivePositionalRepresentation { get; set; }
     bool Adaptive { get; set; }

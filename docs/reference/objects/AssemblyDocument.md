@@ -28,6 +28,7 @@ interface AssemblyDocument
     bool Dirty { get; set; }
     DisabledCommandList DisabledCommandList { get; }
     CommandTypesEnum DisabledCommandTypes { get; set; }
+    string DisplayName { get; set; } // hidden in 2026, 2027: there, prefer the newer members
     string DisplayNameBasis { get; set; } // since 2026
     bool DisplayNameOverridden { get; set; }
     DisplaySettings DisplaySettings { get; }
@@ -120,7 +121,7 @@ interface AssemblyDocument
 }
 ```
 
-38 hidden member(s) omitted: they are obsolete or internal and should not be used.
+37 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [AssemblyComponentDefinition](../objects/AssemblyComponentDefinition.md).Parent, [AssemblyComponentDefinitions](../objects/AssemblyComponentDefinitions.md).Parent, [WeldmentComponentDefinition](../objects/WeldmentComponentDefinition.md).Parent
 

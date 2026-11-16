@@ -16,7 +16,7 @@ interface BIMComponent
     ObjectTypeEnum Type { get; }
     // Methods
     void ExportBuildingComponent(string FullFileName);
-    void ExportBuildingComponentWithOptions(string FullFileName, NameValueMap pOptions);
+    void ExportBuildingComponentWithOptions(string FullFileName, NameValueMap pOptions); // hidden in 2024, 2025: there, prefer the newer members
 }
 ```
 

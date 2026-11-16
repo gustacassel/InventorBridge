@@ -15,7 +15,7 @@ interface ModelGeneralNoteDefinition
     bool OnScreen { get; }
     ModelAnnotation Parent { get; }
     Point Position { get; set; }
-    IntPtr ScreenQuadrant { get; set; }
+    IntPtr get_ScreenQuadrant(); void set_ScreenQuadrant(ScreenQuadrantEnum value); // not usable as a property in C#
     bool ShowTextBorder { get; set; }
     GeneralNoteSymbolDefinitions SymbolDefinitions { get; }
     ModelAnnotationText Text { get; }

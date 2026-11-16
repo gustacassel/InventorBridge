@@ -26,6 +26,7 @@ interface DrawingDocument
     bool Dirty { get; set; }
     DisabledCommandList DisabledCommandList { get; }
     CommandTypesEnum DisabledCommandTypes { get; set; }
+    string DisplayName { get; set; } // hidden in 2026, 2027: there, prefer the newer members
     string DisplayNameBasis { get; set; } // since 2026
     bool DisplayNameOverridden { get; set; }
     DocumentEvents DocumentEvents { get; }
@@ -123,7 +124,7 @@ interface DrawingDocument
 }
 ```
 
-27 hidden member(s) omitted: they are obsolete or internal and should not be used.
+26 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [AutoCADBlockDefinition](../objects/AutoCADBlockDefinition.md).Parent, [BorderDefinition](../objects/BorderDefinition.md).Parent, [DrawingBOM](../objects/DrawingBOM.md).Parent, [DrawingEvents](../objects/DrawingEvents.md).Parent, [DrawingHatchPatternsManager](../objects/DrawingHatchPatternsManager.md).Parent, [DrawingSettings](../objects/DrawingSettings.md).Parent, [DrawingStylesManager](../objects/DrawingStylesManager.md).Parent, [SheetFormat](../objects/SheetFormat.md).Parent, [SheetSettings](../objects/SheetSettings.md).Parent, [SketchedSymbolDefinition](../objects/SketchedSymbolDefinition.md).Parent, [TitleBlockDefinition](../objects/TitleBlockDefinition.md).Parent
 

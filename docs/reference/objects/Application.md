@@ -73,6 +73,7 @@ interface Application
     SaveOptions SaveOptions { get; }
     bool ScreenUpdating { get; set; }
     bool SilentOperation { get; set; }
+    Sketch3DOptions Sketch3DOptions { get; } // hidden in 2026, 2027: there, prefer the newer members
     SketchEvents SketchEvents { get; }
     SketchOptions SketchOptions { get; }
     SoftwareVersion SoftwareVersion { get; }
@@ -121,7 +122,7 @@ interface Application
 }
 ```
 
-64 hidden member(s) omitted: they are obsolete or internal and should not be used.
+63 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [ApplicationAddInSite](../objects/ApplicationAddInSite.md).Application, [AuxiliaryFeatureIndicator](../objects/AuxiliaryFeatureIndicator.md).Application, [AuxiliaryFeatureIndicators](../objects/AuxiliaryFeatureIndicators.md).Application, [BalloonTip](../objects/BalloonTip.md).Application, [BalloonTips](../objects/BalloonTips.md).Application, [BrowserFoldersEnumerator](../objects/BrowserFoldersEnumerator.md).Application, [BrowserNodesEnumerator](../objects/BrowserNodesEnumerator.md).Application, [ButtonDefinition](../objects/ButtonDefinition.md).Application, [ClientResourceMap](../objects/ClientResourceMap.md).Parent, [ComboBoxDefinition](../objects/ComboBoxDefinition.md).Application, [CommandCategories](../objects/CommandCategories.md).Application, [CommandCategory](../objects/CommandCategory.md).Application, [CommandControl](../objects/CommandControl.md).Application, [CommandControls](../objects/CommandControls.md).Application, [CommandControlsEnumerator](../objects/CommandControlsEnumerator.md).Application, [CommandManager](../objects/CommandManager.md).Parent, [ControlDefinition](../objects/ControlDefinition.md).Application, [ControlDefinitionEvents](../objects/ControlDefinitionEvents.md).Application, [ControlDefinitions](../objects/ControlDefinitions.md).Application, [DisabledCommandList](../objects/DisabledCommandList.md).Application, [Environment](../objects/Environment.md).Application, [Environment](../objects/Environment.md).Parent, [EnvironmentList](../objects/EnvironmentList.md).Application, [EnvironmentManager](../objects/EnvironmentManager.md).Application, [Environments](../objects/Environments.md).Application, [FileUIEvents](../objects/FileUIEvents.md).Application, [FileUIEvents](../objects/FileUIEvents.md).Parent, [InteractionEvents](../objects/InteractionEvents.md).Application, [InventorVBAProject](../objects/InventorVBAProject.md).Parent, [InventorVBAProjects](../objects/InventorVBAProjects.md).Parent, [KeyboardEvents](../objects/KeyboardEvents.md).Application, [LicenseManager](../objects/LicenseManager.md).Application, [LicenseManager](../objects/LicenseManager.md).Parent, [MacroControlDefinition](../objects/MacroControlDefinition.md).Application, [ManipulatorEvents](../objects/ManipulatorEvents.md).Application, [MeasureEvents](../objects/MeasureEvents.md).Application, [MiniToolbar](../objects/MiniToolbar.md).Application, [MiniToolbarButton](../objects/MiniToolbarButton.md).Application, [MiniToolbarCheckBox](../objects/MiniToolbarCheckBox.md).Application, [MiniToolbarComboBox](../objects/MiniToolbarComboBox.md).Application and 34 more (see `members.tsv`)
 

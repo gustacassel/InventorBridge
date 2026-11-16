@@ -18,7 +18,7 @@ interface SketchCircularPatternDefinition
     ObjectCollection Geometries { get; set; } // since 2025
     bool HasBoundarySettingConfigured { get; set; } // since 2025
     bool NaturalAxisDirection { get; set; } // since 2025
-    int[] SuppressedElements { get; set; } // since 2025
+    int[] get_SuppressedElements(); void set_SuppressedElements(int[] value); // not usable as a property in C# // since 2025
     bool Symmetric { get; set; } // since 2025
     ObjectTypeEnum Type { get; } // since 2025
     // Methods

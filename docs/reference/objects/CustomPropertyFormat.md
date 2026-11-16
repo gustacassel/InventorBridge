@@ -16,7 +16,7 @@ interface CustomPropertyFormat
     bool ShowTrailingZeros { get; set; }
     bool ShowUnitsString { get; set; }
     ObjectTypeEnum Type { get; }
-    string Units { get; set; }
+    string get_Units(); void set_Units(object value); // not usable as a property in C#
 }
 ```
 

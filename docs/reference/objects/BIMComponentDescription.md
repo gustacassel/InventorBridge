@@ -10,6 +10,7 @@ interface BIMComponentDescription
     // Properties
     object Application { get; }
     BIMComponentPropertySets ComponentPropertySets { get; }
+    string ComponentType { get; set; } // hidden in 2026, 2027: there, prefer the newer members
     string FamilyType { get; set; }
     ObjectCollection ModelProperties { get; set; }
     BIMComponentOrientationTypeEnum OrientationType { get; set; }
@@ -23,7 +24,7 @@ interface BIMComponentDescription
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [BIMComponent](../objects/BIMComponent.md).ComponentDescription
 

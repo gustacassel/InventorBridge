@@ -13,12 +13,13 @@ interface BreakOperations
     BreakOperation Item[int Index] { get; }
     ObjectTypeEnum Type { get; }
     // Methods
+    BreakOperation Add(BreakOrientationEnum Orientation, Point2d StartPoint, Point2d EndPoint, BreakStyleEnum BreakStyle = BreakStyleEnum.kRectangularBreakStyle, int DisplayLevel = 5, double Gap = 0, int NumberOfSymbols = 1, bool PropagateToParentView = false); // hidden in 2027: there, prefer the newer members
     BreakOperation AddBySketch(DrawingSketch Sketch, BreakStyleEnum BreakStyle = BreakStyleEnum.kRectangularBreakStyle, int DisplayLevel = 5, double Gap = 0, int NumberOfSymbols = 1, object Reserved = Missing); // since 2026
     BreakOperation AddWithOptions(BreakOrientationEnum Orientation, Point2d StartPoint, Point2d EndPoint, object Options = Missing); // since 2027
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [DetailDrawingView](../objects/DetailDrawingView.md).BreakOperations, [DrawingView](../objects/DrawingView.md).BreakOperations, [SectionDrawingView](../objects/SectionDrawingView.md).BreakOperations
 

@@ -20,6 +20,7 @@ interface SurfaceTextureGOSTDefinition
     string ProductionMethod { get; set; }
     string SecondRequirement { get; set; }
     SurfaceTextureStandardReferenceTypeEnum StandardReference { get; } // since 2025
+    DraftingStandardEnum StandardReferenceType { get; } // hidden in 2025, 2026, 2027: there, prefer the newer members
     SurfaceTextureTypeEnum SurfaceTextureType { get; set; }
     LayDirectionTypeEnum TextureDirection { get; set; }
     string ThirdRequirement { get; set; }
@@ -27,7 +28,5 @@ interface SurfaceTextureGOSTDefinition
 }
 ```
 
-1 hidden member(s) omitted: they are obsolete or internal and should not be used.
-
-**Referenced types:** [LayDirectionTypeEnum](../enums/LayDirectionTypeEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Sheet](../objects/Sheet.md), [SurfaceTextureStandardReferenceTypeEnum](../enums/SurfaceTextureStandardReferenceTypeEnum.md), [SurfaceTextureTypeEnum](../enums/SurfaceTextureTypeEnum.md)
+**Referenced types:** [DraftingStandardEnum](../enums/DraftingStandardEnum.md), [LayDirectionTypeEnum](../enums/LayDirectionTypeEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Sheet](../objects/Sheet.md), [SurfaceTextureStandardReferenceTypeEnum](../enums/SurfaceTextureStandardReferenceTypeEnum.md), [SurfaceTextureTypeEnum](../enums/SurfaceTextureTypeEnum.md)
 

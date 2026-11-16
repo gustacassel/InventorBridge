@@ -15,10 +15,11 @@ interface FlangeFeatures
     // Methods
     FlangeFeature Add(FlangeDefinition FlangeDefinition);
     FlangeDefinition CreateDefinition(EdgeCollection Edges, FlangeReferenceTypeEnum FlangeAngleReferenceType, object FlangeAngleOrFlangeAngleReferencePlane, object FlangePlacementType = Missing, object Distance = Missing, object Options = Missing); // since 2025
+    FlangeDefinition CreateFlangeDefinition(EdgeCollection Edges, object FlangeAngleOrFlangeAngleReferencePlane, object Distance); // hidden in 2025, 2026, 2027: there, prefer the newer members
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [SheetMetalFeatures](../objects/SheetMetalFeatures.md).FlangeFeatures
 

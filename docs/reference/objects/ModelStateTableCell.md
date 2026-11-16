@@ -2,7 +2,7 @@
 
 Inventor API object · versions: 2024+ · [index](../index.md)
 
-**How to get it:** `Application.ActiveDocument → (PartDocument).ComponentDefinition.ModelStates.ModelStateTable.TableRows.Item[…].Item[…]`
+**How to get it:** `Application.ActiveDocument → (PartDocument).ComponentDefinition.ModelStates.ModelStateTable.TableColumns.Item[…].Item[…]`
 
 ```csharp
 interface ModelStateTableCell

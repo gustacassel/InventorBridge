@@ -2,7 +2,7 @@
 
 Inventor API object · versions: 2024+ · [index](../index.md)
 
-**How to get it:** `Application.ActiveDocument → (PartDocument).ComponentDefinition.Features.BoundaryPatchFeatures.Item[…] → (LoftedFlangeFeatureProxy).Definition`
+**How to get it:** `Application.ActiveDocument → (PartDocument).ComponentDefinition.Features.BoundaryPatchFeatures.Item[…] → (LoftedFlangeFeature).Definition`
 
 ```csharp
 interface LoftedFlangeDefinition

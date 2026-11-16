@@ -16,7 +16,7 @@ interface GeneralDimensionsEnumerator
 
 1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
-**Returned by:** [BaselineDimensionSet](../objects/BaselineDimensionSet.md).Members, [ChainDimensionSet](../objects/ChainDimensionSet.md).AddMembers, [ChainDimensionSet](../objects/ChainDimensionSet.md).Members
+**Returned by:** [BaselineDimensionSet](../objects/BaselineDimensionSet.md).Members, [ChainDimensionSet](../objects/ChainDimensionSet.md).AddMembers, [ChainDimensionSet](../objects/ChainDimensionSet.md).Members, [GeneralDimensions](../objects/GeneralDimensions.md).Retrieve
 
 **Referenced types:** [GeneralDimension](../objects/GeneralDimension.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
 

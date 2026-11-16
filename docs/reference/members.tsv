@@ -441,6 +441,7 @@ Application	RepresentationEvents	property	RepresentationEvents RepresentationEve
 Application	SaveOptions	property	SaveOptions SaveOptions { get; }	2024+
 Application	ScreenUpdating	property	bool ScreenUpdating { get; set; }	2024+
 Application	SilentOperation	property	bool SilentOperation { get; set; }	2024+
+Application	Sketch3DOptions	property	Sketch3DOptions Sketch3DOptions { get; }	2024, 2025
 Application	SketchEvents	property	SketchEvents SketchEvents { get; }	2024+
 Application	SketchOptions	property	SketchOptions SketchOptions { get; }	2024+
 Application	SoftwareVersion	property	SoftwareVersion SoftwareVersion { get; }	2024+
@@ -512,7 +513,7 @@ ApplicationAddInServer	Activate	method	void Activate(ApplicationAddInSite AddInS
 ApplicationAddInServer	Deactivate	method	void Deactivate();	2024+
 ApplicationAddInServer	ExecuteCommand	method	void ExecuteCommand(int CommandID);	2024+
 ApplicationAddInSite	Application	property	Application Application { get; }	2024+
-ApplicationAddInSite	InventorServer	property	InventorServer InventorServer { get; }	2024+
+ApplicationAddInSite	InventorServer	property	InventorServer InventorServer { get; }	2027
 ApplicationAddInSite	Parent	property	ApplicationAddIn Parent { get; }	2024+
 ApplicationAddInSite	Type	property	ObjectTypeEnum Type { get; }	2024+
 ApplicationAddIns	Count	property	int Count { get; }	2024+
@@ -935,6 +936,7 @@ AssemblyDocument	DesignViewInfo	property	string DesignViewInfo { get; }	2024+
 AssemblyDocument	Dirty	property	bool Dirty { get; set; }	2024+
 AssemblyDocument	DisabledCommandList	property	DisabledCommandList DisabledCommandList { get; }	2024+
 AssemblyDocument	DisabledCommandTypes	property	CommandTypesEnum DisabledCommandTypes { get; set; }	2024+
+AssemblyDocument	DisplayName	property	string DisplayName { get; set; }	2024, 2025
 AssemblyDocument	DisplayNameBasis	property	string DisplayNameBasis { get; set; }	2026, 2027
 AssemblyDocument	DisplayNameOverridden	property	bool DisplayNameOverridden { get; set; }	2024+
 AssemblyDocument	DisplaySettings	property	DisplaySettings DisplaySettings { get; }	2024+
@@ -1460,9 +1462,10 @@ BIMComponent	ConnectorLinks	property	BIMConnectorLinks ConnectorLinks { get; }	2
 BIMComponent	Connectors	property	BIMConnectors Connectors { get; }	2024+
 BIMComponent	Type	property	ObjectTypeEnum Type { get; }	2024+
 BIMComponent	ExportBuildingComponent	method	void ExportBuildingComponent(string FullFileName);	2024+
-BIMComponent	ExportBuildingComponentWithOptions	method	void ExportBuildingComponentWithOptions(string FullFileName, NameValueMap pOptions);	2024+
+BIMComponent	ExportBuildingComponentWithOptions	method	void ExportBuildingComponentWithOptions(string FullFileName, NameValueMap pOptions);	2026, 2027
 BIMComponentDescription	Application	property	object Application { get; }	2024+
 BIMComponentDescription	ComponentPropertySets	property	BIMComponentPropertySets ComponentPropertySets { get; }	2024+
+BIMComponentDescription	ComponentType	property	string ComponentType { get; set; }	2024, 2025
 BIMComponentDescription	FamilyType	property	string FamilyType { get; set; }	2024+
 BIMComponentDescription	ModelProperties	property	ObjectCollection ModelProperties { get; set; }	2024+
 BIMComponentDescription	OrientationType	property	BIMComponentOrientationTypeEnum OrientationType { get; set; }	2024+
@@ -2316,6 +2319,7 @@ BreakOperations	Application	property	object Application { get; }	2024+
 BreakOperations	Count	property	int Count { get; }	2024+
 BreakOperations	Item	property	BreakOperation Item[int Index] { get; }	2024+
 BreakOperations	Type	property	ObjectTypeEnum Type { get; }	2024+
+BreakOperations	Add	method	BreakOperation Add(BreakOrientationEnum Orientation, Point2d StartPoint, Point2d EndPoint, BreakStyleEnum BreakStyle = BreakStyleEnum.kRectangularBreakStyle, int DisplayLevel = 5, double Gap = 0, int NumberOfSymbols = 1, bool PropagateToParentView = false);	2024, 2025, 2026
 BreakOperations	AddBySketch	method	BreakOperation AddBySketch(DrawingSketch Sketch, BreakStyleEnum BreakStyle = BreakStyleEnum.kRectangularBreakStyle, int DisplayLevel = 5, double Gap = 0, int NumberOfSymbols = 1, object Reserved = Missing);	2026, 2027
 BreakOperations	AddWithOptions	method	BreakOperation AddWithOptions(BreakOrientationEnum Orientation, Point2d StartPoint, Point2d EndPoint, object Options = Missing);	2027
 BreakOutOperation	AllAffectedViews	property	ObjectsEnumerator AllAffectedViews { get; }	2024+
@@ -2342,6 +2346,7 @@ BrowserFolder	AllowRename	property	bool AllowRename { get; set; }	2024+
 BrowserFolder	AllowReorder	property	bool AllowReorder { get; set; }	2024+
 BrowserFolder	Application	property	object Application { get; }	2024+
 BrowserFolder	BrowserNode	property	BrowserNode BrowserNode { get; }	2024+
+BrowserFolder	InternalName	property	string InternalName { get; }	2024, 2025, 2026
 BrowserFolder	Name	property	string Name { get; set; }	2024+
 BrowserFolder	Parent	property	object Parent { get; }	2024+
 BrowserFolder	PartFeatureFolder	property	bool PartFeatureFolder { get; }	2027
@@ -2506,6 +2511,7 @@ Cell	Static	property	bool Static { get; set; }	2024+
 Cell	Type	property	ObjectTypeEnum Type { get; }	2024+
 Cell	Value	property	string Value { get; set; }	2024+
 CenteredWidthExtent	Application	property	object Application { get; }	2024+
+CenteredWidthExtent	Edge	property	Edge Edge { get; }	2024
 CenteredWidthExtent	Parent	property	PartFeature Parent { get; }	2024+
 CenteredWidthExtent	Type	property	ObjectTypeEnum Type { get; }	2024+
 CenteredWidthExtent	Width	property	Parameter Width { get; }	2024+
@@ -3370,7 +3376,7 @@ ColorAssetValue	Parent	property	Asset Parent { get; }	2024+
 ColorAssetValue	Type	property	ObjectTypeEnum Type { get; }	2024+
 ColorAssetValue	Value	property	Color Value { get; set; }	2024+
 ColorAssetValue	ValueType	property	AssetValueTypeEnum ValueType { get; }	2024+
-ColorAssetValue	Values	property	Color[] Values { get; set; }	2024+
+ColorAssetValue	Values	property	Color[] get_Values(); void set_Values(Color[] value); // not usable as a property in C#	2024+
 ColorScheme	Application	property	object Application { get; }	2024+
 ColorScheme	BottomScreenColor	property	Color BottomScreenColor { get; }	2024+
 ColorScheme	BottomScreenColor2D	property	Color BottomScreenColor2D { get; }	2024+
@@ -3650,7 +3656,7 @@ ComponentGraphics	RemoveViewSpaceAnchor	method	void RemoveViewSpaceAnchor();	202
 ComponentGraphics	SetCustomLineType	method	void SetCustomLineType(string FullFileName, string LineTypeName, bool ReplaceExisting);	2024+
 ComponentGraphics	SetTransformBehavior	method	void SetTransformBehavior(Point Anchor, DisplayTransformBehaviorEnum BehaviorType, double PixelScale = 1);	2024+
 ComponentGraphics	SetViewSpaceAnchor	method	void SetViewSpaceAnchor(Point Origin, Point2d Anchor, ViewLayoutEnum AnchorRelativeTo);	2024+
-ComponentOccurrence	ActiveDesignViewRepresentation	property	string ActiveDesignViewRepresentation { get; }	2024+
+ComponentOccurrence	ActiveDesignViewRepresentation	property	string ActiveDesignViewRepresentation { get; }	2026, 2027
 ComponentOccurrence	ActiveModelState	property	string ActiveModelState { get; set; }	2024+
 ComponentOccurrence	ActivePositionalRepresentation	property	string ActivePositionalRepresentation { get; set; }	2024+
 ComponentOccurrence	Adaptive	property	bool Adaptive { get; set; }	2024+
@@ -3720,7 +3726,7 @@ ComponentOccurrence	SetTransformWithoutConstraints	method	void SetTransformWitho
 ComponentOccurrence	ShowRelationships	method	void ShowRelationships();	2024+
 ComponentOccurrence	Suppress	method	void Suppress(bool SkipDocumentSave = false);	2024+
 ComponentOccurrence	Unsuppress	method	void Unsuppress();	2024+
-ComponentOccurrenceProxy	ActiveDesignViewRepresentation	property	string ActiveDesignViewRepresentation { get; }	2024+
+ComponentOccurrenceProxy	ActiveDesignViewRepresentation	property	string ActiveDesignViewRepresentation { get; }	2026, 2027
 ComponentOccurrenceProxy	ActiveModelState	property	string ActiveModelState { get; set; }	2024+
 ComponentOccurrenceProxy	ActivePositionalRepresentation	property	string ActivePositionalRepresentation { get; set; }	2024+
 ComponentOccurrenceProxy	Adaptive	property	bool Adaptive { get; set; }	2024+
@@ -4020,7 +4026,11 @@ ContourFlangeDefinition	BendOptions	property	BendOptions BendOptions { get; set;
 ContourFlangeDefinition	BendRadius	property	object BendRadius { get; set; }	2024+
 ContourFlangeDefinition	ContourFlangeEdgeSetCount	property	int ContourFlangeEdgeSetCount { get; }	2026, 2027
 ContourFlangeDefinition	CornerOptions	property	CornerOptions CornerOptions { get; set; }	2024+
+ContourFlangeDefinition	DefaultWidthExtent	property	PartFeatureExtent DefaultWidthExtent { get; }	2024, 2025
+ContourFlangeDefinition	DefaultWidthExtentType	property	PartFeatureExtentEnum DefaultWidthExtentType { get; }	2024, 2025
 ContourFlangeDefinition	DistanceWidthExtentTwo	property	PartFeatureExtent DistanceWidthExtentTwo { get; }	2024+
+ContourFlangeDefinition	Edges	property	EdgeCollection Edges { get; set; }	2024, 2025
+ContourFlangeDefinition	ExtendFaces	property	bool ExtendFaces { get; set; }	2024, 2025
 ContourFlangeDefinition	ExtentDirection	property	PartFeatureExtentDirectionEnum ExtentDirection { get; set; }	2024+
 ContourFlangeDefinition	IsDistanceWidthExtentAsymmetric	property	bool IsDistanceWidthExtentAsymmetric { get; }	2024+
 ContourFlangeDefinition	IsUnfoldMethodOverridden	property	bool IsUnfoldMethodOverridden { get; set; }	2024+
@@ -4038,10 +4048,22 @@ ContourFlangeDefinition	WidthExtentsFromSketchPlane	property	bool WidthExtentsFr
 ContourFlangeDefinition	AddContourFlangeEdgeSet	method	FlangeEdgeSet AddContourFlangeEdgeSet(EdgeCollection Edges);	2026, 2027
 ContourFlangeDefinition	ContourFlangeEdgeSetItem	method	FlangeEdgeSet ContourFlangeEdgeSetItem(int Index);	2026, 2027
 ContourFlangeDefinition	Copy	method	ContourFlangeDefinition Copy();	2024+
+ContourFlangeDefinition	GetWidthExtent	method	PartFeatureExtent GetWidthExtent(Edge Edge);	2024, 2025
+ContourFlangeDefinition	GetWidthExtentType	method	PartFeatureExtentEnum GetWidthExtentType(Edge Edge, out bool HasOverride);	2024, 2025
+ContourFlangeDefinition	SetCenteredDefaultWidthExtent	method	void SetCenteredDefaultWidthExtent(object Width);	2024, 2025
+ContourFlangeDefinition	SetCenteredWidthExtent	method	void SetCenteredWidthExtent(Edge Edge, object Width);	2024, 2025
 ContourFlangeDefinition	SetDistanceExtent	method	void SetDistanceExtent(object Distance, PartFeatureExtentDirectionEnum ExtentDirection);	2024+
 ContourFlangeDefinition	SetDistanceWidthExtentTwo	method	void SetDistanceWidthExtentTwo(object Distance);	2024+
+ContourFlangeDefinition	SetEdgeDefaultWidthExtent	method	void SetEdgeDefaultWidthExtent();	2024, 2025
+ContourFlangeDefinition	SetEdgeWidthExtent	method	void SetEdgeWidthExtent(Edge Edge);	2024, 2025
+ContourFlangeDefinition	SetFromToDefaultWidthExtent	method	void SetFromToDefaultWidthExtent(object FromEntity, object ToEntity);	2024, 2025
 ContourFlangeDefinition	SetFromToExtent	method	void SetFromToExtent(object FromEntity, object ToEntity);	2026, 2027
+ContourFlangeDefinition	SetFromToWidthExtent	method	void SetFromToWidthExtent(Edge Edge, object FromEntity, object ToEntity);	2024, 2025
+ContourFlangeDefinition	SetOffsetDefaultWidthExtent	method	void SetOffsetDefaultWidthExtent(object OffsetEntityOne, object OffsetDistanceOne, object OffsetEntityTwo, object OffsetDistanceTwo);	2024, 2025
+ContourFlangeDefinition	SetOffsetWidthExtent	method	void SetOffsetWidthExtent(Edge Edge, object OffsetEntityOne, object OffsetDistanceOne, object OffsetEntityTwo, object OffsetDistanceTwo);	2024, 2025
 ContourFlangeDefinition	SetToExtent	method	void SetToExtent(object ToEntity);	2026, 2027
+ContourFlangeDefinition	SetWidthOffsetDefaultWidthExtent	method	void SetWidthOffsetDefaultWidthExtent(object Width, object OffsetDistance, object OffsetEntity, bool PositiveDirection);	2024, 2025
+ContourFlangeDefinition	SetWidthOffsetWidthExtent	method	void SetWidthOffsetWidthExtent(Edge Edge, object Width, object OffsetDistance, object OffsetEntity, bool PositiveDirection);	2024, 2025
 ContourFlangeFeature	Adaptive	property	bool Adaptive { get; set; }	2024+
 ContourFlangeFeature	Appearance	property	Asset Appearance { get; set; }	2024+
 ContourFlangeFeature	AppearanceSourceType	property	AppearanceSourceTypeEnum AppearanceSourceType { get; set; }	2024+
@@ -4107,6 +4129,7 @@ ContourFlangeFeatures	Count	property	int Count { get; }	2024+
 ContourFlangeFeatures	Item	property	ContourFlangeFeature Item[object Index] { get; }	2024+
 ContourFlangeFeatures	Type	property	ObjectTypeEnum Type { get; }	2024+
 ContourFlangeFeatures	Add	method	ContourFlangeFeature Add(ContourFlangeDefinition ContourFlangeDefinition);	2024+
+ContourFlangeFeatures	CreateContourFlangeDefinition	method	ContourFlangeDefinition CreateContourFlangeDefinition(Path Path, object Edges = Missing);	2024, 2025
 ContourFlangeFeatures	CreateDefinition	method	ContourFlangeDefinition CreateDefinition(Path Path, object Operation = Missing, object WidthExtentsFromSketchPlane = Missing, object EdgeSet = Missing, object BendEdges = Missing);	2026, 2027
 ContourRollFeature	Adaptive	property	bool Adaptive { get; set; }	2024+
 ContourRollFeature	Appearance	property	Asset Appearance { get; set; }	2024+
@@ -4524,8 +4547,8 @@ CosmeticWelds	Application	property	object Application { get; }	2024+
 CosmeticWelds	Count	property	int Count { get; }	2024+
 CosmeticWelds	Item	property	CosmeticWeld Item[object Index] { get; }	2024+
 CosmeticWelds	Type	property	ObjectTypeEnum Type { get; }	2024+
-CosmeticWelds	Add	method	CosmeticWeld Add(CosmeticWeldDefinition CosmeticWeldDefinition);	2024+
-CosmeticWelds	CreateDefinition	method	CosmeticWeldDefinition CreateDefinition(EdgeCollection Edges);	2024+
+CosmeticWelds	Add	method	CosmeticWeld Add(CosmeticWeldDefinition CosmeticWeldDefinition);	2025, 2026, 2027
+CosmeticWelds	CreateDefinition	method	CosmeticWeldDefinition CreateDefinition(EdgeCollection Edges);	2025, 2026, 2027
 CropOperation	Application	property	object Application { get; }	2025, 2026, 2027
 CropOperation	AttributeSets	property	AttributeSets AttributeSets { get; }	2025, 2026, 2027
 CropOperation	CropBoundarySketch	property	DrawingSketch CropBoundarySketch { get; }	2025, 2026, 2027
@@ -4670,7 +4693,7 @@ CustomPropertyFormat	ShowLeadingZeros	property	bool ShowLeadingZeros { get; set;
 CustomPropertyFormat	ShowTrailingZeros	property	bool ShowTrailingZeros { get; set; }	2024+
 CustomPropertyFormat	ShowUnitsString	property	bool ShowUnitsString { get; set; }	2024+
 CustomPropertyFormat	Type	property	ObjectTypeEnum Type { get; }	2024+
-CustomPropertyFormat	Units	property	string Units { get; set; }	2024+
+CustomPropertyFormat	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 CustomTable	Application	property	object Application { get; }	2024+
 CustomTable	AttributeSets	property	AttributeSets AttributeSets { get; }	2024+
 CustomTable	BendDirectionReversed	property	bool BendDirectionReversed { get; set; }	2024+
@@ -5659,7 +5682,7 @@ DerivedParameter	Precision	property	int Precision { get; set; }	2024+
 DerivedParameter	ReferencedEntity	property	Parameter ReferencedEntity { get; }	2024+
 DerivedParameter	Tolerance	property	Tolerance Tolerance { get; }	2024+
 DerivedParameter	Type	property	ObjectTypeEnum Type { get; }	2024+
-DerivedParameter	Units	property	string Units { get; set; }	2024+
+DerivedParameter	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 DerivedParameter	Value	property	object Value { get; set; }	2024+
 DerivedParameter	Delete	method	void Delete();	2024+
 DerivedParameter	GetReferenceKey	method	void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);	2024+
@@ -6684,6 +6707,7 @@ Document	DatabaseRevisionId	property	string DatabaseRevisionId { get; }	2024+
 Document	DefaultCommand	property	string DefaultCommand { get; }	2024+
 Document	Dirty	property	bool Dirty { get; set; }	2024+
 Document	DisabledCommandTypes	property	CommandTypesEnum DisabledCommandTypes { get; set; }	2024+
+Document	DisplayName	property	string DisplayName { get; set; }	2024, 2025
 Document	DisplayNameBasis	property	string DisplayNameBasis { get; set; }	2026, 2027
 Document	DisplayNameOverridden	property	bool DisplayNameOverridden { get; set; }	2024+
 Document	DocumentEvents	property	DocumentEvents DocumentEvents { get; }	2024+
@@ -6979,6 +7003,7 @@ DrawingDocument	DefaultCommand	property	string DefaultCommand { get; }	2024+
 DrawingDocument	Dirty	property	bool Dirty { get; set; }	2024+
 DrawingDocument	DisabledCommandList	property	DisabledCommandList DisabledCommandList { get; }	2024+
 DrawingDocument	DisabledCommandTypes	property	CommandTypesEnum DisabledCommandTypes { get; set; }	2024+
+DrawingDocument	DisplayName	property	string DisplayName { get; set; }	2024, 2025
 DrawingDocument	DisplayNameBasis	property	string DisplayNameBasis { get; set; }	2026, 2027
 DrawingDocument	DisplayNameOverridden	property	bool DisplayNameOverridden { get; set; }	2024+
 DrawingDocument	DocumentEvents	property	DocumentEvents DocumentEvents { get; }	2024+
@@ -7828,6 +7853,7 @@ EdgeUses	Count	property	int Count { get; }	2024+
 EdgeUses	Item	property	EdgeUse Item[int Index] { get; }	2024+
 EdgeUses	Type	property	ObjectTypeEnum Type { get; }	2024+
 EdgeWidthExtent	Application	property	object Application { get; }	2024+
+EdgeWidthExtent	Edge	property	Edge Edge { get; }	2024
 EdgeWidthExtent	Parent	property	PartFeature Parent { get; }	2024+
 EdgeWidthExtent	Type	property	ObjectTypeEnum Type { get; }	2024+
 Edges	Count	property	int Count { get; }	2024+
@@ -9021,7 +9047,7 @@ FilenameAssetValue	Parent	property	Asset Parent { get; }	2024+
 FilenameAssetValue	Type	property	ObjectTypeEnum Type { get; }	2024+
 FilenameAssetValue	Value	property	string Value { get; set; }	2024+
 FilenameAssetValue	ValueType	property	AssetValueTypeEnum ValueType { get; }	2024+
-FilenameAssetValue	Values	property	string[] Values { get; set; }	2024+
+FilenameAssetValue	Values	property	string[] get_Values(); void set_Values(string[] value); // not usable as a property in C#	2024+
 FilesEnumerator	Application	property	object Application { get; }	2024+
 FilesEnumerator	Count	property	int Count { get; }	2024+
 FilesEnumerator	Item	property	File Item[object Index] { get; }	2024+
@@ -9172,6 +9198,7 @@ FinishDefinition	ExcludedEntities	property	ObjectCollection ExcludedEntities { g
 FinishDefinition	FinishType	property	FinishTypeEnum FinishType { get; set; }	2024+
 FinishDefinition	Hardness	property	object Hardness { get; set; }	2024+
 FinishDefinition	IncludedEntities	property	ObjectCollection IncludedEntities { get; set; }	2025, 2026, 2027
+FinishDefinition	InputFaces	property	FaceCollection InputFaces { get; set; }	2024
 FinishDefinition	Parent	property	FinishFeature Parent { get; }	2024+
 FinishDefinition	ProcessName	property	string ProcessName { get; set; }	2024+
 FinishDefinition	ShortDescription	property	string ShortDescription { get; set; }	2024+
@@ -9246,6 +9273,7 @@ FinishFeatures	Item	property	FinishFeature Item[object Index] { get; }	2024+
 FinishFeatures	Type	property	ObjectTypeEnum Type { get; }	2024+
 FinishFeatures	Add	method	FinishFeature Add(FinishDefinition pDefinition);	2024+
 FinishFeatures	CreateDefinition	method	FinishDefinition CreateDefinition(ObjectCollection pIncludedEntities, object vtExcludedEntities = Missing, FinishTypeEnum FinishType = FinishTypeEnum.kAppearanceFinishType, object vtProcessName = Missing, object vtAppearance = Missing, object vtMoreOptions = Missing);	2025, 2026, 2027
+FinishFeatures	CreateFinishDefinition	method	FinishDefinition CreateFinishDefinition(FaceCollection pInputFaces, FinishTypeEnum FinishType, object vtProcessName = Missing, object vtAppearance = Missing);	2024
 FinishParameter	AttributeSets	property	AttributeSets AttributeSets { get; }	2024+
 FinishParameter	Comment	property	string Comment { get; set; }	2024+
 FinishParameter	CustomPropertyFormat	property	CustomPropertyFormat CustomPropertyFormat { get; }	2024+
@@ -9267,7 +9295,7 @@ FinishParameter	Parent	property	object Parent { get; }	2024+
 FinishParameter	Precision	property	int Precision { get; set; }	2024+
 FinishParameter	Tolerance	property	Tolerance Tolerance { get; }	2024+
 FinishParameter	Type	property	ObjectTypeEnum Type { get; }	2024+
-FinishParameter	Units	property	string Units { get; set; }	2024+
+FinishParameter	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 FinishParameter	Value	property	object Value { get; set; }	2024+
 FinishParameter	Delete	method	void Delete();	2024+
 FinishParameter	GetReferenceKey	method	void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);	2024+
@@ -9296,9 +9324,13 @@ FixedWorkPointDef	Type	property	ObjectTypeEnum Type { get; }	2024+
 FlangeDefinition	Application	property	object Application { get; }	2024+
 FlangeDefinition	ApplyAutoMitering	property	bool ApplyAutoMitering { get; set; }	2024+
 FlangeDefinition	BendOptions	property	BendOptions BendOptions { get; set; }	2024+
+FlangeDefinition	BendPosition	property	BendPositionEnum BendPosition { get; set; }	2024
 FlangeDefinition	BendRadius	property	object BendRadius { get; set; }	2024+
 FlangeDefinition	CornerOptions	property	CornerOptions CornerOptions { get; set; }	2024+
+FlangeDefinition	DefaultWidthExtent	property	PartFeatureExtent DefaultWidthExtent { get; }	2024
+FlangeDefinition	DefaultWidthExtentType	property	PartFeatureExtentEnum DefaultWidthExtentType { get; }	2024
 FlangeDefinition	EdgeSetCount	property	int EdgeSetCount { get; }	2025, 2026, 2027
+FlangeDefinition	Edges	property	EdgeCollection Edges { get; set; }	2024
 FlangeDefinition	FlangeAngle	property	object FlangeAngle { get; set; }	2024+
 FlangeDefinition	FlangeAngleReferencePlane	property	object FlangeAngleReferencePlane { get; set; }	2024+
 FlangeDefinition	FlangeAngleReferenceType	property	FlangeReferenceTypeEnum FlangeAngleReferenceType { get; set; }	2025, 2026, 2027
@@ -9313,10 +9345,23 @@ FlangeDefinition	UnfoldMethod	property	UnfoldMethod UnfoldMethod { get; set; }	2
 FlangeDefinition	AddFlangeEdgeSet	method	FlangeEdgeSet AddFlangeEdgeSet(EdgeCollection Edges);	2025, 2026, 2027
 FlangeDefinition	Copy	method	FlangeDefinition Copy();	2024+
 FlangeDefinition	EdgeSetItem	method	FlangeEdgeSet EdgeSetItem(int Index);	2025, 2026, 2027
+FlangeDefinition	GetWidthExtent	method	PartFeatureExtent GetWidthExtent(Edge Edge);	2024
+FlangeDefinition	GetWidthExtentType	method	PartFeatureExtentEnum GetWidthExtentType(Edge Edge, out bool HasOverride);	2024
+FlangeDefinition	RemoveOverrideWidthExtent	method	void RemoveOverrideWidthExtent(Edge Edge);	2024
+FlangeDefinition	SetCenteredDefaultWidthExtent	method	void SetCenteredDefaultWidthExtent(object Width);	2024
+FlangeDefinition	SetCenteredWidthExtent	method	void SetCenteredWidthExtent(Edge Edge, object Width);	2024
 FlangeDefinition	SetDistanceHeightExtent	method	void SetDistanceHeightExtent(object Distance, PartFeatureExtentDirectionEnum ExtentDirection, HeightDatumTypeEnum HeightDatumType);	2024+
+FlangeDefinition	SetEdgeDefaultWidthExtent	method	void SetEdgeDefaultWidthExtent();	2024
+FlangeDefinition	SetEdgeWidthExtent	method	void SetEdgeWidthExtent(Edge Edge);	2024
 FlangeDefinition	SetFlangeAngleReferenceType	method	void SetFlangeAngleReferenceType(FlangeReferenceTypeEnum ReferenceType, object FlangeAngleOrReferencePlane = Missing, object PlancementType = Missing);	2025, 2026, 2027
+FlangeDefinition	SetFromToDefaultWidthExtent	method	void SetFromToDefaultWidthExtent(object FromEntity, object ToEntity);	2024
+FlangeDefinition	SetFromToWidthExtent	method	void SetFromToWidthExtent(Edge Edge, object FromEntity, object ToEntity);	2024
 FlangeDefinition	SetLegacyDistanceHeightExtent	method	void SetLegacyDistanceHeightExtent(object Distance, PartFeatureExtentDirectionEnum ExtentDirection, HeightDatumTypeEnum HeightDatumType);	2024+
+FlangeDefinition	SetOffsetDefaultWidthExtent	method	void SetOffsetDefaultWidthExtent(object OffsetEntityOne, object OffsetDistanceOne, object OffsetEntityTwo, object OffsetDistanceTwo);	2024
+FlangeDefinition	SetOffsetWidthExtent	method	void SetOffsetWidthExtent(Edge Edge, object OffsetEntityOne, object OffsetDistanceOne, object OffsetEntityTwo, object OffsetDistanceTwo);	2024
 FlangeDefinition	SetToHeightExtent	method	void SetToHeightExtent(object ToEntity, object Offset = Missing);	2024+
+FlangeDefinition	SetWidthOffsetDefaultWidthExtent	method	void SetWidthOffsetDefaultWidthExtent(object Width, object OffsetDistance, object OffsetEntity, bool PositiveDirection);	2024
+FlangeDefinition	SetWidthOffsetWidthExtent	method	void SetWidthOffsetWidthExtent(Edge Edge, object Width, object OffsetDistance, object OffsetEntity, bool PositiveDirection);	2024
 FlangeEdgeSet	Application	property	object Application { get; }	2025, 2026, 2027
 FlangeEdgeSet	Edges	property	EdgeCollection Edges { get; set; }	2025, 2026, 2027
 FlangeEdgeSet	Type	property	ObjectTypeEnum Type { get; }	2025, 2026, 2027
@@ -9394,6 +9439,7 @@ FlangeFeatures	Item	property	FlangeFeature Item[object Index] { get; }	2024+
 FlangeFeatures	Type	property	ObjectTypeEnum Type { get; }	2024+
 FlangeFeatures	Add	method	FlangeFeature Add(FlangeDefinition FlangeDefinition);	2024+
 FlangeFeatures	CreateDefinition	method	FlangeDefinition CreateDefinition(EdgeCollection Edges, FlangeReferenceTypeEnum FlangeAngleReferenceType, object FlangeAngleOrFlangeAngleReferencePlane, object FlangePlacementType = Missing, object Distance = Missing, object Options = Missing);	2025, 2026, 2027
+FlangeFeatures	CreateFlangeDefinition	method	FlangeDefinition CreateFlangeDefinition(EdgeCollection Edges, object FlangeAngleOrFlangeAngleReferencePlane, object Distance);	2024
 FlatBendResult	Angle	property	double Angle { get; }	2024+
 FlatBendResult	Application	property	object Application { get; }	2024+
 FlatBendResult	Bend	property	Bend Bend { get; }	2024+
@@ -9554,7 +9600,7 @@ FloatAssetValue	Type	property	ObjectTypeEnum Type { get; }	2024+
 FloatAssetValue	Units	property	string Units { get; }	2024+
 FloatAssetValue	Value	property	double Value { get; set; }	2024+
 FloatAssetValue	ValueType	property	AssetValueTypeEnum ValueType { get; }	2024+
-FloatAssetValue	Values	property	double[] Values { get; set; }	2024+
+FloatAssetValue	Values	property	double[] get_Values(); void set_Values(double[] value); // not usable as a property in C#	2024+
 FloatAssetValue	GetLimits	method	void GetLimits(out bool HasLowLimit, out double LowLimit, out bool HasHighLimit, out double HighLimit);	2024+
 FlushConstraint	AffectedOccurrenceOne	property	ComponentOccurrence AffectedOccurrenceOne { get; }	2024+
 FlushConstraint	AffectedOccurrenceTwo	property	ComponentOccurrence AffectedOccurrenceTwo { get; }	2024+
@@ -9855,6 +9901,7 @@ FromToExtent	Parent	property	PartFeature Parent { get; }	2024+
 FromToExtent	ToFace	property	object ToFace { get; set; }	2024+
 FromToExtent	Type	property	ObjectTypeEnum Type { get; }	2024+
 FromToWidthExtent	Application	property	object Application { get; }	2024+
+FromToWidthExtent	Edge	property	Edge Edge { get; }	2024
 FromToWidthExtent	FromEntity	property	object FromEntity { get; }	2024+
 FromToWidthExtent	Parent	property	PartFeature Parent { get; }	2024+
 FromToWidthExtent	ToEntity	property	object ToEntity { get; }	2024+
@@ -9907,6 +9954,8 @@ GeneralDimensions	AddLinear2	method	LinearGeneralDimension AddLinear2(Point2d Te
 GeneralDimensions	AddLinearForeshortened	method	LinearGeneralDimension AddLinearForeshortened(Point2d TextOrigin, GeometryIntent IntentOne, GeometryIntent IntentTwo, bool HideSecondArrowhead = false, object DimensionStyle = Missing, object Layer = Missing);	2024+
 GeneralDimensions	AddLinearSum	method	LinearGeneralDimension AddLinearSum(Point2d TextOrigin, LinearGeneralDimension SpacingDimension, GeometryIntent IntentOne, object IntentTwo = Missing, bool ArrowheadsInside = true, object DimensionStyle = Missing, object Layer = Missing, object Reserved = Missing);	2026, 2027
 GeneralDimensions	AddRadius	method	RadiusGeneralDimension AddRadius(Point2d TextOrigin, GeometryIntent Intent, bool ArrowheadsInside = false, bool LeaderFromCenter = false, bool Jogged = false, object DimensionStyle = Missing, object Layer = Missing);	2024+
+GeneralDimensions	GetRetrievableDimensions	method	ObjectCollection GetRetrievableDimensions(DrawingView View, object ModelObject = Missing);	2024
+GeneralDimensions	Retrieve	method	GeneralDimensionsEnumerator Retrieve(object ViewOrSketch, object DimensionsToRetrieve = Missing);	2024
 GeneralDimensionsEnumerator	Count	property	int Count { get; }	2024+
 GeneralDimensionsEnumerator	Item	property	GeneralDimension Item[int Index] { get; }	2024+
 GeneralDimensionsEnumerator	Type	property	ObjectTypeEnum Type { get; }	2024+
@@ -10352,7 +10401,7 @@ GroundPlaneSettings	SetSize	method	void SetSize(Point PointOne, Point PointTwo);
 HardwareOptions	Application	property	object Application { get; }	2024+
 HardwareOptions	Diagnostics	property	string Diagnostics { get; }	2024+
 HardwareOptions	EnableViewportGPURayTracing	property	bool EnableViewportGPURayTracing { get; set; }	2024+
-HardwareOptions	GraphicsDriverType	property	GraphicsDriverTypeEnum GraphicsDriverType { get; set; }	2024+
+HardwareOptions	GraphicsDriverType	property	GraphicsDriverTypeEnum GraphicsDriverType { get; set; }	2027
 HardwareOptions	GraphicsSettingType	property	GraphicsSettingTypeEnum GraphicsSettingType { get; set; }	2024+
 HardwareOptions	Type	property	ObjectTypeEnum Type { get; }	2024+
 HardwareOptions	UseSoftwareGraphics	property	bool UseSoftwareGraphics { get; set; }	2024+
@@ -10610,6 +10659,7 @@ HoleFeature	Extent	property	PartFeatureExtent Extent { get; }	2024+
 HoleFeature	ExtentType	property	PartFeatureExtentEnum ExtentType { get; }	2024+
 HoleFeature	Faces	property	Faces Faces { get; }	2024+
 HoleFeature	FeatureDimensions	property	FeatureDimensions FeatureDimensions { get; }	2024+
+HoleFeature	FlatBottom	property	bool FlatBottom { get; }	2024
 HoleFeature	HealthStatus	property	HealthStatusEnum HealthStatus { get; }	2024+
 HoleFeature	HoleCenterPoints	property	ObjectCollection HoleCenterPoints { get; set; }	2024+
 HoleFeature	HoleDiameter	property	Parameter HoleDiameter { get; }	2024+
@@ -10642,12 +10692,14 @@ HoleFeature	RemoveParticipant	method	void RemoveParticipant(ComponentOccurrence 
 HoleFeature	SetAffectedBodies	method	void SetAffectedBodies(ObjectCollection Bodies);	2024+
 HoleFeature	SetCBore	method	void SetCBore(object CBoreDiameter, object CBoreDepth);	2024+
 HoleFeature	SetCSink	method	void SetCSink(object CSinkDiameter, object CSinkAngle);	2024+
+HoleFeature	SetDistanceExtent	method	void SetDistanceExtent(object Depth, PartFeatureExtentDirectionEnum ExtentDirection, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeature	SetDistanceExtent2	method	void SetDistanceExtent2(object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeature	SetDrilled	method	void SetDrilled();	2024+
 HoleFeature	SetEndOfPart	method	void SetEndOfPart(bool Before);	2024+
 HoleFeature	SetSpotFace	method	void SetSpotFace(object SpotFaceDiameter, object SpotFaceDepth);	2024+
 HoleFeature	SetSuppressionCondition	method	void SetSuppressionCondition(Parameter Parameter, ComparisonTypeEnum ComparisonType, object Expression);	2024+
 HoleFeature	SetThroughAllExtent	method	void SetThroughAllExtent(PartFeatureExtentDirectionEnum ExtentDirection);	2024+
+HoleFeature	SetToFaceExtent	method	void SetToFaceExtent(object ToFace, bool ExtendToFace);	2024
 HoleFeature	SetToFaceExtent2	method	void SetToFaceExtent2(object ToFace, bool ExtendToFace, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatureProxy	Adaptive	property	bool Adaptive { get; set; }	2024+
 HoleFeatureProxy	Appearance	property	Asset Appearance { get; set; }	2024+
@@ -10672,6 +10724,7 @@ HoleFeatureProxy	Extent	property	PartFeatureExtent Extent { get; }	2024+
 HoleFeatureProxy	ExtentType	property	PartFeatureExtentEnum ExtentType { get; }	2024+
 HoleFeatureProxy	Faces	property	Faces Faces { get; }	2024+
 HoleFeatureProxy	FeatureDimensions	property	FeatureDimensions FeatureDimensions { get; }	2024+
+HoleFeatureProxy	FlatBottom	property	bool FlatBottom { get; }	2024
 HoleFeatureProxy	HealthStatus	property	HealthStatusEnum HealthStatus { get; }	2024+
 HoleFeatureProxy	HoleCenterPoints	property	ObjectCollection HoleCenterPoints { get; set; }	2024+
 HoleFeatureProxy	HoleDiameter	property	Parameter HoleDiameter { get; }	2024+
@@ -10705,30 +10758,42 @@ HoleFeatureProxy	RemoveParticipant	method	void RemoveParticipant(ComponentOccurr
 HoleFeatureProxy	SetAffectedBodies	method	void SetAffectedBodies(ObjectCollection Bodies);	2024+
 HoleFeatureProxy	SetCBore	method	void SetCBore(object CBoreDiameter, object CBoreDepth);	2024+
 HoleFeatureProxy	SetCSink	method	void SetCSink(object CSinkDiameter, object CSinkAngle);	2024+
+HoleFeatureProxy	SetDistanceExtent	method	void SetDistanceExtent(object Depth, PartFeatureExtentDirectionEnum ExtentDirection, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatureProxy	SetDistanceExtent2	method	void SetDistanceExtent2(object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatureProxy	SetDrilled	method	void SetDrilled();	2024+
 HoleFeatureProxy	SetEndOfPart	method	void SetEndOfPart(bool Before);	2024+
 HoleFeatureProxy	SetSpotFace	method	void SetSpotFace(object SpotFaceDiameter, object SpotFaceDepth);	2024+
 HoleFeatureProxy	SetSuppressionCondition	method	void SetSuppressionCondition(Parameter Parameter, ComparisonTypeEnum ComparisonType, object Expression);	2024+
 HoleFeatureProxy	SetThroughAllExtent	method	void SetThroughAllExtent(PartFeatureExtentDirectionEnum ExtentDirection);	2024+
+HoleFeatureProxy	SetToFaceExtent	method	void SetToFaceExtent(object ToFace, bool ExtendToFace);	2024
 HoleFeatureProxy	SetToFaceExtent2	method	void SetToFaceExtent2(object ToFace, bool ExtendToFace, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatures	Application	property	object Application { get; }	2024+
 HoleFeatures	Count	property	int Count { get; }	2024+
 HoleFeatures	Item	property	HoleFeature Item[object Index] { get; }	2024+
 HoleFeatures	Type	property	ObjectTypeEnum Type { get; }	2024+
+HoleFeatures	AddCBoreByDistanceExtent	method	HoleFeature AddCBoreByDistanceExtent(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object CBoreDiameter, object CBoreDepth, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddCBoreByDistanceExtent2	method	HoleFeature AddCBoreByDistanceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object CBoreDiameter, object CBoreDepth, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatures	AddCBoreByThroughAllExtent	method	HoleFeature AddCBoreByThroughAllExtent(object PlacementDefinition, object DiameterOrTapInfo, PartFeatureExtentDirectionEnum ExtentDirection, object CBoreDiameter, object CBoreDepth);	2024+
+HoleFeatures	AddCBoreByToFaceExtent	method	HoleFeature AddCBoreByToFaceExtent(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, object CBoreDiameter, object CBoreDepth, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddCBoreByToFaceExtent2	method	HoleFeature AddCBoreByToFaceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, object CBoreDiameter, object CBoreDepth, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
+HoleFeatures	AddCSinkByDistanceExtent	method	HoleFeature AddCSinkByDistanceExtent(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object CSinkDiameter, object CSinkAngle, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddCSinkByDistanceExtent2	method	HoleFeature AddCSinkByDistanceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object CSinkDiameter, object CSinkAngle, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatures	AddCSinkByThroughAllExtent	method	HoleFeature AddCSinkByThroughAllExtent(object PlacementDefinition, object DiameterOrTapInfo, PartFeatureExtentDirectionEnum ExtentDirection, object CSinkDiameter, object CSinkAngle);	2024+
+HoleFeatures	AddCSinkByToFaceExtent	method	HoleFeature AddCSinkByToFaceExtent(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, object CSinkDiameter, object CSinkAngle, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddCSinkByToFaceExtent2	method	HoleFeature AddCSinkByToFaceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, object CSinkDiameter, object CSinkAngle, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
+HoleFeatures	AddDrilledByDistanceExtent	method	HoleFeature AddDrilledByDistanceExtent(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddDrilledByDistanceExtent2	method	HoleFeature AddDrilledByDistanceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatures	AddDrilledByThroughAllExtent	method	HoleFeature AddDrilledByThroughAllExtent(object PlacementDefinition, object DiameterOrTapInfo, PartFeatureExtentDirectionEnum ExtentDirection);	2024+
+HoleFeatures	AddDrilledByToFaceExtent	method	HoleFeature AddDrilledByToFaceExtent(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddDrilledByToFaceExtent2	method	HoleFeature AddDrilledByToFaceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
+HoleFeatures	AddSpotFaceByDistanceExtent	method	HoleFeature AddSpotFaceByDistanceExtent(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object SpotFaceDiameter, object SpotFaceDepth, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddSpotFaceByDistanceExtent2	method	HoleFeature AddSpotFaceByDistanceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object Depth, PartFeatureExtentDirectionEnum ExtentDirection, object SpotFaceDiameter, object SpotFaceDepth, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatures	AddSpotFaceByThroughAllExtent	method	HoleFeature AddSpotFaceByThroughAllExtent(object PlacementDefinition, object DiameterOrTapInfo, PartFeatureExtentDirectionEnum ExtentDirection, object SpotFaceDiameter, object SpotFaceDepth);	2024+
+HoleFeatures	AddSpotFaceByToFaceExtent	method	HoleFeature AddSpotFaceByToFaceExtent(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, object SpotFaceDiameter, object SpotFaceDepth, bool FlatBottom = true, object BottomTipAngle = Missing);	2024
 HoleFeatures	AddSpotFaceByToFaceExtent2	method	HoleFeature AddSpotFaceByToFaceExtent2(object PlacementDefinition, object DiameterOrTapInfo, object ToFace, bool ExtendToFace, object SpotFaceDiameter, object SpotFaceDepth, object DrillPointType = 126977, object BottomTipAngle = Missing);	2025, 2026, 2027
 HoleFeatures	CreateClearanceInfo	method	HoleClearanceInfo CreateClearanceInfo(string FastenerStandard, string FastenerType, string FastenerSize, object FastenerFitType = Missing);	2024+
+HoleFeatures	CreateConcentricPlacementDefinition	method	ConcentricHolePlacementDefinition CreateConcentricPlacementDefinition(object Plane, object ConcentricReference);	2024
+HoleFeatures	CreateLinearPlacementDefinition	method	LinearHolePlacementDefinition CreateLinearPlacementDefinition(object Plane, object ReferenceEntityOne, object DistanceOne, object ReferenceEntityTwo, object DistanceTwo, Point BiasPoint);	2024
 HoleFeatures	CreatePointPlacementDefinition	method	PointHolePlacementDefinition CreatePointPlacementDefinition(object Point, object Direction);	2024+
 HoleFeatures	CreateSketchPlacementDefinition	method	SketchHolePlacementDefinition CreateSketchPlacementDefinition(ObjectCollection HoleCenterPoints);	2024+
 HoleFeatures	CreateTapInfo	method	HoleTapInfo CreateTapInfo(bool RightHanded, string ThreadType, string ThreadDesignation, string Class, bool FullTapDepth, object ThreadDepth = Missing);	2024+
@@ -11462,7 +11527,7 @@ IntegerAssetValue	Parent	property	Asset Parent { get; }	2024+
 IntegerAssetValue	Type	property	ObjectTypeEnum Type { get; }	2024+
 IntegerAssetValue	Value	property	int Value { get; set; }	2024+
 IntegerAssetValue	ValueType	property	AssetValueTypeEnum ValueType { get; }	2024+
-IntegerAssetValue	Values	property	int[] Values { get; set; }	2024+
+IntegerAssetValue	Values	property	int[] get_Values(); void set_Values(int[] value); // not usable as a property in C#	2024+
 IntegerAssetValue	GetLimits	method	void GetLimits(out bool HasLowLimit, out int LowLimit, out bool HasHighLimit, out int HighLimit);	2024+
 InteractionEvents	AllowCommandAliases	property	bool AllowCommandAliases { get; set; }	2024+
 InteractionEvents	Application	property	Application Application { get; }	2024+
@@ -11573,6 +11638,7 @@ InventorServer	PresentationOptions	property	PresentationOptions PresentationOpti
 InventorServer	Ready	property	bool Ready { get; }	2024+
 InventorServer	RepresentationEvents	property	RepresentationEvents RepresentationEvents { get; }	2024+
 InventorServer	SaveOptions	property	SaveOptions SaveOptions { get; }	2024+
+InventorServer	Sketch3DOptions	property	Sketch3DOptions Sketch3DOptions { get; }	2024, 2025
 InventorServer	SketchEvents	property	SketchEvents SketchEvents { get; }	2024+
 InventorServer	SketchOptions	property	SketchOptions SketchOptions { get; }	2024+
 InventorServer	SoftwareVersion	property	SoftwareVersion SoftwareVersion { get; }	2024+
@@ -11643,7 +11709,7 @@ InventorVBAProjects	Open	method	void Open(string FullFileName);	2024+
 IrregularDistributionItem	Application	property	object Application { get; }	2027
 IrregularDistributionItem	DistributionValue	property	object DistributionValue { get; set; }	2027
 IrregularDistributionItem	Parent	property	object Parent { get; }	2027
-IrregularDistributionItem	PatternMemberIndices	property	int[] PatternMemberIndices { get; set; }	2027
+IrregularDistributionItem	PatternMemberIndices	property	int[] get_PatternMemberIndices(); void set_PatternMemberIndices(int[] value); // not usable as a property in C#	2027
 IrregularDistributionItem	Type	property	ObjectTypeEnum Type { get; }	2027
 IrregularDistributionItem	Delete	method	void Delete();	2027
 IrregularDistributionSet	Application	property	object Application { get; }	2027
@@ -12985,18 +13051,30 @@ MeshFeatureEntitiesEnumerator	Type	property	ObjectTypeEnum Type { get; }	2024+
 MeshFeatureEntity	Application	property	object Application { get; }	2024+
 MeshFeatureEntity	AttributeSets	property	AttributeSets AttributeSets { get; }	2024+
 MeshFeatureEntity	ColorBinding	property	ColorBindingEnum ColorBinding { get; }	2024+
+MeshFeatureEntity	ColorIndexSet	property	GraphicsIndexSet ColorIndexSet { get; }	2024, 2025
+MeshFeatureEntity	ColorSet	property	GraphicsColorSet ColorSet { get; }	2024, 2025
+MeshFeatureEntity	CoordinateIndexSet	property	GraphicsIndexSet CoordinateIndexSet { get; }	2024, 2025
+MeshFeatureEntity	CoordinateSet	property	GraphicsCoordinateSet CoordinateSet { get; }	2024, 2025
 MeshFeatureEntity	GraphicsDataSetsCollection	property	GraphicsDataSetsCollection GraphicsDataSetsCollection { get; }	2026, 2027
 MeshFeatureEntity	NormalBinding	property	NormalBindingEnum NormalBinding { get; }	2024+
+MeshFeatureEntity	NormalIndexSet	property	GraphicsIndexSet NormalIndexSet { get; }	2024, 2025
+MeshFeatureEntity	NormalSet	property	GraphicsNormalSet NormalSet { get; }	2024, 2025
 MeshFeatureEntity	Parent	property	MeshFeature Parent { get; }	2024+
 MeshFeatureEntity	Type	property	ObjectTypeEnum Type { get; }	2024+
 MeshFeatureEntity	GetReferenceKey	method	void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);	2024+
 MeshFeatureEntityProxy	Application	property	object Application { get; }	2024+
 MeshFeatureEntityProxy	AttributeSets	property	AttributeSets AttributeSets { get; }	2024+
 MeshFeatureEntityProxy	ColorBinding	property	ColorBindingEnum ColorBinding { get; }	2024+
+MeshFeatureEntityProxy	ColorIndexSet	property	GraphicsIndexSet ColorIndexSet { get; }	2024, 2025
+MeshFeatureEntityProxy	ColorSet	property	GraphicsColorSet ColorSet { get; }	2024, 2025
 MeshFeatureEntityProxy	ContainingOccurrence	property	ComponentOccurrence ContainingOccurrence { get; }	2024+
+MeshFeatureEntityProxy	CoordinateIndexSet	property	GraphicsIndexSet CoordinateIndexSet { get; }	2024, 2025
+MeshFeatureEntityProxy	CoordinateSet	property	GraphicsCoordinateSet CoordinateSet { get; }	2024, 2025
 MeshFeatureEntityProxy	GraphicsDataSetsCollection	property	GraphicsDataSetsCollection GraphicsDataSetsCollection { get; }	2026, 2027
 MeshFeatureEntityProxy	NativeObject	property	MeshFeatureEntity NativeObject { get; }	2024+
 MeshFeatureEntityProxy	NormalBinding	property	NormalBindingEnum NormalBinding { get; }	2024+
+MeshFeatureEntityProxy	NormalIndexSet	property	GraphicsIndexSet NormalIndexSet { get; }	2024, 2025
+MeshFeatureEntityProxy	NormalSet	property	GraphicsNormalSet NormalSet { get; }	2024, 2025
 MeshFeatureEntityProxy	Parent	property	MeshFeature Parent { get; }	2024+
 MeshFeatureEntityProxy	Type	property	ObjectTypeEnum Type { get; }	2024+
 MeshFeatureEntityProxy	GetReferenceKey	method	void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);	2024+
@@ -13909,7 +13987,7 @@ ModelGeneralNoteDefinition	Intent	property	GeometryIntent Intent { get; set; }	2
 ModelGeneralNoteDefinition	OnScreen	property	bool OnScreen { get; }	2024+
 ModelGeneralNoteDefinition	Parent	property	ModelAnnotation Parent { get; }	2024+
 ModelGeneralNoteDefinition	Position	property	Point Position { get; set; }	2024+
-ModelGeneralNoteDefinition	ScreenQuadrant	property	IntPtr ScreenQuadrant { get; set; }	2024+
+ModelGeneralNoteDefinition	ScreenQuadrant	property	IntPtr get_ScreenQuadrant(); void set_ScreenQuadrant(ScreenQuadrantEnum value); // not usable as a property in C#	2024+
 ModelGeneralNoteDefinition	ShowTextBorder	property	bool ShowTextBorder { get; set; }	2024+
 ModelGeneralNoteDefinition	SymbolDefinitions	property	GeneralNoteSymbolDefinitions SymbolDefinitions { get; }	2024+
 ModelGeneralNoteDefinition	Text	property	ModelAnnotationText Text { get; }	2024+
@@ -14123,7 +14201,7 @@ ModelParameter	Precision	property	int Precision { get; set; }	2024+
 ModelParameter	Renamed	property	bool Renamed { get; }	2024+
 ModelParameter	Tolerance	property	Tolerance Tolerance { get; }	2024+
 ModelParameter	Type	property	ObjectTypeEnum Type { get; }	2024+
-ModelParameter	Units	property	string Units { get; set; }	2024+
+ModelParameter	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 ModelParameter	Value	property	object Value { get; set; }	2024+
 ModelParameter	ConvertToReferenceParameter	method	ReferenceParameter ConvertToReferenceParameter();	2024+
 ModelParameter	ConvertToUserParameter	method	UserParameter ConvertToUserParameter();	2024+
@@ -14136,6 +14214,7 @@ ModelParameters	AddByExpression	method	ModelParameter AddByExpression(string Exp
 ModelParameters	AddByValue	method	ModelParameter AddByValue(object Value, object UnitsSpecifier, string Name = "");	2024+
 ModelState	Application	property	object Application { get; }	2024+
 ModelState	AttributeSets	property	AttributeSets AttributeSets { get; }	2024+
+ModelState	BOMDelegate	property	ModelState BOMDelegate { get; }	2024, 2025
 ModelState	ChildModelStates	property	ObjectCollection ChildModelStates { get; }	2026, 2027
 ModelState	DelegateModelState	property	ModelState DelegateModelState { get; set; }	2026, 2027
 ModelState	Document	property	Document Document { get; }	2024+
@@ -15060,6 +15139,7 @@ OffsetSplineDimConstraintProxy	Type	property	ObjectTypeEnum Type { get; }	2024+
 OffsetSplineDimConstraintProxy	Delete	method	void Delete();	2024+
 OffsetSplineDimConstraintProxy	GetReferenceKey	method	void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);	2024+
 OffsetWidthExtent	Application	property	object Application { get; }	2024+
+OffsetWidthExtent	Edge	property	Edge Edge { get; }	2024
 OffsetWidthExtent	OffsetDistanceOne	property	Parameter OffsetDistanceOne { get; }	2024+
 OffsetWidthExtent	OffsetDistanceTwo	property	Parameter OffsetDistanceTwo { get; }	2024+
 OffsetWidthExtent	OffsetEntityOne	property	object OffsetEntityOne { get; }	2024+
@@ -15391,7 +15471,7 @@ Parameter	Parent	property	object Parent { get; }	2024+
 Parameter	Precision	property	int Precision { get; set; }	2024+
 Parameter	Tolerance	property	Tolerance Tolerance { get; }	2024+
 Parameter	Type	property	ObjectTypeEnum Type { get; }	2024+
-Parameter	Units	property	string Units { get; set; }	2024+
+Parameter	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 Parameter	Value	property	object Value { get; set; }	2024+
 Parameter	Delete	method	void Delete();	2024+
 Parameter	GetReferenceKey	method	void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);	2024+
@@ -15528,6 +15608,7 @@ PartDocument	DefaultCommand	property	string DefaultCommand { get; }	2024+
 PartDocument	Dirty	property	bool Dirty { get; set; }	2024+
 PartDocument	DisabledCommandList	property	DisabledCommandList DisabledCommandList { get; }	2024+
 PartDocument	DisabledCommandTypes	property	CommandTypesEnum DisabledCommandTypes { get; set; }	2024+
+PartDocument	DisplayName	property	string DisplayName { get; set; }	2024, 2025
 PartDocument	DisplayNameBasis	property	string DisplayNameBasis { get; set; }	2026, 2027
 PartDocument	DisplayNameOverridden	property	bool DisplayNameOverridden { get; set; }	2024+
 PartDocument	DisplaySettings	property	DisplaySettings DisplaySettings { get; }	2024+
@@ -15755,7 +15836,7 @@ PartsList	HideZeroQuantityRows	property	bool HideZeroQuantityRows { get; set; }	
 PartsList	Layer	property	Layer Layer { get; set; }	2024+
 PartsList	Level	property	PartsListLevelEnum Level { get; }	2024+
 PartsList	MaximumRows	property	int MaximumRows { get; set; }	2024+
-PartsList	MembersToInclude	property	string[] MembersToInclude { get; set; }	2024+
+PartsList	MembersToInclude	property	string[] get_MembersToInclude(); void set_MembersToInclude(object value); // not usable as a property in C#	2024+
 PartsList	NumberOfSections	property	int NumberOfSections { get; set; }	2024+
 PartsList	NumberingScheme	property	NumberingSchemeEnum NumberingScheme { get; }	2024+
 PartsList	Parent	property	Sheet Parent { get; }	2024+
@@ -16557,6 +16638,7 @@ PresentationDocument	DefaultCommand	property	string DefaultCommand { get; }	2024
 PresentationDocument	Dirty	property	bool Dirty { get; set; }	2024+
 PresentationDocument	DisabledCommandList	property	DisabledCommandList DisabledCommandList { get; }	2024+
 PresentationDocument	DisabledCommandTypes	property	CommandTypesEnum DisabledCommandTypes { get; set; }	2024+
+PresentationDocument	DisplayName	property	string DisplayName { get; set; }	2024, 2025
 PresentationDocument	DisplayNameBasis	property	string DisplayNameBasis { get; set; }	2026, 2027
 PresentationDocument	DisplayNameOverridden	property	bool DisplayNameOverridden { get; set; }	2024+
 PresentationDocument	DisplaySettings	property	DisplaySettings DisplaySettings { get; }	2024+
@@ -17577,7 +17659,7 @@ ReferenceAssetValue	Parent	property	Asset Parent { get; }	2024+
 ReferenceAssetValue	Type	property	ObjectTypeEnum Type { get; }	2024+
 ReferenceAssetValue	Value	property	Asset Value { get; set; }	2024+
 ReferenceAssetValue	ValueType	property	AssetValueTypeEnum ValueType { get; }	2024+
-ReferenceAssetValue	Values	property	Asset[] Values { get; set; }	2024+
+ReferenceAssetValue	Values	property	Asset[] get_Values(); void set_Values(Asset[] value); // not usable as a property in C#	2024+
 ReferenceComponent	Application	property	object Application { get; }	2024+
 ReferenceComponent	AttributeSets	property	AttributeSets AttributeSets { get; }	2024+
 ReferenceComponent	HealthStatus	property	HealthStatusEnum HealthStatus { get; }	2024+
@@ -17707,7 +17789,7 @@ ReferenceParameter	Precision	property	int Precision { get; set; }	2024+
 ReferenceParameter	Renamed	property	bool Renamed { get; }	2024+
 ReferenceParameter	Tolerance	property	Tolerance Tolerance { get; }	2024+
 ReferenceParameter	Type	property	ObjectTypeEnum Type { get; }	2024+
-ReferenceParameter	Units	property	string Units { get; set; }	2024+
+ReferenceParameter	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 ReferenceParameter	Value	property	object Value { get; set; }	2024+
 ReferenceParameter	ConvertToModelParameter	method	ModelParameter ConvertToModelParameter();	2024+
 ReferenceParameter	ConvertToUserParameter	method	UserParameter ConvertToUserParameter();	2024+
@@ -17728,7 +17810,7 @@ ReferencedOLEFileDescriptor	LastKnownFileTime	property	object LastKnownFileTime 
 ReferencedOLEFileDescriptor	LogicalName	property	string LogicalName { get; }	2024+
 ReferencedOLEFileDescriptor	OLEDocumentType	property	OLEDocumentTypeEnum OLEDocumentType { get; }	2024+
 ReferencedOLEFileDescriptor	Parent	property	object Parent { get; }	2024+
-ReferencedOLEFileDescriptor	ReferenceMonitoring	property	IntPtr ReferenceMonitoring { get; set; }	2024+
+ReferencedOLEFileDescriptor	ReferenceMonitoring	property	IntPtr get_ReferenceMonitoring(); void set_ReferenceMonitoring(ReferenceMonitoringEnum value); // not usable as a property in C#	2024+
 ReferencedOLEFileDescriptor	ReferenceStatus	property	ReferenceStatusEnum ReferenceStatus { get; }	2024+
 ReferencedOLEFileDescriptor	Type	property	ObjectTypeEnum Type { get; }	2024+
 ReferencedOLEFileDescriptor	Visible	property	bool Visible { get; set; }	2024+
@@ -18319,7 +18401,7 @@ RibDefinition	AffectedBody	property	SurfaceBody AffectedBody { get; set; }	2024+
 RibDefinition	Application	property	object Application { get; }	2024+
 RibDefinition	BossSets	property	BossSets BossSets { get; }	2024+
 RibDefinition	DirectionReversed	property	bool DirectionReversed { get; set; }	2024+
-RibDefinition	DraftAngle	property	IntPtr DraftAngle { get; set; }	2024+
+RibDefinition	DraftAngle	property	IntPtr get_DraftAngle(); void set_DraftAngle(object value); // not usable as a property in C#	2024+
 RibDefinition	DraftProfileEnds	property	bool DraftProfileEnds { get; set; }	2024+
 RibDefinition	ExtendProfile	property	bool ExtendProfile { get; set; }	2024+
 RibDefinition	ExtentDistance	property	IntPtr ExtentDistance { get; }	2024+
@@ -18327,7 +18409,7 @@ RibDefinition	ExtentType	property	RibFeatureExtentEnum ExtentType { get; }	2024+
 RibDefinition	IsRib	property	bool IsRib { get; set; }	2024+
 RibDefinition	Parent	property	RibFeature Parent { get; }	2024+
 RibDefinition	ProfileCurves	property	ObjectCollection ProfileCurves { get; set; }	2024+
-RibDefinition	Thickness	property	IntPtr Thickness { get; set; }	2024+
+RibDefinition	Thickness	property	IntPtr get_Thickness(); void set_Thickness(object value); // not usable as a property in C#	2024+
 RibDefinition	ThicknessDirection	property	PartFeatureExtentDirectionEnum ThicknessDirection { get; set; }	2024+
 RibDefinition	Type	property	ObjectTypeEnum Type { get; }	2024+
 RibDefinition	Copy	method	RibDefinition Copy();	2024+
@@ -19248,7 +19330,9 @@ Sheet	Delete	method	void Delete(bool RetainDependentViews = false);	2024+
 Sheet	FindUsingPoint	method	ObjectsEnumerator FindUsingPoint(Point2d PointOnSheet, object ProximityTolerance = Missing);	2024+
 Sheet	GetAvailableDesignViewsToRetrieve3DAnnotations	method	string[] GetAvailableDesignViewsToRetrieve3DAnnotations(DrawingView View);	2025, 2026, 2027
 Sheet	GetReferenceKey	method	void GetReferenceKey(ref byte[] ReferenceKey, int KeyContext = 0);	2024+
+Sheet	GetRetrievableAnnotations	method	ObjectCollection GetRetrievableAnnotations(DrawingView View, object SketchAndFeatureDimensions = Missing, object ModelObject = Missing, object DesignView = Missing);	2025
 Sheet	GetRetrievableAnnotations2	method	ObjectCollection GetRetrievableAnnotations2(DrawingView View, object SketchAndFeatureDimensions = Missing, object ModelObject = Missing, object DesignView = Missing);	2026, 2027
+Sheet	RetrieveAnnotations	method	ObjectsEnumerator RetrieveAnnotations(object ViewOrSketch, object AnnotationsToRetrieve = Missing);	2025
 Sheet	RetrieveAnnotations2	method	ObjectsEnumerator RetrieveAnnotations2(object ViewOrSketch, object AnnotationsToRetrieve = Missing);	2026, 2027
 Sheet	Update	method	void Update();	2024+
 SheetFormat	Application	property	object Application { get; }	2024+
@@ -19570,6 +19654,7 @@ ShellFeatures	Item	property	ShellFeature Item[object Index] { get; }	2024+
 ShellFeatures	Type	property	ObjectTypeEnum Type { get; }	2024+
 ShellFeatures	Add	method	ShellFeature Add(ShellDefinition Definition);	2024+
 ShellFeatures	CreateDefinition	method	ShellDefinition CreateDefinition(object InputFaces = Missing, object Solids = Missing, object Thickness = Missing, ShellDirectionEnum Direction = ShellDirectionEnum.kInsideShellDirection, ShellMethodEnum Method = ShellMethodEnum.kSharpShellMethod, object MoreOptions = Missing);	2026, 2027
+ShellFeatures	CreateShellDefinition	method	ShellDefinition CreateShellDefinition(object InputFaces = Missing, object Thickness = Missing, ShellDirectionEnum Direction = ShellDirectionEnum.kInsideShellDirection);	2024, 2025
 ShellThicknessFaceSet	Application	property	object Application { get; }	2024+
 ShellThicknessFaceSet	Faces	property	FaceCollection Faces { get; set; }	2024+
 ShellThicknessFaceSet	Thickness	property	Parameter Thickness { get; }	2024+
@@ -20483,7 +20568,7 @@ SketchCircularPatternDefinition	Fitted	property	bool Fitted { get; set; }	2025, 
 SketchCircularPatternDefinition	Geometries	property	ObjectCollection Geometries { get; set; }	2025, 2026, 2027
 SketchCircularPatternDefinition	HasBoundarySettingConfigured	property	bool HasBoundarySettingConfigured { get; set; }	2025, 2026, 2027
 SketchCircularPatternDefinition	NaturalAxisDirection	property	bool NaturalAxisDirection { get; set; }	2025, 2026, 2027
-SketchCircularPatternDefinition	SuppressedElements	property	int[] SuppressedElements { get; set; }	2025, 2026, 2027
+SketchCircularPatternDefinition	SuppressedElements	property	int[] get_SuppressedElements(); void set_SuppressedElements(int[] value); // not usable as a property in C#	2025, 2026, 2027
 SketchCircularPatternDefinition	Symmetric	property	bool Symmetric { get; set; }	2025, 2026, 2027
 SketchCircularPatternDefinition	Type	property	ObjectTypeEnum Type { get; }	2025, 2026, 2027
 SketchCircularPatternDefinition	Copy	method	SketchCircularPatternDefinition Copy();	2025, 2026, 2027
@@ -21786,7 +21871,7 @@ SketchRectangularPatternDefinition	Geometries	property	ObjectCollection Geometri
 SketchRectangularPatternDefinition	HasBoundarySettingConfigured	property	bool HasBoundarySettingConfigured { get; set; }	2025, 2026, 2027
 SketchRectangularPatternDefinition	NaturalXDirection	property	bool NaturalXDirection { get; set; }	2025, 2026, 2027
 SketchRectangularPatternDefinition	NaturalYDirection	property	bool NaturalYDirection { get; set; }	2025, 2026, 2027
-SketchRectangularPatternDefinition	SuppressedElements	property	int[] SuppressedElements { get; set; }	2025, 2026, 2027
+SketchRectangularPatternDefinition	SuppressedElements	property	int[] get_SuppressedElements(); void set_SuppressedElements(int[] value); // not usable as a property in C#	2025, 2026, 2027
 SketchRectangularPatternDefinition	Type	property	ObjectTypeEnum Type { get; }	2025, 2026, 2027
 SketchRectangularPatternDefinition	XCount	property	object XCount { get; set; }	2025, 2026, 2027
 SketchRectangularPatternDefinition	XDirectionEntity	property	object XDirectionEntity { get; set; }	2025, 2026, 2027
@@ -22894,6 +22979,7 @@ SurfaceTextureANSIDefinition	Parent	property	Sheet Parent { get; }	2024+
 SurfaceTextureANSIDefinition	ProcessNote	property	string ProcessNote { get; set; }	2024+
 SurfaceTextureANSIDefinition	SamplingLength	property	string SamplingLength { get; set; }	2024+
 SurfaceTextureANSIDefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureANSIDefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureANSIDefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
 SurfaceTextureANSIDefinition	Type	property	ObjectTypeEnum Type { get; }	2024+
 SurfaceTextureBSIDefinition	AllAroundSymbol	property	bool AllAroundSymbol { get; set; }	2024+
@@ -22907,6 +22993,7 @@ SurfaceTextureBSIDefinition	Parent	property	Sheet Parent { get; }	2024+
 SurfaceTextureBSIDefinition	ProcessNote	property	string ProcessNote { get; set; }	2024+
 SurfaceTextureBSIDefinition	SecondRequirement	property	string SecondRequirement { get; set; }	2024+
 SurfaceTextureBSIDefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureBSIDefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureBSIDefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
 SurfaceTextureBSIDefinition	ThirdRequirement	property	string ThirdRequirement { get; set; }	2024+
 SurfaceTextureBSIDefinition	Type	property	ObjectTypeEnum Type { get; }	2024+
@@ -22922,6 +23009,7 @@ SurfaceTextureDINDefinition	ProcessNoteOne	property	string ProcessNoteOne { get;
 SurfaceTextureDINDefinition	ProcessNoteTwo	property	string ProcessNoteTwo { get; set; }	2024+
 SurfaceTextureDINDefinition	SecondRequirement	property	string SecondRequirement { get; set; }	2024+
 SurfaceTextureDINDefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureDINDefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureDINDefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
 SurfaceTextureDINDefinition	ThirdRequirement	property	string ThirdRequirement { get; set; }	2024+
 SurfaceTextureDINDefinition	Type	property	ObjectTypeEnum Type { get; }	2024+
@@ -22937,6 +23025,7 @@ SurfaceTextureGBDefinition	ProcessNoteOne	property	string ProcessNoteOne { get; 
 SurfaceTextureGBDefinition	ProcessNoteTwo	property	string ProcessNoteTwo { get; set; }	2024+
 SurfaceTextureGBDefinition	SecondRequirement	property	string SecondRequirement { get; set; }	2024+
 SurfaceTextureGBDefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureGBDefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureGBDefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
 SurfaceTextureGBDefinition	ThirdRequirement	property	string ThirdRequirement { get; set; }	2024+
 SurfaceTextureGBDefinition	Type	property	ObjectTypeEnum Type { get; }	2024+
@@ -22950,6 +23039,7 @@ SurfaceTextureGOSTDefinition	Parent	property	Sheet Parent { get; }	2024+
 SurfaceTextureGOSTDefinition	ProductionMethod	property	string ProductionMethod { get; set; }	2024+
 SurfaceTextureGOSTDefinition	SecondRequirement	property	string SecondRequirement { get; set; }	2024+
 SurfaceTextureGOSTDefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureGOSTDefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureGOSTDefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
 SurfaceTextureGOSTDefinition	TextureDirection	property	LayDirectionTypeEnum TextureDirection { get; set; }	2024+
 SurfaceTextureGOSTDefinition	ThirdRequirement	property	string ThirdRequirement { get; set; }	2024+
@@ -22969,6 +23059,7 @@ SurfaceTextureISODefinition	ProcessNoteTwo	property	string ProcessNoteTwo { get;
 SurfaceTextureISODefinition	ProfileDirection	property	ProfileDirectionTypeEnum ProfileDirection { get; set; }	2025, 2026, 2027
 SurfaceTextureISODefinition	SecondRequirement	property	string SecondRequirement { get; set; }	2024+
 SurfaceTextureISODefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureISODefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureISODefinition	SurfaceProfileLowerTolerance	property	string SurfaceProfileLowerTolerance { get; set; }	2025, 2026, 2027
 SurfaceTextureISODefinition	SurfaceProfileUpperTolerance	property	string SurfaceProfileUpperTolerance { get; set; }	2025, 2026, 2027
 SurfaceTextureISODefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
@@ -22985,6 +23076,7 @@ SurfaceTextureJISDefinition	Parent	property	Sheet Parent { get; }	2024+
 SurfaceTextureJISDefinition	ProcessNote	property	string ProcessNote { get; set; }	2024+
 SurfaceTextureJISDefinition	SecondRequirement	property	string SecondRequirement { get; set; }	2024+
 SurfaceTextureJISDefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureJISDefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureJISDefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
 SurfaceTextureJISDefinition	ThirdRequirement	property	string ThirdRequirement { get; set; }	2024+
 SurfaceTextureJISDefinition	Type	property	ObjectTypeEnum Type { get; }	2024+
@@ -23000,6 +23092,7 @@ SurfaceTextureStyle	MachiningProhibitedSymbolSizeSmall	property	bool MachiningPr
 SurfaceTextureStyle	MajorityType	property	MajorityTypeEnum MajorityType { get; set; }	2024+
 SurfaceTextureStyle	Name	property	string Name { get; set; }	2024+
 SurfaceTextureStyle	Parent	property	object Parent { get; }	2024+
+SurfaceTextureStyle	StandardReference	property	DraftingStandardEnum StandardReference { get; set; }	2024
 SurfaceTextureStyle	StandardReferenceType	property	SurfaceTextureStandardReferenceTypeEnum StandardReferenceType { get; set; }	2025, 2026, 2027
 SurfaceTextureStyle	StyleLocation	property	StyleLocationEnum StyleLocation { get; }	2024+
 SurfaceTextureStyle	StyleType	property	StyleTypeEnum StyleType { get; }	2024+
@@ -23033,6 +23126,7 @@ SurfaceTextureSymbolDefinition	IsForceTailShown	property	bool IsForceTailShown {
 SurfaceTextureSymbolDefinition	IsMajority	property	bool IsMajority { get; set; }	2024+
 SurfaceTextureSymbolDefinition	Parent	property	Sheet Parent { get; }	2024+
 SurfaceTextureSymbolDefinition	StandardReference	property	SurfaceTextureStandardReferenceTypeEnum StandardReference { get; }	2025, 2026, 2027
+SurfaceTextureSymbolDefinition	StandardReferenceType	property	DraftingStandardEnum StandardReferenceType { get; }	2024
 SurfaceTextureSymbolDefinition	SurfaceTextureType	property	SurfaceTextureTypeEnum SurfaceTextureType { get; set; }	2024+
 SurfaceTextureSymbolDefinition	Type	property	ObjectTypeEnum Type { get; }	2024+
 SurfaceTextureSymbols	Application	property	object Application { get; }	2024+
@@ -23187,7 +23281,7 @@ TableParameter	Parent	property	object Parent { get; }	2024+
 TableParameter	Precision	property	int Precision { get; set; }	2024+
 TableParameter	Tolerance	property	Tolerance Tolerance { get; }	2024+
 TableParameter	Type	property	ObjectTypeEnum Type { get; }	2024+
-TableParameter	Units	property	string Units { get; set; }	2024+
+TableParameter	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 TableParameter	Value	property	object Value { get; set; }	2024+
 TableParameter	ConvertToUserParameter	method	UserParameter ConvertToUserParameter();	2024+
 TableParameter	Delete	method	void Delete();	2024+
@@ -24032,6 +24126,7 @@ TransientBRep	WriteToFile	method	void WriteToFile(ObjectCollection Bodies, strin
 TransientGeometry	PointTolerance	property	double PointTolerance { get; }	2024+
 TransientGeometry	Type	property	ObjectTypeEnum Type { get; }	2024+
 TransientGeometry	CreateArc2d	method	Arc2d CreateArc2d(Point2d Center, double Radius, double StartAngle, double SweepAngle);	2024+
+TransientGeometry	CreateArc2dByThreePoints	method	Arc2d CreateArc2dByThreePoints(Point2d PointOne, Point2d PointTwo, Point2d PointThree);	2024
 TransientGeometry	CreateArc2dByThreePoints2	method	Arc2d CreateArc2dByThreePoints2(Point2d PointOne, Point2d PointTwo, Point2d PointThree);	2025, 2026, 2027
 TransientGeometry	CreateArc3d	method	Arc3d CreateArc3d(Point Center, UnitVector Normal, UnitVector ReferenceVector, double Radius, double StartAngle, double SweepAngle);	2024+
 TransientGeometry	CreateArc3dByThreePoints	method	Arc3d CreateArc3dByThreePoints(Point PointOne, Point PointTwo, Point PointThree);	2024+
@@ -25085,7 +25180,7 @@ UserParameter	Parent	property	object Parent { get; }	2024+
 UserParameter	Precision	property	int Precision { get; set; }	2024+
 UserParameter	Tolerance	property	Tolerance Tolerance { get; }	2024+
 UserParameter	Type	property	ObjectTypeEnum Type { get; }	2024+
-UserParameter	Units	property	string Units { get; set; }	2024+
+UserParameter	Units	property	string get_Units(); void set_Units(object value); // not usable as a property in C#	2024+
 UserParameter	Value	property	object Value { get; set; }	2024+
 UserParameter	ConvertToModelParameter	method	ModelParameter ConvertToModelParameter();	2024+
 UserParameter	ConvertToReferenceParameter	method	ReferenceParameter ConvertToReferenceParameter();	2024+
@@ -25596,6 +25691,7 @@ WeldsComponentDefinition	GetUnusedGeometries	method	void GetUnusedGeometries(out
 WeldsComponentDefinition	PurgeUnusedGeometries	method	void PurgeUnusedGeometries(object UnusedGeometries = Missing);	2024+
 WeldsComponentDefinition	RepositionObject	method	void RepositionObject(object TargetObject, bool Before, object StartObject, object EndObject = Missing);	2025, 2026, 2027
 WidthOffsetWidthExtent	Application	property	object Application { get; }	2024+
+WidthOffsetWidthExtent	Edge	property	Edge Edge { get; }	2024
 WidthOffsetWidthExtent	OffsetDistance	property	Parameter OffsetDistance { get; }	2024+
 WidthOffsetWidthExtent	OffsetEntity	property	object OffsetEntity { get; }	2024+
 WidthOffsetWidthExtent	Parent	property	PartFeature Parent { get; }	2024+

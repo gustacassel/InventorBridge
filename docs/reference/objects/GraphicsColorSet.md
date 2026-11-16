@@ -25,7 +25,7 @@ interface GraphicsColorSet
 
 2 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
-**Returned by:** [GraphicsDataSets](../objects/GraphicsDataSets.md).CreateColorSet, [LineGraphics](../objects/LineGraphics.md).ColorSet, [LineStripGraphics](../objects/LineStripGraphics.md).ColorSet, [PresentationMeshFeatureEntity](../objects/PresentationMeshFeatureEntity.md).ColorSet, [TriangleFanGraphics](../objects/TriangleFanGraphics.md).ColorSet, [TriangleGraphics](../objects/TriangleGraphics.md).ColorSet, [TriangleStripGraphics](../objects/TriangleStripGraphics.md).ColorSet
+**Returned by:** [GraphicsDataSets](../objects/GraphicsDataSets.md).CreateColorSet, [LineGraphics](../objects/LineGraphics.md).ColorSet, [LineStripGraphics](../objects/LineStripGraphics.md).ColorSet, [MeshFeatureEntity](../objects/MeshFeatureEntity.md).ColorSet, [MeshFeatureEntityProxy](../objects/MeshFeatureEntityProxy.md).ColorSet, [PresentationMeshFeatureEntity](../objects/PresentationMeshFeatureEntity.md).ColorSet, [TriangleFanGraphics](../objects/TriangleFanGraphics.md).ColorSet, [TriangleGraphics](../objects/TriangleGraphics.md).ColorSet, [TriangleStripGraphics](../objects/TriangleStripGraphics.md).ColorSet
 
 **Referenced types:** [Color](../objects/Color.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
 

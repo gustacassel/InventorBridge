@@ -11,6 +11,7 @@ interface FromToWidthExtent
 {
     // Properties
     object Application { get; }
+    Edge Edge { get; } // hidden in 2025, 2026, 2027: there, prefer the newer members
     object FromEntity { get; }
     PartFeature Parent { get; }
     object ToEntity { get; }
@@ -18,7 +19,5 @@ interface FromToWidthExtent
 }
 ```
 
-1 hidden member(s) omitted: they are obsolete or internal and should not be used.
-
-**Referenced types:** [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [PartFeature](../objects/PartFeature.md)
+**Referenced types:** [Edge](../objects/Edge.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [PartFeature](../objects/PartFeature.md)
 

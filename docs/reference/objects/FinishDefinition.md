@@ -17,6 +17,7 @@ interface FinishDefinition
     FinishTypeEnum FinishType { get; set; }
     object Hardness { get; set; }
     ObjectCollection IncludedEntities { get; set; } // since 2025
+    FaceCollection InputFaces { get; set; } // hidden in 2025, 2026, 2027: there, prefer the newer members
     FinishFeature Parent { get; }
     string ProcessName { get; set; }
     string ShortDescription { get; set; }
@@ -29,9 +30,7 @@ interface FinishDefinition
 }
 ```
 
-1 hidden member(s) omitted: they are obsolete or internal and should not be used.
+**Returned by:** [FinishDefinition](../objects/FinishDefinition.md).Copy, [FinishFeature](../objects/FinishFeature.md).Definition, [FinishFeatureProxy](../objects/FinishFeatureProxy.md).Definition, [FinishFeatures](../objects/FinishFeatures.md).CreateDefinition, [FinishFeatures](../objects/FinishFeatures.md).CreateFinishDefinition
 
-**Returned by:** [FinishDefinition](../objects/FinishDefinition.md).Copy, [FinishFeature](../objects/FinishFeature.md).Definition, [FinishFeatureProxy](../objects/FinishFeatureProxy.md).Definition, [FinishFeatures](../objects/FinishFeatures.md).CreateDefinition
-
-**Referenced types:** [Asset](../objects/Asset.md), [FinishFeature](../objects/FinishFeature.md), [FinishTypeEnum](../enums/FinishTypeEnum.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
+**Referenced types:** [Asset](../objects/Asset.md), [FaceCollection](../objects/FaceCollection.md), [FinishFeature](../objects/FinishFeature.md), [FinishTypeEnum](../enums/FinishTypeEnum.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
 

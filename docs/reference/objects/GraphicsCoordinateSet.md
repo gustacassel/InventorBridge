@@ -23,7 +23,7 @@ interface GraphicsCoordinateSet
 }
 ```
 
-**Returned by:** [GraphicsDataSets](../objects/GraphicsDataSets.md).CreateCoordinateSet, [LineGraphics](../objects/LineGraphics.md).CoordinateSet, [LineStripGraphics](../objects/LineStripGraphics.md).CoordinateSet, [PointGraphics](../objects/PointGraphics.md).CoordinateSet, [PresentationMeshFeatureEntity](../objects/PresentationMeshFeatureEntity.md).CoordinateSet, [TriangleFanGraphics](../objects/TriangleFanGraphics.md).CoordinateSet, [TriangleGraphics](../objects/TriangleGraphics.md).CoordinateSet, [TriangleStripGraphics](../objects/TriangleStripGraphics.md).CoordinateSet
+**Returned by:** [GraphicsDataSets](../objects/GraphicsDataSets.md).CreateCoordinateSet, [LineGraphics](../objects/LineGraphics.md).CoordinateSet, [LineStripGraphics](../objects/LineStripGraphics.md).CoordinateSet, [MeshFeatureEntity](../objects/MeshFeatureEntity.md).CoordinateSet, [MeshFeatureEntityProxy](../objects/MeshFeatureEntityProxy.md).CoordinateSet, [PointGraphics](../objects/PointGraphics.md).CoordinateSet, [PresentationMeshFeatureEntity](../objects/PresentationMeshFeatureEntity.md).CoordinateSet, [TriangleFanGraphics](../objects/TriangleFanGraphics.md).CoordinateSet, [TriangleGraphics](../objects/TriangleGraphics.md).CoordinateSet, [TriangleStripGraphics](../objects/TriangleStripGraphics.md).CoordinateSet
 
 **Referenced types:** [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Point](../objects/Point.md)
 

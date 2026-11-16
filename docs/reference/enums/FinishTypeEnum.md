@@ -13,5 +13,5 @@ enum FinishTypeEnum
 }
 ```
 
-**Used by:** [FinishDefinition](../objects/FinishDefinition.md).FinishType, [FinishFeatures](../objects/FinishFeatures.md).CreateDefinition
+**Used by:** [FinishDefinition](../objects/FinishDefinition.md).FinishType, [FinishFeatures](../objects/FinishFeatures.md).CreateDefinition, [FinishFeatures](../objects/FinishFeatures.md).CreateFinishDefinition
 

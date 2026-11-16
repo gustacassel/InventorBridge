@@ -23,7 +23,7 @@ interface GraphicsNormalSet
 }
 ```
 
-**Returned by:** [GraphicsDataSets](../objects/GraphicsDataSets.md).CreateNormalSet, [PresentationMeshFeatureEntity](../objects/PresentationMeshFeatureEntity.md).NormalSet, [TriangleFanGraphics](../objects/TriangleFanGraphics.md).NormalSet, [TriangleGraphics](../objects/TriangleGraphics.md).NormalSet, [TriangleStripGraphics](../objects/TriangleStripGraphics.md).NormalSet
+**Returned by:** [GraphicsDataSets](../objects/GraphicsDataSets.md).CreateNormalSet, [MeshFeatureEntity](../objects/MeshFeatureEntity.md).NormalSet, [MeshFeatureEntityProxy](../objects/MeshFeatureEntityProxy.md).NormalSet, [PresentationMeshFeatureEntity](../objects/PresentationMeshFeatureEntity.md).NormalSet, [TriangleFanGraphics](../objects/TriangleFanGraphics.md).NormalSet, [TriangleGraphics](../objects/TriangleGraphics.md).NormalSet, [TriangleStripGraphics](../objects/TriangleStripGraphics.md).NormalSet
 
 **Referenced types:** [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [UnitVector](../objects/UnitVector.md)
 

@@ -21,7 +21,7 @@ interface ColorAssetValue
     ObjectTypeEnum Type { get; }
     Color Value { get; set; }
     AssetValueTypeEnum ValueType { get; }
-    Color[] Values { get; set; }
+    Color[] get_Values(); void set_Values(Color[] value); // not usable as a property in C#
 }
 ```
 

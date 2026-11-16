@@ -2,7 +2,7 @@
 
 Inventor API object · versions: 2024+ · [index](../index.md)
 
-**How to get it:** `Application.ActiveDocument → (PartDocument).ComponentDefinition.ModelAnnotations.ModelSurfaceTextureSymbols.Item[…].Definition.Leader`
+**How to get it:** `Application.ActiveDocument → (PartDocument).ComponentDefinition.ModelAnnotations.ModelWeldingSymbols.Item[…].Definitions.Leader`
 
 ```csharp
 interface ModelLeader

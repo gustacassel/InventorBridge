@@ -25,6 +25,7 @@ interface PresentationDocument
     bool Dirty { get; set; }
     DisabledCommandList DisabledCommandList { get; }
     CommandTypesEnum DisabledCommandTypes { get; set; }
+    string DisplayName { get; set; } // hidden in 2026, 2027: there, prefer the newer members
     string DisplayNameBasis { get; set; } // since 2026
     bool DisplayNameOverridden { get; set; }
     DisplaySettings DisplaySettings { get; }
@@ -108,7 +109,7 @@ interface PresentationDocument
 }
 ```
 
-34 hidden member(s) omitted: they are obsolete or internal and should not be used.
+33 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [PresentationScene](../objects/PresentationScene.md).Parent
 

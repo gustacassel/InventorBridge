@@ -12,6 +12,7 @@ interface TransientGeometry
     ObjectTypeEnum Type { get; }
     // Methods
     Arc2d CreateArc2d(Point2d Center, double Radius, double StartAngle, double SweepAngle);
+    Arc2d CreateArc2dByThreePoints(Point2d PointOne, Point2d PointTwo, Point2d PointThree); // hidden in 2025, 2026, 2027: there, prefer the newer members
     Arc2d CreateArc2dByThreePoints2(Point2d PointOne, Point2d PointTwo, Point2d PointThree); // since 2025
     Arc3d CreateArc3d(Point Center, UnitVector Normal, UnitVector ReferenceVector, double Radius, double StartAngle, double SweepAngle);
     Arc3d CreateArc3dByThreePoints(Point PointOne, Point PointTwo, Point PointThree);
@@ -63,8 +64,6 @@ interface TransientGeometry
     ObjectsEnumerator SurfaceSurfaceIntersection(object SurfaceOne, object SurfaceTwo, double Tolerance = 0);
 }
 ```
-
-1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [Application](../objects/Application.md).TransientGeometry, [ApprenticeServer](../objects/ApprenticeServer.md).TransientGeometry, [ApprenticeServerComponent](../objects/ApprenticeServerComponent.md).TransientGeometry, [InventorServer](../objects/InventorServer.md).TransientGeometry
 

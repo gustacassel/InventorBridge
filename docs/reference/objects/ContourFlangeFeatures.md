@@ -14,11 +14,12 @@ interface ContourFlangeFeatures
     ObjectTypeEnum Type { get; }
     // Methods
     ContourFlangeFeature Add(ContourFlangeDefinition ContourFlangeDefinition);
+    ContourFlangeDefinition CreateContourFlangeDefinition(Path Path, object Edges = Missing); // hidden in 2026, 2027: there, prefer the newer members
     ContourFlangeDefinition CreateDefinition(Path Path, object Operation = Missing, object WidthExtentsFromSketchPlane = Missing, object EdgeSet = Missing, object BendEdges = Missing); // since 2026
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [SheetMetalFeatures](../objects/SheetMetalFeatures.md).ContourFlangeFeatures
 

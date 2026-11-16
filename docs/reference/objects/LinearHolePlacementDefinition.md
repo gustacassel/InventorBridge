@@ -23,5 +23,7 @@ interface LinearHolePlacementDefinition
 }
 ```
 
+**Returned by:** [HoleFeatures](../objects/HoleFeatures.md).CreateLinearPlacementDefinition
+
 **Referenced types:** [HoleFeature](../objects/HoleFeature.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Parameter](../objects/Parameter.md)
 

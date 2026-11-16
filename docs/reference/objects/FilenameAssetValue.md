@@ -19,7 +19,7 @@ interface FilenameAssetValue
     ObjectTypeEnum Type { get; }
     string Value { get; set; }
     AssetValueTypeEnum ValueType { get; }
-    string[] Values { get; set; }
+    string[] get_Values(); void set_Values(string[] value); // not usable as a property in C#
 }
 ```
 

@@ -12,7 +12,7 @@ interface RibDefinition
     object Application { get; }
     BossSets BossSets { get; }
     bool DirectionReversed { get; set; }
-    IntPtr DraftAngle { get; set; }
+    IntPtr get_DraftAngle(); void set_DraftAngle(object value); // not usable as a property in C#
     bool DraftProfileEnds { get; set; }
     bool ExtendProfile { get; set; }
     IntPtr ExtentDistance { get; }
@@ -20,7 +20,7 @@ interface RibDefinition
     bool IsRib { get; set; }
     RibFeature Parent { get; }
     ObjectCollection ProfileCurves { get; set; }
-    IntPtr Thickness { get; set; }
+    IntPtr get_Thickness(); void set_Thickness(object value); // not usable as a property in C#
     PartFeatureExtentDirectionEnum ThicknessDirection { get; set; }
     ObjectTypeEnum Type { get; }
     // Methods

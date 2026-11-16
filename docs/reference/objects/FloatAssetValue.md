@@ -24,7 +24,7 @@ interface FloatAssetValue
     string Units { get; }
     double Value { get; set; }
     AssetValueTypeEnum ValueType { get; }
-    double[] Values { get; set; }
+    double[] get_Values(); void set_Values(double[] value); // not usable as a property in C#
     // Methods
     void GetLimits(out bool HasLowLimit, out double LowLimit, out bool HasHighLimit, out double HighLimit);
 }

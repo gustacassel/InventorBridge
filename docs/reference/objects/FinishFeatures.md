@@ -15,12 +15,13 @@ interface FinishFeatures
     // Methods
     FinishFeature Add(FinishDefinition pDefinition);
     FinishDefinition CreateDefinition(ObjectCollection pIncludedEntities, object vtExcludedEntities = Missing, FinishTypeEnum FinishType = FinishTypeEnum.kAppearanceFinishType, object vtProcessName = Missing, object vtAppearance = Missing, object vtMoreOptions = Missing); // since 2025
+    FinishDefinition CreateFinishDefinition(FaceCollection pInputFaces, FinishTypeEnum FinishType, object vtProcessName = Missing, object vtAppearance = Missing); // hidden in 2025, 2026, 2027: there, prefer the newer members
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [Features](../objects/Features.md).FinishFeatures, [PartFeatures](../objects/PartFeatures.md).FinishFeatures, [SheetMetalFeatures](../objects/SheetMetalFeatures.md).FinishFeatures
 
-**Referenced types:** [FinishDefinition](../objects/FinishDefinition.md), [FinishFeature](../objects/FinishFeature.md), [FinishTypeEnum](../enums/FinishTypeEnum.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
+**Referenced types:** [FaceCollection](../objects/FaceCollection.md), [FinishDefinition](../objects/FinishDefinition.md), [FinishFeature](../objects/FinishFeature.md), [FinishTypeEnum](../enums/FinishTypeEnum.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
 

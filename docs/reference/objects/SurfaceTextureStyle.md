@@ -22,6 +22,7 @@ interface SurfaceTextureStyle
     MajorityTypeEnum MajorityType { get; set; }
     string Name { get; set; }
     object Parent { get; }
+    DraftingStandardEnum StandardReference { get; set; } // hidden in 2025, 2026, 2027: there, prefer the newer members
     SurfaceTextureStandardReferenceTypeEnum StandardReferenceType { get; set; } // since 2025
     StyleLocationEnum StyleLocation { get; }
     StyleTypeEnum StyleType { get; }
@@ -38,9 +39,9 @@ interface SurfaceTextureStyle
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [ObjectDefaultsStyle](../objects/ObjectDefaultsStyle.md).SurfaceTextureStyle, [SurfaceTextureStylesEnumerator](../objects/SurfaceTextureStylesEnumerator.md).Item, [SurfaceTextureSymbol](../objects/SurfaceTextureSymbol.md).Style
 
-**Referenced types:** [LayDirectionTypeEnum](../enums/LayDirectionTypeEnum.md), [LeaderStyle](../objects/LeaderStyle.md), [MajorityTypeEnum](../enums/MajorityTypeEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [ProfileDirectionTypeEnum](../enums/ProfileDirectionTypeEnum.md), [Style](../objects/Style.md), [StyleLocationEnum](../enums/StyleLocationEnum.md), [StyleTypeEnum](../enums/StyleTypeEnum.md), [SurfaceTextureStandardReferenceTypeEnum](../enums/SurfaceTextureStandardReferenceTypeEnum.md), [TextStyle](../objects/TextStyle.md)
+**Referenced types:** [DraftingStandardEnum](../enums/DraftingStandardEnum.md), [LayDirectionTypeEnum](../enums/LayDirectionTypeEnum.md), [LeaderStyle](../objects/LeaderStyle.md), [MajorityTypeEnum](../enums/MajorityTypeEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [ProfileDirectionTypeEnum](../enums/ProfileDirectionTypeEnum.md), [Style](../objects/Style.md), [StyleLocationEnum](../enums/StyleLocationEnum.md), [StyleTypeEnum](../enums/StyleTypeEnum.md), [SurfaceTextureStandardReferenceTypeEnum](../enums/SurfaceTextureStandardReferenceTypeEnum.md), [TextStyle](../objects/TextStyle.md)
 

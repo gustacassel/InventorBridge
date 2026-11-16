@@ -18,7 +18,7 @@ interface PartsList
     Layer Layer { get; set; }
     PartsListLevelEnum Level { get; }
     int MaximumRows { get; set; }
-    string[] MembersToInclude { get; set; }
+    string[] get_MembersToInclude(); void set_MembersToInclude(object value); // not usable as a property in C#
     int NumberOfSections { get; set; }
     NumberingSchemeEnum NumberingScheme { get; }
     Sheet Parent { get; }

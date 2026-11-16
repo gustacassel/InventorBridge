@@ -19,7 +19,7 @@ interface ReferenceAssetValue
     ObjectTypeEnum Type { get; }
     Asset Value { get; set; }
     AssetValueTypeEnum ValueType { get; }
-    Asset[] Values { get; set; }
+    Asset[] get_Values(); void set_Values(Asset[] value); // not usable as a property in C#
 }
 ```
 

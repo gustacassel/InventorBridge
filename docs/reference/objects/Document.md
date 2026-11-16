@@ -19,6 +19,7 @@ interface Document
     string DefaultCommand { get; }
     bool Dirty { get; set; }
     CommandTypesEnum DisabledCommandTypes { get; set; }
+    string DisplayName { get; set; } // hidden in 2026, 2027: there, prefer the newer members
     string DisplayNameBasis { get; set; } // since 2026
     bool DisplayNameOverridden { get; set; }
     DocumentEvents DocumentEvents { get; }
@@ -98,7 +99,7 @@ interface Document
 }
 ```
 
-26 hidden member(s) omitted: they are obsolete or internal and should not be used.
+25 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
 **Returned by:** [Application](../objects/Application.md).ActiveDocument, [Application](../objects/Application.md).ActiveEditDocument, [AssemblyComponentDefinition](../objects/AssemblyComponentDefinition.md).FactoryDocument, [AssemblyDocument](../objects/AssemblyDocument.md).EmbeddingDocument, [BrowserNodeDefinition](../objects/BrowserNodeDefinition.md).Parent, [BrowserPane](../objects/BrowserPane.md).Parent, [ClientBrowserNodeDefinition](../objects/ClientBrowserNodeDefinition.md).Parent, [ClientNodeResource](../objects/ClientNodeResource.md).Parent, [Documents](../objects/Documents.md).Add, [Documents](../objects/Documents.md).AddWithOptions, [Documents](../objects/Documents.md).Item, [Documents](../objects/Documents.md).ItemByName, [Documents](../objects/Documents.md).Open, [Documents](../objects/Documents.md).OpenWithOptions, [DocumentsEnumerator](../objects/DocumentsEnumerator.md).Item, [EnvironmentManager](../objects/EnvironmentManager.md).Parent, [FileMetadata](../objects/FileMetadata.md).Document, [FlatPatternSettings](../objects/FlatPatternSettings.md).Parent, [InteractionEvents](../objects/InteractionEvents.md).TargetDocument, [ModelState](../objects/ModelState.md).Document, [ModelState](../objects/ModelState.md).FactoryDocument, [ModelingSettings](../objects/ModelingSettings.md).Parent, [NativeBrowserNodeDefinition](../objects/NativeBrowserNodeDefinition.md).Parent, [ObjectVisibility](../objects/ObjectVisibility.md).Parent, [PartComponentDefinition](../objects/PartComponentDefinition.md).FactoryDocument, [PartDocument](../objects/PartDocument.md).EmbeddingDocument, [SheetMetalComponentDefinition](../objects/SheetMetalComponentDefinition.md).FactoryDocument, [Sketch3DSettings](../objects/Sketch3DSettings.md).Parent, [SketchSettings](../objects/SketchSettings.md).Parent, [Transaction](../objects/Transaction.md).Document, [View](../objects/View.md).Document, [View](../objects/View.md).Parent, [WeldmentComponentDefinition](../objects/WeldmentComponentDefinition.md).FactoryDocument
 

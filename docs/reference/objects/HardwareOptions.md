@@ -11,7 +11,7 @@ interface HardwareOptions
     object Application { get; }
     string Diagnostics { get; }
     bool EnableViewportGPURayTracing { get; set; }
-    GraphicsDriverTypeEnum GraphicsDriverType { get; set; }
+    GraphicsDriverTypeEnum GraphicsDriverType { get; set; } // hidden in 2024, 2025, 2026: there, prefer the newer members
     GraphicsSettingTypeEnum GraphicsSettingType { get; set; }
     ObjectTypeEnum Type { get; }
     bool UseSoftwareGraphics { get; set; }

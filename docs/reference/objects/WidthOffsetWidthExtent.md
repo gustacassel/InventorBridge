@@ -11,6 +11,7 @@ interface WidthOffsetWidthExtent
 {
     // Properties
     object Application { get; }
+    Edge Edge { get; } // hidden in 2025, 2026, 2027: there, prefer the newer members
     Parameter OffsetDistance { get; }
     object OffsetEntity { get; }
     PartFeature Parent { get; }
@@ -20,7 +21,5 @@ interface WidthOffsetWidthExtent
 }
 ```
 
-1 hidden member(s) omitted: they are obsolete or internal and should not be used.
-
-**Referenced types:** [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Parameter](../objects/Parameter.md), [PartFeature](../objects/PartFeature.md)
+**Referenced types:** [Edge](../objects/Edge.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [Parameter](../objects/Parameter.md), [PartFeature](../objects/PartFeature.md)
 

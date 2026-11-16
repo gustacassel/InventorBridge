@@ -7,7 +7,7 @@ interface ApplicationAddInSite
 {
     // Properties
     Application Application { get; }
-    InventorServer InventorServer { get; }
+    InventorServer InventorServer { get; } // hidden in 2024, 2025, 2026: there, prefer the newer members
     ApplicationAddIn Parent { get; }
     ObjectTypeEnum Type { get; }
 }

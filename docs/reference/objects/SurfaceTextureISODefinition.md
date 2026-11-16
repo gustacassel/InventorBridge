@@ -25,6 +25,7 @@ interface SurfaceTextureISODefinition
     ProfileDirectionTypeEnum ProfileDirection { get; set; } // since 2025
     string SecondRequirement { get; set; }
     SurfaceTextureStandardReferenceTypeEnum StandardReference { get; } // since 2025
+    DraftingStandardEnum StandardReferenceType { get; } // hidden in 2025, 2026, 2027: there, prefer the newer members
     string SurfaceProfileLowerTolerance { get; set; } // since 2025
     string SurfaceProfileUpperTolerance { get; set; } // since 2025
     SurfaceTextureTypeEnum SurfaceTextureType { get; set; }
@@ -33,7 +34,5 @@ interface SurfaceTextureISODefinition
 }
 ```
 
-1 hidden member(s) omitted: they are obsolete or internal and should not be used.
-
-**Referenced types:** [LayDirectionTypeEnum](../enums/LayDirectionTypeEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [ProfileDirectionTypeEnum](../enums/ProfileDirectionTypeEnum.md), [Sheet](../objects/Sheet.md), [SurfaceTextureStandardReferenceTypeEnum](../enums/SurfaceTextureStandardReferenceTypeEnum.md), [SurfaceTextureTypeEnum](../enums/SurfaceTextureTypeEnum.md)
+**Referenced types:** [DraftingStandardEnum](../enums/DraftingStandardEnum.md), [LayDirectionTypeEnum](../enums/LayDirectionTypeEnum.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md), [ProfileDirectionTypeEnum](../enums/ProfileDirectionTypeEnum.md), [Sheet](../objects/Sheet.md), [SurfaceTextureStandardReferenceTypeEnum](../enums/SurfaceTextureStandardReferenceTypeEnum.md), [SurfaceTextureTypeEnum](../enums/SurfaceTextureTypeEnum.md)
 

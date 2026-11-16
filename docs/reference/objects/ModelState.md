@@ -10,6 +10,7 @@ interface ModelState
     // Properties
     object Application { get; }
     AttributeSets AttributeSets { get; }
+    ModelState BOMDelegate { get; } // hidden in 2026, 2027: there, prefer the newer members
     ObjectCollection ChildModelStates { get; } // since 2026
     ModelState DelegateModelState { get; set; } // since 2026
     Document Document { get; }
@@ -33,9 +34,9 @@ interface ModelState
 }
 ```
 
-2 hidden member(s) omitted: they are obsolete or internal and should not be used.
+1 hidden member(s) omitted: they are obsolete or internal and should not be used.
 
-**Returned by:** [DesignViewRepresentation](../objects/DesignViewRepresentation.md).CopyComponentVisibilityToSuppression, [ModelState](../objects/ModelState.md).Copy, [ModelState](../objects/ModelState.md).DelegateModelState, [ModelStates](../objects/ModelStates.md).ActiveModelState, [ModelStates](../objects/ModelStates.md).Add, [ModelStates](../objects/ModelStates.md).AddSubstitute, [ModelStates](../objects/ModelStates.md).Item
+**Returned by:** [DesignViewRepresentation](../objects/DesignViewRepresentation.md).CopyComponentVisibilityToSuppression, [ModelState](../objects/ModelState.md).BOMDelegate, [ModelState](../objects/ModelState.md).Copy, [ModelState](../objects/ModelState.md).DelegateModelState, [ModelStates](../objects/ModelStates.md).ActiveModelState, [ModelStates](../objects/ModelStates.md).Add, [ModelStates](../objects/ModelStates.md).AddSubstitute, [ModelStates](../objects/ModelStates.md).Item
 
 **Referenced types:** [AttributeSets](../objects/AttributeSets.md), [ComponentDefinition](../objects/ComponentDefinition.md), [ComponentOccurrence](../objects/ComponentOccurrence.md), [DesignViewRepresentation](../objects/DesignViewRepresentation.md), [Document](../objects/Document.md), [DocumentDescriptor](../objects/DocumentDescriptor.md), [ModelStateMemberDocumentStatusEnum](../enums/ModelStateMemberDocumentStatusEnum.md), [ModelStateMemberGenerationStatusEnum](../enums/ModelStateMemberGenerationStatusEnum.md), [ModelStateTypeEnum](../enums/ModelStateTypeEnum.md), [ObjectCollection](../objects/ObjectCollection.md), [ObjectTypeEnum](../enums/ObjectTypeEnum.md)
 

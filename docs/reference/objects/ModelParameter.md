@@ -33,7 +33,7 @@ interface ModelParameter
     bool Renamed { get; }
     Tolerance Tolerance { get; }
     ObjectTypeEnum Type { get; }
-    string Units { get; set; }
+    string get_Units(); void set_Units(object value); // not usable as a property in C#
     object Value { get; set; }
     // Methods
     ReferenceParameter ConvertToReferenceParameter();
