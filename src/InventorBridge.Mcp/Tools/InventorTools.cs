@@ -322,7 +322,7 @@ namespace InventorBridge.Mcp.Tools
             "Runs an iLogic rule inside Inventor: a rule stored in the document (name) or an external rule file " +
             "(externalFile). Like run_csharp it runs in a transaction (undo_last undoes it; an error rolls it back), " +
             "returns early with the title when the rule shows a message box, and script_result picks up a long run. " +
-            "Rules run in Inventor's process, so loops over thousands of entities are much faster than in run_csharp. " +
+            "iLogic does not report a rule's errors to the caller: it shows its error dialog, so watch for one. " +
             "Logger output goes to iLogic's log window, not here: return values through a parameter or iProperty.")]
         public Task<CallToolResult> RunILogicRuleAsync(
             [Description("Name of a rule stored in the document.")] string? name = null,
@@ -331,6 +331,30 @@ namespace InventorBridge.Mcp.Tools
         {
             return RunTrackedAsync($"iLogic rule {name ?? externalFile}",
                 application => Text(ILogicRules.Run(application, document, name, externalFile)));
+        }
+
+        [McpServerTool(Name = "ilogic_script", Title = "Run iLogic code",
+            ReadOnly = false, Destructive = true, Idempotent = false, OpenWorld = true)]
+        [Description(
+            "Runs iLogic code (VB.NET with iLogic's functions) inside Inventor without storing it in a document, and " +
+            "returns values. Use it for iLogic's own functions (Parameter, iProperties, ThisApplication...) and for code " +
+            "the user already has as iLogic. It is not faster than run_csharp: an API call costs as much or more from a " +
+            "rule. The code reads arguments with " +
+            "RuleArguments.Arguments.Value(\"Name\") and returns values by setting RuleArguments.Arguments.Value(\"Result\") " +
+            "= ... or adding new ones with RuleArguments.Arguments.Add(\"Name\", value): numbers, booleans and strings " +
+            "(join lists into one string). ThisDoc.Document is the document. Like run_csharp it runs in a transaction " +
+            "(undo_last undoes it, an error rolls it back; undoable=false for code that only reads), and returns early " +
+            "with the title when iLogic shows a dialog, such as its error dialog for a compilation or runtime error, " +
+            "which names the line. Code that stops before its end (an error) is reported as an error and rolled back.")]
+        public Task<CallToolResult> RunILogicScriptAsync(
+            [Description("The rule's text, in iLogic's VB.NET: plain statements, or Sub Main() with other Subs and Functions.")] string code,
+            [Description("Short description; it becomes the undo step name in Inventor.")] string description,
+            [Description("Optional arguments for the code, such as {\"Prefix\": \"1004\", \"Limit\": 100}.")] Dictionary<string, object?>? arguments = null,
+            [Description("The document to run it on: its name or file as listed by inventor_status. Default: the active document.")] string? document = null,
+            [Description("False for code that only reads: no transaction, so no empty undo step.")] bool undoable = true)
+        {
+            return RunTrackedAsync("iLogic script: " + description,
+                application => Text(ToJson(ILogicRules.RunScript(application, document, code, description, arguments, undoable))));
         }
 
         [McpServerTool(Name = "topology", Title = "Faces and edges",

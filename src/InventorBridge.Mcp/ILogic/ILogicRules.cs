@@ -8,8 +8,9 @@ namespace InventorBridge.Mcp.ILogic
 {
     /// <summary>
     /// Lists, writes and runs iLogic rules through the automation interface of the iLogic add-in that ships with
-    /// Inventor. A rule runs inside Inventor's process, so a loop over thousands of entities is far faster there
-    /// than through run_csharp's out-of-process calls.
+    /// Inventor, and runs iLogic code given as text. Rules run inside Inventor's process, but that does not make
+    /// them faster: measured on Inventor 2024, a cheap API call costs about 1.2 ms from a rule against 0.4 ms
+    /// across processes, and loops over thousands of occurrences took as long either way.
     /// </summary>
     /// <remarks>
     /// The automation interface has no type library in the interop, so it is used late-bound. Running a rule goes
@@ -143,6 +144,187 @@ namespace InventorBridge.Mcp.ILogic
             return $"ran {label} on {document.DisplayName} in {stopwatch.Elapsed.TotalSeconds.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)} s. " +
                 $"Transaction: {committed}. iLogic writes Logger output to its own log window, not here; return values " +
                 "through a parameter or an iProperty, and read them with inspect.";
+        }
+
+        /// <summary>
+        /// Runs rule text without storing it in a document: it is written to a temporary external rule file, run with
+        /// the arguments, and the arguments map comes back, with whatever the rule set or added to it.
+        /// </summary>
+        /// <remarks>
+        /// The rule reads arguments with RuleArguments.Arguments.Value("Name") and returns values by setting them
+        /// (Value("Result") = ...) or adding them (RuleArguments.Arguments.Add("Count", n)). The map is a COM object
+        /// of Inventor's, so what the rule writes into it is visible here after the run.
+        /// </remarks>
+        public static object RunScript(Application application, string? documentName, string code, string description,
+            IReadOnlyDictionary<string, object?>? arguments, bool undoable)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                throw new ArgumentException("Give the rule's text, in iLogic's VB.NET.");
+            }
+
+            var document = OpenDocuments.Find(application, documentName);
+            var automation = Automation(application);
+            if (!ReferenceEquals(application.ActiveDocument, document))
+            {
+                document.Activate();
+            }
+
+            var map = application.TransientObjects.CreateNameValueMap();
+            foreach (var (name, value) in arguments ?? new Dictionary<string, object?>())
+            {
+                map.Add(name, ToComValue(value));
+            }
+
+            if (!(arguments?.ContainsKey(ResultName) ?? false))
+            {
+                map.Add(ResultName, "");
+            }
+
+            map.Add(FinishedName, false);
+
+            var folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "InventorBridge");
+            System.IO.Directory.CreateDirectory(folder);
+            // iLogic names the file in its error dialogs, so the name carries the description.
+            var path = System.IO.Path.Combine(folder, $"{FileNamePart(description)}-{Guid.NewGuid().ToString("N")[..6]}.iLogicVb");
+            System.IO.File.WriteAllText(path, WithFinishMarker(code));
+
+            var label = "iLogic script: " + description;
+            var stopwatch = Stopwatch.StartNew();
+            var transaction = ScriptTransaction.Start(application, ScriptRunner.TransactionPrefix + label, undoable);
+
+            try
+            {
+                automation.RunExternalRuleWithArguments(document, path, map);
+            }
+            catch (Exception exception) when (exception is COMException or Microsoft.CSharp.RuntimeBinder.RuntimeBinderException
+                or System.Reflection.TargetInvocationException)
+            {
+                var note = transaction.RollBack(application);
+                var message = (exception.InnerException ?? exception).Message;
+                throw new InvalidOperationException($"{label} failed: {message}. Transaction: {note}");
+            }
+            finally
+            {
+                TryDelete(path);
+            }
+
+            var values = new Dictionary<string, object?>();
+            var finished = false;
+            for (var index = 1; index <= map.Count; index++)
+            {
+                var name = map.Name[index];
+                if (name == FinishedName)
+                {
+                    finished = map.Value[name] is true;
+                    continue;
+                }
+
+                values[name] = FromComValue(map.Value[name]);
+            }
+
+            if (!finished)
+            {
+                // iLogic does not report a rule's error to the caller: it shows its error dialog and returns.
+                var note = transaction.RollBack(application);
+                throw new ScriptNotFinishedException(
+                    $"{label} stopped before its end: iLogic hit an error (its error dialog names the line, numbered as in " +
+                    "your code; for a compilation error it lists them) or Main left early with Exit Sub or Return. " +
+                    $"Transaction: {note}. Values set before it stopped: {System.Text.Json.JsonSerializer.Serialize(values)}");
+            }
+
+            return new
+            {
+                outcome = "succeeded",
+                document = document.DisplayName,
+                elapsedSeconds = Math.Round(stopwatch.Elapsed.TotalSeconds, 2),
+                transaction = transaction.Commit(application),
+                values,
+                note = "values holds the arguments map after the run: what was passed in, and what the rule set or added. " +
+                    "Logger output goes to iLogic's log window, not here.",
+            };
+        }
+
+        private const string ResultName = "Result";
+        private const string FinishedName = "InventorBridgeFinished";
+
+        /// <summary>Thrown when iLogic code did not reach its end; the tool reports it as an error.</summary>
+        public sealed class ScriptNotFinishedException(string message) : InvalidOperationException(message);
+
+        /// <summary>
+        /// The code with a last statement that records it reached its end: before the End Sub of Main when the code
+        /// has one, at the end otherwise. Earlier lines keep their numbers, so iLogic's error lines match the code.
+        /// </summary>
+        internal static string WithFinishMarker(string code)
+        {
+            var marker = $"RuleArguments.Arguments.Value(\"{FinishedName}\") = True";
+            var lines = code.Replace("\r\n", "\n").Split('\n').ToList();
+            var main = lines.FindIndex(line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*(Public\s+)?Sub\s+Main\s*\(", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+
+            if (main < 0)
+            {
+                lines.Add(marker);
+            }
+            else
+            {
+                var end = lines.FindIndex(main + 1, line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*End\s+Sub\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+                if (end < 0)
+                {
+                    throw new ArgumentException("The code has Sub Main() but no End Sub after it.");
+                }
+
+                lines.Insert(end, marker);
+            }
+
+            return string.Join("\r\n", lines);
+        }
+
+        private static string FileNamePart(string description)
+        {
+            var text = new string(description.Select(character => char.IsLetterOrDigit(character) ? character : '-').ToArray()).Trim('-');
+            return text.Length == 0 ? "ilogic" : text[..Math.Min(text.Length, 40)];
+        }
+
+        /// <summary>JSON values from the tool call as plain values a NameValueMap accepts.</summary>
+        private static object ToComValue(object? value)
+        {
+            return value switch
+            {
+                null => "",
+                System.Text.Json.JsonElement { ValueKind: System.Text.Json.JsonValueKind.String } element => element.GetString() ?? "",
+                System.Text.Json.JsonElement { ValueKind: System.Text.Json.JsonValueKind.Number } element => element.GetDouble(),
+                System.Text.Json.JsonElement { ValueKind: System.Text.Json.JsonValueKind.True } => true,
+                System.Text.Json.JsonElement { ValueKind: System.Text.Json.JsonValueKind.False } => false,
+                System.Text.Json.JsonElement element => element.GetRawText(),
+                _ => value,
+            };
+        }
+
+        /// <summary>Values from the map as JSON-friendly values: numbers, booleans and strings as they are, the rest as text.</summary>
+        private static object? FromComValue(object? value)
+        {
+            return value switch
+            {
+                null => null,
+                string or bool or int or long or double or float or decimal or short => value,
+                Array array => array.Cast<object?>().Select(FromComValue).ToList(),
+                _ when Marshal.IsComObject(value) => "an Inventor object (put one of its properties in the map instead)",
+                _ => value.ToString(),
+            };
+        }
+
+        private static void TryDelete(string path)
+        {
+            try
+            {
+                System.IO.File.Delete(path);
+            }
+            catch (System.IO.IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
         }
 
         private static dynamic Automation(Application application)

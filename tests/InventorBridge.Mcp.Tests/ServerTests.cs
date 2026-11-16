@@ -14,7 +14,7 @@ namespace InventorBridge.Mcp.Tests
         [
             "inventor_status", "inventor_start", "run_csharp", "script_result", "inspect",
             "topology", "screenshot", "api_lookup", "guide", "bom", "export", "check", "undo_last",
-            "ilogic_list", "ilogic_set", "ilogic_run",
+            "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script",
         ];
 
         [Fact]

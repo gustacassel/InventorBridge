@@ -69,8 +69,10 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 
 ## iLogic
 
-- A rule runs inside Inventor's process, so a loop over thousands of parts or faces that would take minutes in `run_csharp` takes seconds as a rule. Write it with `ilogic_set` (it is not run) and run it with `ilogic_run`.
-- Rules return nothing to the agent: `Logger` writes to iLogic's log window. Write results into a parameter or an iProperty and read them with `inspect`, or into a file.
-- A rule that fails, or shows a `MessageBox`, opens a dialog in Inventor. `ilogic_run` returns with its title; tell the user to close it.
+- `ilogic_script` runs iLogic code given as text and returns values: the code sets `RuleArguments.Arguments.Value("Result") = ...` or adds its own with `RuleArguments.Arguments.Add("Name", value)`. Code that stops before its end is reported as an error and rolled back.
+- To store a rule in a document, write it with `ilogic_set` (it is not run) and run it with `ilogic_run`. A stored rule returns nothing to the agent: write results into a parameter or an iProperty and read them with `inspect`.
+- iLogic is not a way to speed up loops. Rules run inside Inventor, but an API call costs as much or more there: 1.2 ms against 0.4 ms from `run_csharp`, and a loop over 4,000 occurrences took about as long both ways. The time goes into Inventor itself.
+- `Logger` writes to iLogic's log window, not to the agent.
+- A rule that fails, or shows a `MessageBox`, opens a dialog in Inventor, and iLogic does not report the error to the caller. The tools return with the dialog's title; tell the user to close it.
 - Rules may already exist in the user's documents: read them with `ilogic_list` (`withText: true`) before replacing one.
 

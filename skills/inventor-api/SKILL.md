@@ -40,7 +40,11 @@ A call that returns "still running" with a window title means Inventor shows a d
 
 ## Heavy loops
 
-A loop over thousands of parts or faces is slow through `run_csharp` (each property read crosses processes). Ask Inventor for what it computes (mass, range box, `bom`), or run the loop as an iLogic rule: `ilogic_set`, then `ilogic_run`.
+A loop over thousands of parts or faces is slow: each API call costs around 1 ms, inside Inventor or out of it, so running the loop as iLogic does not help. Ask Inventor for what it computes (mass, range box, `bom`), filter before looping, and read only what you need.
+
+## iLogic
+
+`ilogic_script` runs iLogic code and returns values; `ilogic_list`, `ilogic_set` and `ilogic_run` work with the rules stored in documents. Read `guide("workflow")`, section iLogic.
 
 ## More
 
