@@ -1,11 +1,10 @@
-namespace InventorBridge.ReferenceGenerator.Model
+namespace InventorBridge.ReferenceGenerator.Model;
+
+public static class TypeNames
 {
-    public static class TypeNames
+    /// <summary>Element type of an array ("Face[]" becomes "Face"). Other types are returned unchanged.</summary>
+    public static string WithoutArray(string typeName)
     {
-        /// <summary>Element type of an array ("Face[]" becomes "Face"). Other types are returned unchanged.</summary>
-        public static string WithoutArray(string typeName)
-        {
-            return typeName.EndsWith("[]") ? typeName[..^2] : typeName;
-        }
+        return typeName.EndsWith("[]") ? typeName[..^2] : typeName;
     }
 }

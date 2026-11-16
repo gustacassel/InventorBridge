@@ -1,89 +1,88 @@
 using System.Runtime.InteropServices;
 using Inventor;
 
-namespace InventorBridge.Mcp.Scripting
+namespace InventorBridge.Mcp.Scripting;
+
+/// <summary>
+/// Names faces, edges and vertices the way Inventor's "Assign Name" command does (an attribute read by
+/// iLogic), so a later script can find the same entity again by name instead of by index or position.
+/// </summary>
+public static class EntityNames
 {
-    /// <summary>
-    /// Names faces, edges and vertices the way Inventor's "Assign Name" command does (an attribute read by
-    /// iLogic), so a later script can find the same entity again by name instead of by index or position.
-    /// </summary>
-    public static class EntityNames
+    private const string SetName = "iLogicEntityNameSet";
+    private const string AttributeName = "iLogicEntityName";
+
+    /// <summary>Names a Face, Edge or Vertex. For a proxy, the name goes on the entity in its part document.</summary>
+    public static void Set(object entity, string name)
     {
-        private const string SetName = "iLogicEntityNameSet";
-        private const string AttributeName = "iLogicEntityName";
+        var sets = AttributeSetsOf(Native(entity))
+            ?? throw new ArgumentException($"Only a Face, Edge or Vertex can be named, not {entity.GetType().Name}.");
 
-        /// <summary>Names a Face, Edge or Vertex. For a proxy, the name goes on the entity in its part document.</summary>
-        public static void Set(object entity, string name)
+        var set = sets.NameIsUsed[SetName] ? sets[SetName] : sets.Add(SetName);
+        if (set.NameIsUsed[AttributeName])
         {
-            var sets = AttributeSetsOf(Native(entity))
-                ?? throw new ArgumentException($"Only a Face, Edge or Vertex can be named, not {entity.GetType().Name}.");
-
-            var set = sets.NameIsUsed[SetName] ? sets[SetName] : sets.Add(SetName);
-            if (set.NameIsUsed[AttributeName])
-            {
-                set[AttributeName].Value = name;
-            }
-            else
-            {
-                set.Add(AttributeName, ValueTypeEnum.kStringType, name);
-            }
+            set[AttributeName].Value = name;
         }
-
-        /// <summary>The entity's name, or null if it has none. Proxies are read through their native entity.</summary>
-        public static string? Get(object entity)
+        else
         {
-            try
-            {
-                var sets = AttributeSetsOf(Native(entity));
-                if (sets is null || !sets.NameIsUsed[SetName])
-                {
-                    return null;
-                }
+            set.Add(AttributeName, ValueTypeEnum.kStringType, name);
+        }
+    }
 
-                var set = sets[SetName];
-                return set.NameIsUsed[AttributeName] ? set[AttributeName].Value as string : null;
-            }
-            catch (COMException)
+    /// <summary>The entity's name, or null if it has none. Proxies are read through their native entity.</summary>
+    public static string? Get(object entity)
+    {
+        try
+        {
+            var sets = AttributeSetsOf(Native(entity));
+            if (sets is null || !sets.NameIsUsed[SetName])
             {
                 return null;
             }
-        }
 
-        /// <summary>The named entity in a part document, or null.</summary>
-        public static object? Find(Document document, string name)
-        {
-            var found = document.AttributeManager.FindObjects(SetName, AttributeName, name);
-            return found.Count > 0 ? found[1] : null;
+            var set = sets[SetName];
+            return set.NameIsUsed[AttributeName] ? set[AttributeName].Value as string : null;
         }
-
-        private static AttributeSets? AttributeSetsOf(object entity)
+        catch (COMException)
         {
-            switch (entity)
-            {
-                case Face face:
-                    return face.AttributeSets;
-                case Edge edge:
-                    return edge.AttributeSets;
-                case Vertex vertex:
-                    return vertex.AttributeSets;
-                default:
-                    return null;
-            }
+            return null;
         }
+    }
 
-        private static object Native(object entity)
+    /// <summary>The named entity in a part document, or null.</summary>
+    public static object? Find(Document document, string name)
+    {
+        var found = document.AttributeManager.FindObjects(SetName, AttributeName, name);
+        return found.Count > 0 ? found[1] : null;
+    }
+
+    private static AttributeSets? AttributeSetsOf(object entity)
+    {
+        switch (entity)
         {
-            switch (entity)
-            {
-                case FaceProxy face:
-                    return face.NativeObject;
-                case EdgeProxy edge:
-                    return edge.NativeObject;
-                case VertexProxy vertex:
-                    return vertex.NativeObject;
-                default:
-                    return entity;
-            }
+            case Face face:
+                return face.AttributeSets;
+            case Edge edge:
+                return edge.AttributeSets;
+            case Vertex vertex:
+                return vertex.AttributeSets;
+            default:
+                return null;
+        }
+    }
+
+    private static object Native(object entity)
+    {
+        switch (entity)
+        {
+            case FaceProxy face:
+                return face.NativeObject;
+            case EdgeProxy edge:
+                return edge.NativeObject;
+            case VertexProxy vertex:
+                return vertex.NativeObject;
+            default:
+                return entity;
         }
     }
 }

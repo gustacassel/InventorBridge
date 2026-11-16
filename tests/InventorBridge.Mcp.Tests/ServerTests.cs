@@ -2,116 +2,115 @@ using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using Xunit;
 
-namespace InventorBridge.Mcp.Tests
+namespace InventorBridge.Mcp.Tests;
+
+/// <summary>
+/// Starts the real server over stdio, as Claude Code does, and checks the tools it declares.
+/// Only tools that do not need Inventor are called.
+/// </summary>
+public sealed class ServerTests
 {
-    /// <summary>
-    /// Starts the real server over stdio, as Claude Code does, and checks the tools it declares.
-    /// Only tools that do not need Inventor are called.
-    /// </summary>
-    public sealed class ServerTests
+    private static readonly string[] ExpectedTools =
+    [
+        "inventor_status", "inventor_start", "run_csharp", "script_result", "inspect",
+        "topology", "screenshot", "api_lookup", "guide", "bom", "export", "check", "undo_last",
+        "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info",
+    ];
+
+    [Fact]
+    public async Task TheServerDeclaresEveryToolWithAllFourHints()
     {
-        private static readonly string[] ExpectedTools =
-        [
-            "inventor_status", "inventor_start", "run_csharp", "script_result", "inspect",
-            "topology", "screenshot", "api_lookup", "guide", "bom", "export", "check", "undo_last",
-            "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info",
-        ];
+        await using var client = await StartServerAsync();
 
-        [Fact]
-        public async Task TheServerDeclaresEveryToolWithAllFourHints()
+        var tools = await client.ListToolsAsync();
+
+        Assert.Equal(ExpectedTools.Order(), tools.Select(tool => tool.Name).Order());
+        foreach (var tool in tools)
         {
-            await using var client = await StartServerAsync();
-
-            var tools = await client.ListToolsAsync();
-
-            Assert.Equal(ExpectedTools.Order(), tools.Select(tool => tool.Name).Order());
-            foreach (var tool in tools)
-            {
-                var hints = tool.ProtocolTool.Annotations;
-                Assert.True(hints is not null, $"{tool.Name} has no annotations");
-                Assert.True(hints!.ReadOnlyHint is not null, $"{tool.Name}: readOnlyHint");
-                Assert.True(hints.DestructiveHint is not null, $"{tool.Name}: destructiveHint");
-                Assert.True(hints.IdempotentHint is not null, $"{tool.Name}: idempotentHint");
-                Assert.True(hints.OpenWorldHint is not null, $"{tool.Name}: openWorldHint");
-            }
+            var hints = tool.ProtocolTool.Annotations;
+            Assert.True(hints is not null, $"{tool.Name} has no annotations");
+            Assert.True(hints!.ReadOnlyHint is not null, $"{tool.Name}: readOnlyHint");
+            Assert.True(hints.DestructiveHint is not null, $"{tool.Name}: destructiveHint");
+            Assert.True(hints.IdempotentHint is not null, $"{tool.Name}: idempotentHint");
+            Assert.True(hints.OpenWorldHint is not null, $"{tool.Name}: openWorldHint");
         }
+    }
 
-        [Fact]
-        public async Task RunCSharpTakesAnOptionalUndoableFlag()
+    [Fact]
+    public async Task RunCSharpTakesAnOptionalUndoableFlag()
+    {
+        await using var client = await StartServerAsync();
+
+        var tools = await client.ListToolsAsync();
+        var schema = tools.Single(tool => tool.Name == "run_csharp").ProtocolTool.InputSchema;
+
+        var undoable = schema.GetProperty("properties").GetProperty("undoable");
+        Assert.Equal("boolean", undoable.GetProperty("type").GetString());
+        Assert.DoesNotContain("undoable", schema.GetProperty("required").EnumerateArray().Select(item => item.GetString()));
+    }
+
+    [Fact]
+    public async Task TheInstructionsPointToTheCompanyGuides()
+    {
+        var folder = Path.Combine(Path.GetTempPath(), $"inventorbridge-server-guides-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(folder);
+        File.WriteAllText(Path.Combine(folder, "acme-standards.md"), "# ACME standards\n\n> File names at ACME.\n");
+
+        try
         {
-            await using var client = await StartServerAsync();
+            await using var withGuides = await StartServerAsync(folder);
+            await using var without = await StartServerAsync();
 
-            var tools = await client.ListToolsAsync();
-            var schema = tools.Single(tool => tool.Name == "run_csharp").ProtocolTool.InputSchema;
-
-            var undoable = schema.GetProperty("properties").GetProperty("undoable");
-            Assert.Equal("boolean", undoable.GetProperty("type").GetString());
-            Assert.DoesNotContain("undoable", schema.GetProperty("required").EnumerateArray().Select(item => item.GetString()));
+            Assert.Contains("This organization has its own guides: acme-standards.", withGuides.ServerInstructions);
+            Assert.DoesNotContain("own guides", without.ServerInstructions);
         }
-
-        [Fact]
-        public async Task TheInstructionsPointToTheCompanyGuides()
+        finally
         {
-            var folder = Path.Combine(Path.GetTempPath(), "inventorbridge-server-guides-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
-            File.WriteAllText(Path.Combine(folder, "acme-standards.md"), "# ACME standards\n\n> File names at ACME.\n");
-
-            try
-            {
-                await using var withGuides = await StartServerAsync(folder);
-                await using var without = await StartServerAsync();
-
-                Assert.Contains("This organization has its own guides: acme-standards.", withGuides.ServerInstructions);
-                Assert.DoesNotContain("own guides", without.ServerInstructions);
-            }
-            finally
-            {
-                Directory.Delete(folder, recursive: true);
-            }
+            Directory.Delete(folder, recursive: true);
         }
+    }
 
-        [Fact]
-        public async Task GuideAndApiLookupWorkWithoutInventor()
+    [Fact]
+    public async Task GuideAndApiLookupWorkWithoutInventor()
+    {
+        await using var client = await StartServerAsync();
+
+        var guide = await client.CallToolAsync("guide", new Dictionary<string, object?> { ["name"] = "workflow" });
+        var lookup = await client.CallToolAsync("api_lookup", new Dictionary<string, object?> { ["query"] = "ExtrudeFeatures.Add", ["version"] = 2024 });
+
+        Assert.NotEqual(true, guide.IsError);
+        Assert.StartsWith("# Workflow", TextOf(guide));
+        Assert.NotEqual(true, lookup.IsError);
+        Assert.Contains("ExtrudeFeature Add(ExtrudeDefinition Definition);", TextOf(lookup));
+    }
+
+    [Fact]
+    public async Task ABadArgumentIsAnErrorResult()
+    {
+        await using var client = await StartServerAsync();
+
+        var result = await client.CallToolAsync("topology", new Dictionary<string, object?> { ["faces"] = "spheres" });
+
+        Assert.True(result.IsError);
+        Assert.Contains("Use all, cylinders or none", TextOf(result));
+    }
+
+    private static async Task<McpClient> StartServerAsync(string? companyGuides = null)
+    {
+        var serverPath = Path.Combine(AppContext.BaseDirectory, "InventorBridge.Mcp.dll");
+        var transport = new StdioClientTransport(new StdioClientTransportOptions
         {
-            await using var client = await StartServerAsync();
+            Name = "InventorBridge",
+            Command = "dotnet",
+            Arguments = [serverPath],
+            EnvironmentVariables = new Dictionary<string, string?> { ["INVENTORBRIDGE_GUIDES"] = companyGuides },
+        });
 
-            var guide = await client.CallToolAsync("guide", new Dictionary<string, object?> { ["name"] = "workflow" });
-            var lookup = await client.CallToolAsync("api_lookup", new Dictionary<string, object?> { ["query"] = "ExtrudeFeatures.Add", ["version"] = 2024 });
+        return await McpClient.CreateAsync(transport);
+    }
 
-            Assert.NotEqual(true, guide.IsError);
-            Assert.StartsWith("# Workflow", TextOf(guide));
-            Assert.NotEqual(true, lookup.IsError);
-            Assert.Contains("ExtrudeFeature Add(ExtrudeDefinition Definition);", TextOf(lookup));
-        }
-
-        [Fact]
-        public async Task ABadArgumentIsAnErrorResult()
-        {
-            await using var client = await StartServerAsync();
-
-            var result = await client.CallToolAsync("topology", new Dictionary<string, object?> { ["faces"] = "spheres" });
-
-            Assert.True(result.IsError);
-            Assert.Contains("Use all, cylinders or none", TextOf(result));
-        }
-
-        private static async Task<McpClient> StartServerAsync(string? companyGuides = null)
-        {
-            var serverPath = Path.Combine(AppContext.BaseDirectory, "InventorBridge.Mcp.dll");
-            var transport = new StdioClientTransport(new StdioClientTransportOptions
-            {
-                Name = "InventorBridge",
-                Command = "dotnet",
-                Arguments = [serverPath],
-                EnvironmentVariables = new Dictionary<string, string?> { ["INVENTORBRIDGE_GUIDES"] = companyGuides },
-            });
-
-            return await McpClient.CreateAsync(transport);
-        }
-
-        private static string TextOf(CallToolResult result)
-        {
-            return string.Concat(result.Content.OfType<TextContentBlock>().Select(block => block.Text));
-        }
+    private static string TextOf(CallToolResult result)
+    {
+        return string.Concat(result.Content.OfType<TextContentBlock>().Select(block => block.Text));
     }
 }
