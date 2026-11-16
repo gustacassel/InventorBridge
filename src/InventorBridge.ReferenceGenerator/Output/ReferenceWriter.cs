@@ -81,7 +81,7 @@ public sealed class ReferenceWriter
             {
                 var kind = member.Kind.ToString().ToLowerInvariant();
                 var signature = SignatureFormatter.Format(member.Latest);
-                tsv.Append($"{type.Name}\t{member.Name}\t{kind}\t{signature}\t{versionLabels.Range(member.Versions)}\n");
+                tsv.Append($"{type.Name}\t{member.Name}\t{kind}\t{signature}\t{versionLabels.Range(member.VisibleVersions)}\n");
             }
         }
 

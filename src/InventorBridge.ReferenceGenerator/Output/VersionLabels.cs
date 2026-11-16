@@ -55,6 +55,10 @@ public sealed class VersionLabels
     public string MemberNote(MergedMember member)
     {
         var note = Note(member.Versions);
+        if (member.HiddenVersions.Count > 0)
+        {
+            note += $" // hidden in {string.Join(", ", member.HiddenVersions)}: there, prefer the newer members";
+        }
 
         var currentSignature = SignatureFormatter.Format(member.Latest);
         var olderSignatures = member.SignatureByVersion

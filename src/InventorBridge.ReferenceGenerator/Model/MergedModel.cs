@@ -9,17 +9,25 @@ public sealed class MergedMember
     public required string Name { get; init; }
     public required ApiMemberKind Kind { get; init; }
 
-    /// <summary>The member as it appears in the newest version that has it.</summary>
+    /// <summary>The member as it appears in the newest version that has it visible (or the newest, if hidden in all).</summary>
     public required ApiMember Latest { get; set; }
 
     /// <summary>Versions in which the member exists, in order.</summary>
     public List<string> Versions { get; } = [];
 
-    /// <summary>Formatted signature per version, to point out signature changes between versions.</summary>
+    /// <summary>Versions in which the type library hides the member, often because a newer method replaces it.</summary>
+    public List<string> HiddenVersions { get; } = [];
+
+    /// <summary>Formatted signature per version in which the member is visible, to point out signature changes.</summary>
     public Dictionary<string, string> SignatureByVersion { get; } = [];
 
+    /// <summary>Versions in which the member exists and is not hidden.</summary>
     [JsonIgnore]
-    public bool IsHidden => Latest.IsHidden;
+    public List<string> VisibleVersions => Versions.Except(HiddenVersions).ToList();
+
+    /// <summary>Hidden in every version that has it. A member hidden only in newer versions stays in the reference.</summary>
+    [JsonIgnore]
+    public bool IsHidden => HiddenVersions.Count == Versions.Count;
 
     [JsonIgnore]
     public string Key => Latest.Key;

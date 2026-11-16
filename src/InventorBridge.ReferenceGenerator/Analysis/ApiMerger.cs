@@ -56,9 +56,21 @@ public static class ApiMerger
             mergedType.Members[member.Key] = mergedMember;
         }
 
-        mergedMember.Latest = member;
+        // A version that hides the member does not replace the form of a version where it is usable.
+        if (!member.IsHidden || mergedMember.Latest.IsHidden)
+        {
+            mergedMember.Latest = member;
+        }
+
         mergedMember.Versions.Add(version);
-        mergedMember.SignatureByVersion[version] = SignatureFormatter.Format(member);
+        if (member.IsHidden)
+        {
+            mergedMember.HiddenVersions.Add(version);
+        }
+        else
+        {
+            mergedMember.SignatureByVersion[version] = SignatureFormatter.Format(member);
+        }
     }
 
     private static void MergeEnumValue(MergedType mergedType, ApiEnumValue enumValue, string version)

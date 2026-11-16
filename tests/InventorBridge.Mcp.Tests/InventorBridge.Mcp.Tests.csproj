@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\InventorBridge.Mcp\InventorBridge.Mcp.csproj" />
+    <ProjectReference Include="..\..\src\InventorBridge.ReferenceGenerator\InventorBridge.ReferenceGenerator.csproj" />
   </ItemGroup>
 
 </Project>

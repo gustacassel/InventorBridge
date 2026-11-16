@@ -81,6 +81,49 @@ part.Save();
 return path;
 ```
 
+## Holes and chamfers
+
+Hole features, not circles cut by an extrusion, are what drawings read for hole and thread notes. Sketch the centers on the face the holes start from; from such a sketch, `kPositiveExtentDirection` goes into the material. A hole pointing the other way cuts nothing, and Inventor reports it as `kDriverLostHealth`.
+
+```csharp
+var part = (PartDocument)ActiveDocument;
+var definition = part.ComponentDefinition;
+SurfaceBody body = definition.SurfaceBodies[1];
+
+// The top face of a 12 mm plate lying on the XY plane.
+Face top = body.Faces.Cast<Face>().First(face =>
+    face.SurfaceType == SurfaceTypeEnum.kPlaneSurface && Math.Abs(face.PointOnFace.Z - Mm(12)) < 1e-6);
+PlanarSketch sketch = definition.Sketches.Add(top);
+ObjectCollection clearance = Objects.CreateObjectCollection();
+clearance.Add(sketch.SketchPoints.Add(sketch.ModelToSketchSpace(Geometry.CreatePoint(Mm(40), Mm(15), Mm(12))), true));
+clearance.Add(sketch.SketchPoints.Add(sketch.ModelToSketchSpace(Geometry.CreatePoint(Mm(40), Mm(45), Mm(12))), true));
+ObjectCollection tapped = Objects.CreateObjectCollection();
+tapped.Add(sketch.SketchPoints.Add(sketch.ModelToSketchSpace(Geometry.CreatePoint(Mm(100), Mm(30), Mm(12))), true));
+
+HoleFeatures holes = definition.Features.HoleFeatures;
+HoleFeature through = holes.AddDrilledByThroughAllExtent(holes.CreateSketchPlacementDefinition(clearance), Mm(13),
+    PartFeatureExtentDirectionEnum.kPositiveExtentDirection);
+HoleTapInfo thread = holes.CreateTapInfo(true, "ISO Metric profile", "M10x1.5", "6H", true);
+HoleFeature threaded = holes.AddDrilledByThroughAllExtent(holes.CreateSketchPlacementDefinition(tapped), thread,
+    PartFeatureExtentDirectionEnum.kPositiveExtentDirection);
+
+// 5 mm chamfers on the straight edges along Z.
+EdgeCollection corners = Objects.CreateEdgeCollection();
+foreach (Edge edge in body.Edges)
+{
+    Point start = edge.StartVertex.Point, end = edge.StopVertex.Point;
+    if (edge.GeometryType == CurveTypeEnum.kLineSegmentCurve && Math.Abs(start.X - end.X) < 1e-6 && Math.Abs(start.Y - end.Y) < 1e-6)
+    {
+        corners.Add(edge);
+    }
+}
+
+definition.Features.ChamferFeatures.AddUsingDistance(corners, Mm(5));
+return $"{through.HealthStatus}, {threaded.HealthStatus}, {corners.Count} edges chamfered";
+```
+
+Sheet metal parts come from a sheet metal template; their features are under `((SheetMetalFeatures)definition.Features)`: `FaceFeatures`, `FlangeFeatures` and the others. Cast `part.ComponentDefinition` to `SheetMetalComponentDefinition` for `Thickness`, `Unfold()` and `FlatPattern`.
+
 ## Notes
 
 - `SetDistanceExtent`, `AddByAngle` and other `object` arguments take a number in API units (cm, radians). Many also take an expression string such as `"500 mm"`. A user parameter name works too, which keeps the model editable.

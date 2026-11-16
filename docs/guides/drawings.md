@@ -1,8 +1,8 @@
 # Drawings
 
-> Detailing a part or an assembly: sheet from the template's format, views, dimensions tied to edges, parts list, balloons, saving the drawing alone.
+> Detailing a part or an assembly: sheet from the template's format, views, breaks, sections, details, dimensions tied to edges, hole, chamfer and bend notes, center marks, flat patterns, weld symbols, parts list, balloons, saving the drawing alone.
 
-Status: every step below ran on Inventor 2024.4 (2026-11-16) while detailing a 30-part assembly on an A3 sheet; the guide tests compile the scripts.
+Status: every step below ran on Inventor 2024.4 (2026-11-16), while detailing a 30-part assembly, a 1200 mm bar with holes and chamfers, and a bent sheet metal part, on A3 sheets; the guide tests compile the scripts.
 
 ## What a detail drawing usually has
 
@@ -18,14 +18,14 @@ General drafting practice, also what 583 production drawings of one manufacturer
 - Long parts: a view with a break, the full length dimensioned across it.
 - Short notes, in capitals, above the title block.
 
-Not yet run through these tools, so look the methods up with `api_lookup` first: section and detail views (`DrawingViews.AddSectionView`, `AddDetailView`), breaks (`DrawingView.BreakOperations`), hole and bend notes (`DrawingNotes.HoleThreadNotes`, `BendNotes`), center marks (`Sheet.Centermarks`), a flat pattern view (`AddBaseView` options), weld symbols and sketched symbols.
+Sketched symbols have not been run through these tools yet: look them up with `api_lookup` first.
 
 ## The order that works
 
 1. Create the drawing file from the drawing template (`CreateDocument`) next to the model, with the same name and `.idw`.
 2. If the template only has an empty default sheet, add a sheet from one of its sheet formats, which carry the border and the title block, and delete the empty one.
-3. Place the views: a base view, projected views, an isometric view. Check the layout with `screenshot` (`zoomTo: "sheet"`).
-4. Dimensions, from the edges of the views.
+3. Place the views: a base view, projected views, an isometric view, then breaks, sections, details and the flat pattern. Check the layout with `screenshot` (`zoomTo: "sheet"`).
+4. Center marks, dimensions from the edges of the views, then hole, chamfer and bend notes and weld symbols. Move texts that overlap a section line or another note (`Text.Origin`, `Position`).
 5. Parts list (assemblies), then balloons.
 6. Save the drawing alone, then `inspect` (no detached dimensions) and `check`.
 
@@ -80,6 +80,70 @@ DrawingView iso = sheet.DrawingViews.AddBaseView((_Document)model, Geometry.Crea
 return $"main {main.Width / main.Scale * 10:0} x {main.Height / main.Scale * 10:0} mm of model";
 ```
 
+## Breaks
+
+A long part keeps its scale with a break. `BreakOperations.Add` takes two points on the sheet, the start and the end of the part removed. `view.ModelToSheetSpace` turns a model point into that sheet point, and it follows the breaks already in the view, so place each break from model coordinates. Set the view's final scale first: the gap scales with the view.
+
+```csharp
+var drawing = (DrawingDocument)ActiveDocument;
+DrawingView view = drawing.ActiveSheet.DrawingViews[1];
+Point2d AtModelX(double millimeters) => view.ModelToSheetSpace(Geometry.CreatePoint(Mm(millimeters), Mm(30), Mm(6)));
+
+// Remove 120..540 mm and 660..1080 mm of a 1200 mm bar along X: both ends and the middle stay.
+view.BreakOperations.Add(BreakOrientationEnum.kHorizontalBreakOrientation, AtModelX(120), AtModelX(540),
+    BreakStyleEnum.kStructuralBreakStyle, 5, Mm(5), 1, false);
+view.BreakOperations.Add(BreakOrientationEnum.kHorizontalBreakOrientation, AtModelX(660), AtModelX(1080),
+    BreakStyleEnum.kStructuralBreakStyle, 5, Mm(5), 1, false);
+return $"{view.BreakOperations.Count} breaks, view now {view.Width * 10:0} mm wide";
+```
+
+`BreakOperations.Add` is the method on 2024; `AddBySketch` came in 2026 and `AddWithOptions` in 2027.
+
+A dimension between the two end lines of a broken view shows the full length.
+
+## Sections and details
+
+- A section line is a sketch on the parent view: `view.Sketches.Add()`, `Edit()`, a line in the sketch's space (`sketch.SheetToSketchSpace`), `ExitEdit()`. Draw it past the part on both sides.
+- `AddSectionView` places the section aligned with its parent; the name is the label letter. `AddDetailView` takes the fence center on the sheet and, for a circular fence, its radius on the sheet in cm.
+- The template's style writes the labels, "A-A ( 1 : 1 )" and "B ( 1 : 1 )".
+
+```csharp
+var drawing = (DrawingDocument)ActiveDocument;
+Sheet sheet = drawing.ActiveSheet;
+DrawingView view = sheet.DrawingViews[1];
+Point2d AtModel(double x, double y) => view.ModelToSheetSpace(Geometry.CreatePoint(Mm(x), Mm(y), 0));
+
+// Section A-A across the part at x = 600 mm.
+DrawingSketch line = view.Sketches.Add();
+line.Edit();
+line.SketchLines.AddByTwoPoints(line.SheetToSketchSpace(AtModel(600, 80)), line.SheetToSketchSpace(AtModel(600, -20)));
+line.ExitEdit();
+SectionDrawingView section = sheet.DrawingViews.AddSectionView(view, line, Geometry.CreatePoint2d(Mm(345), Mm(220)),
+    DrawingViewStyleEnum.kFromBaseDrawingViewStyle, 1.0, true, "A");
+
+// Detail B at 1:1, a circle of 22 mm on the sheet around the right end.
+DetailDrawingView detail = sheet.DrawingViews.AddDetailView(view, Geometry.CreatePoint2d(Mm(345), Mm(130)),
+    DrawingViewStyleEnum.kFromBaseDrawingViewStyle, true, AtModel(1170, 30), Mm(22), Type.Missing, 1.0, true, "B");
+return $"{section.Name}: {section.Width * 10:0} x {section.Height * 10:0} mm; {detail.Name}: {detail.Width * 10:0} x {detail.Height * 10:0} mm";
+```
+
+## Sheet metal: the flat pattern
+
+The flat pattern view is a base view of the sheet metal part with `SheetMetalFoldedModel` set to false. The part must have a flat pattern already (`SheetMetalComponentDefinition.HasFlatPattern`; `Unfold()` makes one).
+
+```csharp
+var drawing = (DrawingDocument)ActiveDocument;
+Sheet sheet = drawing.ActiveSheet;
+Document model = App.Documents.ItemByName[System.IO.Path.ChangeExtension(drawing.FullFileName, ".ipt")];
+
+NameValueMap options = Objects.CreateNameValueMap();
+options.Add("SheetMetalFoldedModel", false);
+DrawingView flat = sheet.DrawingViews.AddBaseView((_Document)model, Geometry.CreatePoint2d(Mm(130), Mm(110)), 0.5,
+    ViewOrientationTypeEnum.kDefaultViewOrientation, DrawingViewStyleEnum.kHiddenLineRemovedDrawingViewStyle,
+    AdditionalOptions: options);
+return $"flat pattern {flat.IsFlatPatternView}: {flat.Width / flat.Scale * 10:0} x {flat.Height / flat.Scale * 10:0} mm";
+```
+
 ## Dimensions tied to edges
 
 A dimension attached to the drawing's curves follows the model when it changes. `DrawingCurves` with an occurrence returns only that component's curves in the view (in C#, `view.get_DrawingCurves(occurrence)`; without one, pass `Type.Missing`). For an overall size, take the extreme straight lines:
@@ -107,6 +171,106 @@ return $"{length.Text.Text}, attached {length.Attached}";
 ```
 
 For a nested component, pass the occurrence from `Occurrences.AllLeafOccurrences` (a proxy), not the one inside the subassembly's own document.
+
+## Center marks
+
+`SetAutomatedCenterlineSettings` does what the Automated Centerlines dialog does: center marks on the holes seen end on, center lines on the ones seen from the side. It returns what it added. For a single hole, `Sheet.Centermarks.Add(sheet.CreateGeometryIntent(circle))`.
+
+```csharp
+var drawing = (DrawingDocument)ActiveDocument;
+var lines = new List<string>();
+foreach (DrawingView view in drawing.ActiveSheet.DrawingViews)
+{
+    view.GetAutomatedCenterlineSettings(out AutomatedCenterlineSettings settings);
+    settings.ApplyToHoles = true;
+    settings.ProjectionNormalAxis = true;
+    settings.ProjectionParallelAxis = false;
+    ObjectsEnumerator added = view.SetAutomatedCenterlineSettings(settings);
+    lines.Add($"{view.Name}: {added?.Count ?? 0} added");
+}
+
+return string.Join("\n", lines);
+```
+
+## Hole, thread and chamfer notes
+
+- `HoleThreadNotes.Add(position, circle)` takes the hole's circle in a view where the hole is seen end on. Inventor writes the note from the hole feature: "Ø13 THRU", "M10x1.5 - 6H". It works on hole features; a circle cut by an extrusion has no hole data.
+- The count of like holes ("(4x)") is not in the default note. Turn the default format off, set the quantity format, and add `<QuantityNote/>` inside the last `StyleOverride`, or the count comes out in another font size. Other spellings (`<QTYNOTE>`, `<Quantity/>`) end up as plain text in the note.
+- `ChamferNotes.Add(position, chamferLine, adjacentLine)` takes the slanted line of the chamfer and a line that meets it, and writes "5 X 45°".
+- In a note's `Text.Text`, Ø reads as "n": the symbol is the letter n in the AIGDT font.
+
+```csharp
+var drawing = (DrawingDocument)ActiveDocument;
+Sheet sheet = drawing.ActiveSheet;
+DrawingView view = sheet.DrawingViews[1];
+
+DrawingCurve hole = view.get_DrawingCurves(Type.Missing).Cast<DrawingCurve>()
+    .Where(curve => curve.CurveType == CurveTypeEnum.kCircleCurve)
+    .OrderByDescending(curve => curve.CenterPoint.Y).First();
+HoleThreadNote note = sheet.DrawingNotes.HoleThreadNotes.Add(
+    Geometry.CreatePoint2d(hole.CenterPoint.X + Mm(30), view.Center.Y + view.Height / 2 + Mm(8)), hole);
+
+// "Ø13 THRU (4x)": the count inside the last style override, so it keeps the note's font size.
+string format = note.FormattedHoleThreadNote;
+if (format.Contains("kHoleDiameterHoleProperty"))
+{
+    note.UseDefaultFormat = false;
+    note.FormattedQuantityNote = "(<Quantity/>x)";
+    int end = format.LastIndexOf("</StyleOverride>");
+    note.FormattedHoleThreadNote = end < 0 ? $"{format} <QuantityNote/>" : format.Insert(end, " <QuantityNote/>");
+}
+
+return note.Text.Text;
+```
+
+## Bend notes
+
+On a flat pattern view, the bend lines are the curves whose `EdgeType` is `kBendUpEdge` or `kBendDownEdge`. `BendNotes.Add(bendLine)` writes direction, angle and radius in the template's language ("ABAIXO 90° R3" from a Portuguese template).
+
+```csharp
+var drawing = (DrawingDocument)ActiveDocument;
+Sheet sheet = drawing.ActiveSheet;
+DrawingView flat = sheet.DrawingViews.Cast<DrawingView>().First(view => view.IsFlatPatternView);
+
+var notes = new List<string>();
+foreach (DrawingCurve curve in flat.get_DrawingCurves(Type.Missing))
+{
+    if (curve.EdgeType == DrawingEdgeTypeEnum.kBendUpEdge || curve.EdgeType == DrawingEdgeTypeEnum.kBendDownEdge)
+    {
+        notes.Add(sheet.DrawingNotes.BendNotes.Add(curve).Text);
+    }
+}
+
+return string.Join("\n", notes);
+```
+
+## Weld symbols
+
+- `WeldingSymbols.CreateDefinitions()`, then `Add()` one definition per weld (two for a symbol on both sides).
+- `WeldSymbolType` takes a `WeldSymbolTypeEnum` value (`kFilletWeldSymbolType`); the `WeldSymbolVariationTypeEnum` values are refused.
+- Which fields a weld takes depends on its type and the drafting standard. Under ISO, a fillet's size goes in `SizeOrStrength` ("a5") and `Length` takes the weld length; `Leg1` and `Thickness` fail with `E_FAIL`.
+- The leader goes like a balloon's: the symbol's position first, the edge's `GeometryIntent` last.
+
+```csharp
+var drawing = (DrawingDocument)ActiveDocument;
+Sheet sheet = drawing.ActiveSheet;
+DrawingView view = sheet.DrawingViews[1];
+DrawingCurve bottom = view.get_DrawingCurves(Type.Missing).Cast<DrawingCurve>()
+    .Where(curve => curve.CurveType == CurveTypeEnum.kLineSegmentCurve && Math.Abs(curve.StartPoint.Y - curve.EndPoint.Y) < 1e-6)
+    .OrderBy(curve => curve.StartPoint.Y).First();
+
+DrawingWeldingSymbolDefinitions definitions = sheet.WeldingSymbols.CreateDefinitions();
+DrawingWeldingSymbolDefinition weld = definitions.Add();
+weld.WeldSymbolOne.WeldSymbolType = (int)WeldSymbolTypeEnum.kFilletWeldSymbolType;
+weld.WeldSymbolOne.SizeOrStrength = "a5";
+weld.AllAroundSymbol = true;
+
+ObjectCollection leader = Objects.CreateObjectCollection();
+leader.Add(Geometry.CreatePoint2d(bottom.MidPoint.X - Mm(40), bottom.MidPoint.Y - Mm(20)));
+leader.Add(sheet.CreateGeometryIntent(bottom, PointIntentEnum.kMidPointIntent));
+sheet.WeldingSymbols.Add(leader, definitions);
+return $"{sheet.WeldingSymbols.Count} weld symbols";
+```
 
 ## Parts list
 
