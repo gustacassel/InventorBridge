@@ -440,9 +440,14 @@ public static class VaultWriter
                 Case "checkout"
                     If file.CheckedOut Then Return ResultLine(localPath, "unchanged", file, "already checked out to you")
                     Dim problems As String = Acquire(conn, file, options Or VDF.Vault.Settings.AcquireFilesSettings.AcquisitionOption.Checkout)
-                    Return ResultLine(localPath, If(problems.Length = 0, "checked out", "failed"), Latest(conn, vaultPath), problems)
+                    Dim warning As String = ""
+                    If problems.Length = 0 AndAlso file.FileLfCyc IsNot Nothing AndAlso file.FileLfCyc.LfCycStateId > 0 Then
+                        Dim current As ACW.LfCycState = ws.LifeCycleService.GetLifeCycleStatesByIds(New Long() {file.FileLfCyc.LfCycStateId})(0)
+                        If current.ReleasedState Then warning = "released (" & current.DispName & "): checked out because your rights allow it; a released file usually needs a change process first"
+                    End If
+                    Return ResultLine(localPath, If(problems.Length = 0, "checked out", "failed"), Latest(conn, vaultPath), If(problems.Length = 0, warning, problems))
                 Case "checkin"
-                    If Not file.CheckedOut Then Return ResultLine(localPath, "skipped", file, "not checked out: check it out, change it, save it, then check it in")
+                    If Not file.CheckedOut Then Return ResultLine(localPath, "unchanged", file, "in the vault and not checked out, so nothing to check in (to change it: check out, change, save, check in)")
                     Dim iteration As New VDF.Vault.Currency.Entities.FileIteration(conn, file)
                     conn.FileManager.CheckinFile(iteration, comment, False, Associations(conn, root, file, refs), Nothing, False, Nothing, _
                         ACW.FileClassification.None, False, local)

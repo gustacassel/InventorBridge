@@ -89,6 +89,9 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 - Save in Inventor before a check-in: `vault_change` refuses files with unsaved changes, and refuses to overwrite them with a download.
 - A check-in sends the references Inventor reads, so the vault keeps an assembly's and a drawing's dependencies. Files the vault does not have yet are added, folders included; with `withReferences`, an assembly's new parts go in first. The vault's BOM data is not sent: items and BOM views in Vault need the user's check-in from Inventor.
 - A state change writes a new version in the vault, which is downloaded. Files whose local copy was rewritten are reopened in Inventor when they have a window; a file loaded only as a reference keeps the old copy until its assembly is reopened.
-- Each result says, per file, what was done, skipped (checked out by someone else, not checked out) or failed, with Vault's message. A state that does not exist comes back with the states the lifecycle has.
+- Each result says, per file, what was done, unchanged, skipped (checked out by someone else) or failed, with Vault's message. A state that does not exist comes back with the states the lifecycle has.
+- A file checked out by someone else is skipped by every action but `get_latest`; `vault_info` names who has it and on which computer. While a file is checked out, Vault already counts the next version.
+- The tool acts with the rights of the user logged in to Inventor. An administrator can check out a released file that a designer cannot: the result then says it is released. Ask the user before changing a released file.
+- Drawings check in like assemblies: with `withReferences`, a new part goes in before its drawing, and the vault records the drawing's dependency on the model.
 - New numbers, Data Standard's dialogs and items stay the user's to handle in Vault.
 
