@@ -36,6 +36,22 @@ public sealed class CompanyGuideTests : IDisposable
     }
 
     [Fact]
+    public void MaterialInSubfoldersIsReadByPathButNotListed()
+    {
+        Directory.CreateDirectory(Path.Combine(company, "standards", "products"));
+        File.WriteAllText(Path.Combine(company, "standards", "products", "Conveyor.md"), "# Conveyor\n\nBelt width 1800 mm.\n");
+        File.WriteAllText(Path.Combine(Path.GetDirectoryName(company)!, "outside.md"), "# Outside\n");
+        var guides = new GuideLibrary(builtIn, [company]);
+
+        Assert.Contains("Belt width 1800 mm.", guides.Read("standards/products/Conveyor"));
+        Assert.Contains("Belt width 1800 mm.", guides.Read("standards\\products\\Conveyor.md"));
+        Assert.DoesNotContain("Conveyor", guides.List());
+        Assert.Null(guides.Read("standards/products/Missing"));
+        Assert.Null(guides.Read("../outside"));
+        File.Delete(Path.Combine(Path.GetDirectoryName(company)!, "outside.md"));
+    }
+
+    [Fact]
     public void ACompanyGuideCannotReplaceAGeneralOne()
     {
         File.WriteAllText(Path.Combine(company, "workflow.md"), "# Our workflow\n\n> Not the general one.\n");

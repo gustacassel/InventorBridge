@@ -556,9 +556,11 @@ public sealed class InventorTools
             Short guides on working with Inventor through these tools: the workflow, modeling parts, assemblies and
             constraints, and API pitfalls, plus the organization's own guides when it has any (its standards for file
             names, part numbers, templates...). Call it without a name for the list. Read 'workflow' before the first change.
+            A name with a '/' reads material a company guide points to, from a subfolder of its folder, such as
+            'standards/Conveyor'.
             """)]
     public CallToolResult GetGuide(
-        [Description("Guide name, such as 'workflow'. Leave empty for the list.")] string? name = null)
+        [Description("Guide name, such as 'workflow', or 'folder/file' for material a company guide points to. Leave empty for the list.")] string? name = null)
     {
         try
         {
@@ -569,7 +571,9 @@ public sealed class InventorTools
 
             return guides.Read(name) is string guide
                 ? Text(guide)
-                : Error($"There is no guide named \"{name}\".{System.Environment.NewLine}{guides.List()}");
+                : Error(name.Contains('/') || name.Contains('\\')
+                    ? $"There is no file \"{name}\" in the company guide folders: check the path in the guide that named it."
+                    : $"There is no guide named \"{name}\".{System.Environment.NewLine}{guides.List()}");
         }
         catch (InvalidOperationException exception)
         {

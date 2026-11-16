@@ -71,14 +71,46 @@ public sealed class GuideLibrary
         return text.ToString();
     }
 
-    /// <summary>The guide's text, or null if there is no guide with that name.</summary>
+    /// <summary>
+    /// The guide's text, or null if there is no guide with that name. A name with a '/' reads a Markdown file from
+    /// a subfolder of a company guide folder ("standards/Conveyor", for standards\Conveyor.md): material a
+    /// company guide points to, too large or too many to list as guides.
+    /// </summary>
     public string? Read(string name)
     {
+        name = name.Trim();
+        if (name.Contains('/') || name.Contains('\\'))
+        {
+            return ReadCompanyMaterial(name);
+        }
+
         var (general, company, _) = Collect();
         var guide = general.Concat(company).FirstOrDefault(candidate =>
-            string.Equals(candidate.Name, name.Trim(), StringComparison.OrdinalIgnoreCase));
+            string.Equals(candidate.Name, name, StringComparison.OrdinalIgnoreCase));
 
         return guide is null ? null : File.ReadAllText(guide.Path);
+    }
+
+    /// <summary>A Markdown file under a company guide folder, never outside it.</summary>
+    private string? ReadCompanyMaterial(string name)
+    {
+        var relative = name.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+        if (!relative.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+        {
+            relative += ".md";
+        }
+
+        foreach (var directory in companyDirectories.Where(Directory.Exists))
+        {
+            var root = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            var path = Path.GetFullPath(Path.Combine(root, relative));
+            if (path.StartsWith(root, StringComparison.OrdinalIgnoreCase) && File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+        }
+
+        return null;
     }
 
     private sealed record Guide(string Name, string Path);

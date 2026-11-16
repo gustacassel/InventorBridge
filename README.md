@@ -84,6 +84,7 @@ claude mcp add inventor --scope user -e INVENTORBRIDGE_GUIDES=C:\path\to\company
 - Several folders are separated with `;`. A `README.md` in a folder is for people and is not served.
 - Each guide starts with `# Title` and a `> one-line summary` line, like the general ones.
 - The `guide` tool lists them apart from the general guides, and the server tells the agent to read them before creating, naming, saving or exporting files, and that they win where they differ.
+- Larger material, such as product standards converted to Markdown, can go in subfolders: it is not listed, and a guide points to each file by its path, which the agent reads with `guide("standards/Conveyor")` (for `standards\Conveyor.md`). Files outside the guide folders cannot be read this way.
 - A company guide cannot take the name of a general one; the list says so if one tries. Edits show up without restarting the server; new guides are named in the server's instructions at the next start.
 - This repository's tests do not compile the C# in company guides: run those examples on Inventor.
 
