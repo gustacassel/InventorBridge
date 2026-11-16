@@ -34,6 +34,10 @@ The user watches the same Inventor window you work in. Explain what you are abou
 
 A call that returns "still running" with a window title means Inventor shows a dialog: usually an add-in's (a vault's "New file" dialog on saving) or an iLogic message. Tell the user what it is and ask them to answer it in Inventor, then call `script_result`.
 
+## Vault
+
+Before changing an existing file, `vault_info` tells whether it is released, checked out by someone else, or out of date locally. It reads only.
+
 ## Handing files out
 
 `export` writes STEP, IGES, STL, SAT, a sheet metal flat pattern DXF, or a drawing's PDF, DWG or DXF, without changing the document.

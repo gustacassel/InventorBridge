@@ -76,3 +76,10 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 - A rule that fails, or shows a `MessageBox`, opens a dialog in Inventor, and iLogic does not report the error to the caller. The tools return with the dialog's title; tell the user to close it.
 - Rules may already exist in the user's documents: read them with `ilogic_list` (`withText: true`) before replacing one.
 
+## Vault
+
+- `vault_info` reads, for the active document and everything it references (or for given paths), the vault path, version, revision, lifecycle state, category, who has the file checked out, and whether the local copy matches the vault's latest version. It uses the vault connection the user's Inventor already has, through an iLogic rule, so no password is involved, and it acts with the user's own rights.
+- Read it before changing an existing file. A released file, or one checked out by someone else, needs the user's decision before you change it; a local copy older than the vault's needs a "Get latest" first.
+- The vault client's own status for a file can be stale, so `vault_info` also compares the local file's size with the vault's. When they differ, say so; do not decide which one is right.
+- It reads only. Check-out, check-in, lifecycle changes and new numbers are the user's to make in Vault.
+

@@ -158,6 +158,26 @@ namespace InventorBridge.Mcp.ILogic
         public static object RunScript(Application application, string? documentName, string code, string description,
             IReadOnlyDictionary<string, object?>? arguments, bool undoable)
         {
+            var run = Execute(application, documentName, code, description, arguments, undoable);
+            return new
+            {
+                outcome = "succeeded",
+                document = run.Document,
+                elapsedSeconds = run.ElapsedSeconds,
+                transaction = run.Transaction,
+                values = run.Values,
+                note = "values holds the arguments map after the run: what was passed in, and what the rule set or added. " +
+                    "Logger output goes to iLogic's log window, not here.",
+            };
+        }
+
+        /// <summary>What a finished run of iLogic code left: the arguments map, and the transaction's note.</summary>
+        internal sealed record ScriptRun(string Document, double ElapsedSeconds, string Transaction, Dictionary<string, object?> Values);
+
+        /// <summary>Runs iLogic code as a temporary external rule; throws when it did not reach its end.</summary>
+        internal static ScriptRun Execute(Application application, string? documentName, string code, string description,
+            IReadOnlyDictionary<string, object?>? arguments, bool undoable)
+        {
             if (string.IsNullOrWhiteSpace(code))
             {
                 throw new ArgumentException("Give the rule's text, in iLogic's VB.NET.");
@@ -233,16 +253,7 @@ namespace InventorBridge.Mcp.ILogic
                     $"Transaction: {note}. Values set before it stopped: {System.Text.Json.JsonSerializer.Serialize(values)}");
             }
 
-            return new
-            {
-                outcome = "succeeded",
-                document = document.DisplayName,
-                elapsedSeconds = Math.Round(stopwatch.Elapsed.TotalSeconds, 2),
-                transaction = transaction.Commit(application),
-                values,
-                note = "values holds the arguments map after the run: what was passed in, and what the rule set or added. " +
-                    "Logger output goes to iLogic's log window, not here.",
-            };
+            return new ScriptRun(document.DisplayName, Math.Round(stopwatch.Elapsed.TotalSeconds, 2), transaction.Commit(application), values);
         }
 
         private const string ResultName = "Result";

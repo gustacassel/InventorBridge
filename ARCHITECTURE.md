@@ -184,6 +184,6 @@ The reference generator only needs the DLLs, not Inventor. That is why it comes 
 
 - ~~Which Inventor versions to support?~~ Resolved: initial target 2024; reference for 2024 to 2027.
 - Which version to test right after 2024?
-- Vault integration: are check-out and check-in out of the initial scope, or explicit tools?
+- Vault integration: are check-out and check-in out of the initial scope, or explicit tools? Partly resolved (2026-11-16): reading is a tool. The Vault add-in keeps the logged-in connection inside Inventor's process; an iLogic rule runs there and takes it (`Connectivity.InventorAddin.EdmAddin.EdmSecurity.Instance.VaultConnection`, as in-house add-ins do), so `vault_info` reads versions, revisions, lifecycle states, checkouts and local status with the user's own rights and no password. The client's status can be stale (a recreated drawing showed as unchanged), so local and vault sizes are compared too. Writing (check-out, check-in, lifecycle, numbering) stays out until it is decided; the connection carries the user's rights, which on the test machine were an administrator's.
 - Priority use cases: modeling new parts, generating drawings, reviewing models, exporting BOMs to the ERP?
 - ~~Internal or public repository?~~ Resolved: public. The reference only contains names and signatures extracted from the DLLs; the DLLs, the Autodesk posters and company standards stay out.

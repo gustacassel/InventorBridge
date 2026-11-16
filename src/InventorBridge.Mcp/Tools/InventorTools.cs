@@ -7,6 +7,7 @@ using InventorBridge.Mcp.ILogic;
 using InventorBridge.Mcp.Reading;
 using InventorBridge.Mcp.Reference;
 using InventorBridge.Mcp.Scripting;
+using InventorBridge.Mcp.Vault;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 
@@ -355,6 +356,25 @@ namespace InventorBridge.Mcp.Tools
         {
             return RunTrackedAsync("iLogic script: " + description,
                 application => Text(ToJson(ILogicRules.RunScript(application, document, code, description, arguments, undoable))));
+        }
+
+        [McpServerTool(Name = "vault_info", Title = "Vault state of files",
+            ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = true)]
+        [Description(
+            "Reads the Autodesk Vault state of files through the vault connection the user's Inventor already has " +
+            "(through iLogic, so no password is asked for): for each file its vault path, version, revision, lifecycle " +
+            "state, category, who has it checked out, and whether the local copy matches the vault's latest version. " +
+            "Default: the active document and every document it references. Reads only; check-out, check-in and " +
+            "lifecycle changes are the user's to make in Vault. Use it before changing a file, to know whether it is " +
+            "released, checked out by someone else, or out of date.")]
+        public Task<CallToolResult> GetVaultInfoAsync(
+            [Description("Full paths of the files to read, instead of a document and its references.")] string[]? paths = null,
+            [Description("The document to read with its references: its name or file as listed by inventor_status. Default: the active document.")] string? document = null,
+            [Description("Also read every document the document references.")] bool withReferences = true,
+            [Description("Maximum number of files read.")] int maxItems = 200)
+        {
+            return RunTrackedAsync("read vault state",
+                application => Text(ToJson(VaultReader.Read(application, paths, document, withReferences, maxItems))));
         }
 
         [McpServerTool(Name = "topology", Title = "Faces and edges",
