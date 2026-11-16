@@ -41,9 +41,10 @@ public sealed class InventorTools
     private readonly ScriptMonitor scriptMonitor;
     private readonly ApiReference apiReference;
     private readonly GuideLibrary guides;
+    private readonly ToolCallLog log;
 
     public InventorTools(StaDispatcher dispatcher, InventorSession session, ScriptRunner scriptRunner,
-        ScriptMonitor scriptMonitor, ApiReference apiReference, GuideLibrary guides)
+        ScriptMonitor scriptMonitor, ApiReference apiReference, GuideLibrary guides, ToolCallLog log)
     {
         this.dispatcher = dispatcher;
         this.session = session;
@@ -51,6 +52,38 @@ public sealed class InventorTools
         this.scriptMonitor = scriptMonitor;
         this.apiReference = apiReference;
         this.guides = guides;
+        this.log = log;
+    }
+
+    private static readonly string[] NoteKinds = ["feedback", "missing_tool", "guide_conflict", "manual_fix", "question", "other"];
+
+    [McpServerTool(Name = "log_note", Title = "Note for the log",
+        ReadOnly = false, Destructive = false, Idempotent = false, OpenWorld = false)]
+    [Description(
+        """
+            Writes a note to the session log, for sessions the server logs (the server instructions say so); otherwise
+            it records nothing. Use it for what tool calls cannot show: the user's feedback on a task (worked or not,
+            what went wrong), a tool or guide you missed, a guide rule that did not fit the request, a fix the user
+            made by hand, a question you had to ask because no guide answered it. One note per fact, in the user's
+            language, with enough context to understand it later.
+            """)]
+    public CallToolResult WriteLogNote(
+        [Description("feedback, missing_tool, guide_conflict, manual_fix, question or other.")] string kind,
+        [Description("The note: what happened, in a sentence or two.")] string note,
+        [Description("The task it belongs to, in a few words, such as 'drawing of 10043369'.")] string? task = null)
+    {
+        if (!NoteKinds.Contains(kind))
+        {
+            return Error($"Unknown kind '{kind}'. Use {string.Join(", ", NoteKinds)}.");
+        }
+
+        if (!log.Enabled)
+        {
+            return Text($"This session is not logged ({ToolCallLog.FolderVariable} is not set): nothing was recorded.");
+        }
+
+        log.Note(kind, note, task);
+        return Text($"Recorded in the log in {log.Folder}.");
     }
 
     [McpServerTool(Name = "inventor_status", Title = "Inventor status",

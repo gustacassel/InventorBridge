@@ -42,15 +42,37 @@ internal static class Program
         builder.Services.AddSingleton<ApiReference>();
         var guides = new GuideLibrary();
         builder.Services.AddSingleton(guides);
+        var log = new ToolCallLog();
+        builder.Services.AddSingleton(log);
 
         builder.Services
             .AddMcpServer(options =>
             {
                 options.ServerInfo = new Implementation { Name = "InventorBridge", Version = ServerVersion };
-                options.ServerInstructions = Instructions + CompanyGuidesInstruction(guides);
+                options.ServerInstructions = Instructions + CompanyGuidesInstruction(guides) + LogInstruction(log);
             })
             .WithStdioServerTransport()
-            .WithTools<InventorTools>();
+            .WithTools<InventorTools>()
+            .WithRequestFilters(filters => filters.AddCallToolFilter(next => async (context, cancellationToken) =>
+            {
+                if (!log.Enabled)
+                {
+                    return await next(context, cancellationToken);
+                }
+
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                try
+                {
+                    var result = await next(context, cancellationToken);
+                    log.ToolCall(context.Params, result, stopwatch.Elapsed, null);
+                    return result;
+                }
+                catch (Exception exception)
+                {
+                    log.ToolCall(context.Params, null, stopwatch.Elapsed, exception);
+                    throw;
+                }
+            }));
 
         await builder.Build().RunAsync();
     }
@@ -81,5 +103,17 @@ internal static class Program
             This organization has its own guides: {string.Join(", ", names)}.
             Read them with guide before creating, naming, saving or exporting files; where they differ from the general guides, they win.
             """;
+    }
+
+    /// <summary>When the server logs, asks the agent to record what the tool calls cannot show.</summary>
+    private static string LogInstruction(ToolCallLog log)
+    {
+        return log.Enabled
+            ? """
+
+                This session is logged to improve the tools and guides. Record with log_note what the tool calls cannot show:
+                the user's feedback on each task, a tool or guide you missed, a guide rule that did not fit, a fix the user made by hand.
+                """
+            : "";
     }
 }

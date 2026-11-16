@@ -12,7 +12,7 @@ public sealed class ServerTests
     [
         "inventor_status", "inventor_start", "run_csharp", "script_result", "inspect",
         "topology", "screenshot", "api_lookup", "guide", "bom", "export", "check", "undo_last",
-        "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info", "vault_change",
+        "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info", "vault_change", "log_note",
     ];
 
     [Fact]
@@ -80,6 +80,40 @@ public sealed class ServerTests
         Assert.StartsWith("# Workflow", TestServer.TextOf(guide));
         Assert.NotEqual(true, lookup.IsError);
         Assert.Contains("ExtrudeFeature Add(ExtrudeDefinition Definition);", TestServer.TextOf(lookup));
+    }
+
+    [Fact]
+    public async Task WithALogFolderEveryCallAndNoteIsRecorded()
+    {
+        var folder = Path.Combine(Path.GetTempPath(), $"inventorbridge-log-{Guid.NewGuid():N}");
+        try
+        {
+            await using (var logged = await TestServer.StartAsync(logFolder: folder))
+            {
+                Assert.Contains("This session is logged", logged.ServerInstructions);
+                await logged.CallToolAsync("guide", new Dictionary<string, object?> { ["name"] = "workflow" });
+                await logged.CallToolAsync("log_note", new Dictionary<string, object?> { ["kind"] = "feedback", ["note"] = "It worked.", ["task"] = "test" });
+            }
+
+            var lines = File.ReadAllLines(Directory.GetFiles(folder, "*-server.jsonl").Single());
+            Assert.Equal(3, lines.Length);
+            Assert.Contains("\"tool\":\"guide\"", lines[0]);
+            Assert.Contains("\"type\":\"note\"", lines[1]);
+            Assert.Contains("It worked.", lines[1]);
+            Assert.Contains("\"tool\":\"log_note\"", lines[2]);
+
+            await using var notLogged = await TestServer.StartAsync();
+            var note = await notLogged.CallToolAsync("log_note", new Dictionary<string, object?> { ["kind"] = "feedback", ["note"] = "x" });
+            Assert.Contains("nothing was recorded", TestServer.TextOf(note));
+            Assert.DoesNotContain("logged", notLogged.ServerInstructions);
+        }
+        finally
+        {
+            if (Directory.Exists(folder))
+            {
+                Directory.Delete(folder, recursive: true);
+            }
+        }
     }
 
     [Fact]

@@ -66,6 +66,7 @@ Requirements: Windows, Autodesk Inventor 2024 or later, and the [.NET 8 SDK](htt
 | `ilogic_list`, `ilogic_set`, `ilogic_run`, `ilogic_script` | List a document's iLogic rules, write one without running it, run a rule or an external rule file, and run iLogic code given as text with values returned; all in a transaction, so `undo_last` undoes them; iLogic's error dialogs are closed and their errors returned, with line numbers as in the code |
 | `vault_info` | Autodesk Vault state of files (version, revision, lifecycle state, category, who has them checked out, whether the local copy matches the vault), read through the vault connection the user's Inventor already has; reads only |
 | `vault_change` | Check out, check in (adding new files with their dependencies), undo a check-out, get the latest version, or change the lifecycle state, through the same connection and with the user's rights; reopens the files it rewrote and refreshes Inventor's Vault browser |
+| `log_note` | Writes the agent's note (the user's feedback, a missing tool, a guide that did not fit) to the session log, when the server logs (`INVENTORBRIDGE_LOG`) |
 | `topology` | Faces and edges of a part or of one occurrence (also inside subassemblies, by path), with positions, cylinder axes and circle centers in mm, so a script can pick them; split cylinders are merged with their ends, and bends (tori) are listed with theirs |
 | `screenshot` | An image of the Inventor view, so the agent sees what you see; work planes and sketches are hidden for the capture, and on a drawing it can zoom to a view, the parts list, the title block or a region |
 | `api_lookup` | Looks up the API reference: an object's or enum's page, some members of a type, or a search by name. It hides members that the running Inventor version does not have, and works without Inventor |
@@ -87,6 +88,12 @@ claude mcp add inventor --scope user -e INVENTORBRIDGE_GUIDES=C:\path\to\company
 - Larger material, such as product standards converted to Markdown, can go in subfolders: it is not listed, and a guide points to each file by its path, which the agent reads with `guide("standards/Conveyor")` (for `standards\Conveyor.md`). Files outside the guide folders cannot be read this way.
 - A company guide cannot take the name of a general one; the list says so if one tries. Edits show up without restarting the server; new guides are named in the server's instructions at the next start.
 - This repository's tests do not compile the C# in company guides: run those examples on Inventor.
+
+## Logging a pilot
+
+To learn from a trial with real users, set `INVENTORBRIDGE_LOG` to a folder where the server is registered. The server then writes, in a file per day (`2026-11-17-server.jsonl`), one JSON line per tool call (the arguments, such as the scripts sent, the result, errors and the time it took) and per note the agent writes with `log_note`: the user's feedback on a task, a tool or guide it missed, a guide rule that did not fit, a fix the user made by hand. The server's instructions then ask the agent to write those notes. Without the variable nothing is written and `log_note` records nothing.
+
+The log stays on the user's computer, in the folder you chose, and holds what was sent to Inventor: tell the people in the trial. With Claude Code, register the server in a project's `.mcp.json` with the variable, so only the chats opened in that folder are logged; the folder's `CLAUDE.md` and hooks can add the user's requests and ask for feedback after each task.
 
 ## Generating the reference
 
