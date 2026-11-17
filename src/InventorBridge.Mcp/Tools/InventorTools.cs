@@ -448,6 +448,29 @@ public sealed class InventorTools
             application => Text(ToJson(VaultReader.Read(application, paths, document, withReferences, maxItems))));
     }
 
+    [McpServerTool(Name = "vault_search", Title = "Find files and folders in Vault",
+        ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = true)]
+    [Description(
+        """
+            Finds files and folders in Autodesk Vault by name, through the vault connection the user's Inventor
+            already has (an open document is needed to run it). Each name is exact, such as '10031581.ipt', or a
+            pattern with * and ?, such as '1003158*.ipt' or '*COOPAN*'. For each file name: every latest version
+            found, with its vault path, the path it has in the working folder, version, revision, lifecycle state,
+            category, who has it checked out, and whether a local copy exists. For each folder name: the vault paths
+            of the folders found and whether they exist in the working folder. Names not found are listed apart. A
+            file name found in several folders means the vault holds same-named files there. Reads only;
+            vault_change get_latest downloads.
+            """)]
+    public Task<CallToolResult> SearchVaultAsync(
+        [Description("File names or patterns to look for.")] string[]? names = null,
+        [Description("Folder names or patterns to look for.")] string[]? folders = null,
+        [Description("Only under this vault folder and its subfolders, as Vault names it, such as '$/Engenharia/Produto'. Default: the whole vault.")] string? under = null,
+        [Description("Maximum number of files or folders returned for each name.")] int maxPerName = 50)
+    {
+        return RunTrackedAsync("search vault",
+            application => Text(ToJson(VaultSearch.Find(application, names, folders, under, maxPerName))));
+    }
+
     [McpServerTool(Name = "vault_change", Title = "Change files in Vault",
         ReadOnly = false, Destructive = true, Idempotent = false, OpenWorld = true)]
     [Description(

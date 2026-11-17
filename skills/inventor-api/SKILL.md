@@ -36,7 +36,7 @@ A call that returns "still running" with a window title means Inventor shows a d
 
 ## Vault
 
-Before changing an existing file, `vault_info` tells whether it is released, checked out by someone else, or out of date locally. When the user asks, `vault_change` checks the file out before you change it, and checks it in (with a comment, after saving) or moves it to another lifecycle state when you are done. See `guide('workflow')`.
+`vault_search` finds files and folders in the vault by name or pattern. Before changing an existing file, `vault_info` tells whether it is released, checked out by someone else, or out of date locally. When the user asks, `vault_change` checks the file out before you change it, and checks it in (with a comment, after saving) or moves it to another lifecycle state when you are done. See `guide('workflow')`.
 
 ## Handing files out
 

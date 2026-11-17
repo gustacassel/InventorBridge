@@ -12,7 +12,7 @@ public sealed class ServerTests
     [
         "inventor_status", "inventor_start", "run_csharp", "script_result", "inspect",
         "topology", "screenshot", "api_lookup", "guide", "bom", "export", "check", "undo_last",
-        "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info", "vault_change", "log_note",
+        "ilogic_list", "ilogic_set", "ilogic_run", "ilogic_script", "vault_info", "vault_search", "vault_change", "log_note",
     ];
 
     [Fact]
