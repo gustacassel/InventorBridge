@@ -164,6 +164,13 @@ public static class VaultSearch
             Dim users As New Dictionary(Of Long, String)
 
             Dim fileNameProp As Long = NameProperty(conn, "FILE", "ClientFileName")
+            ' Hidden files (such as visualization attachments) are left out, as the Vault client's own search does.
+            Dim notHidden As New WS.SrchCond()
+            notHidden.PropDefId = NameProperty(conn, "FILE", "Hidden")
+            notHidden.PropTyp = WS.PropertySearchType.SingleProperty
+            notHidden.SrchOper = 3
+            notHidden.SrchTxt = "0"
+            notHidden.SrchRule = WS.SearchRuleType.Must
             For Each name As String In Split(RuleArguments.Arguments.Value("Names"))
                 Dim matcher As Regex = Wildcard(name)
                 Dim files As New List(Of WS.File)
@@ -171,7 +178,7 @@ public static class VaultSearch
                 Dim status As WS.SrchStatus = Nothing
                 Dim more As Boolean = False
                 Do
-                    Dim page() As WS.File = docs.FindFilesBySearchConditions(New WS.SrchCond() {Condition(fileNameProp, name)}, Nothing, underIds, True, True, bookmark, status)
+                    Dim page() As WS.File = docs.FindFilesBySearchConditions(New WS.SrchCond() {Condition(fileNameProp, name), notHidden}, Nothing, underIds, True, True, bookmark, status)
                     If page Is Nothing OrElse page.Length = 0 Then Exit Do
                     For Each f As WS.File In page
                         If matcher.IsMatch(f.Name) Then
