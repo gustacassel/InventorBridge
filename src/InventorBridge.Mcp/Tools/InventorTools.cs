@@ -465,10 +465,11 @@ public sealed class InventorTools
         [Description("File names or patterns to look for.")] string[]? names = null,
         [Description("Folder names or patterns to look for.")] string[]? folders = null,
         [Description("Only under this vault folder and its subfolders, as Vault names it, such as '$/Engenharia/Produto'. Default: the whole vault.")] string? under = null,
-        [Description("Maximum number of files or folders returned for each name.")] int maxPerName = 50)
+        [Description("Maximum number of files or folders returned for each name.")] int maxPerName = 50,
+        [Description("Leave out hidden files (such as visualization attachments), as the Vault client's search does. Default: they are found, marked hidden.")] bool skipHidden = false)
     {
         return RunTrackedAsync("search vault",
-            application => Text(ToJson(VaultSearch.Find(application, names, folders, under, maxPerName))));
+            application => Text(ToJson(VaultSearch.Find(application, names, folders, under, maxPerName, skipHidden))));
     }
 
     [McpServerTool(Name = "vault_change", Title = "Change files in Vault",

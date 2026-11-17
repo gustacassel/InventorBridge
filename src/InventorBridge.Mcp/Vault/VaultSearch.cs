@@ -16,7 +16,7 @@ namespace InventorBridge.Mcp.Vault;
 public static class VaultSearch
 {
     public static object Find(Application application, IReadOnlyList<string>? names, IReadOnlyList<string>? folders,
-        string? under, int maxPerName)
+        string? under, int maxPerName, bool skipHidden = false)
     {
         var fileNames = Clean(names);
         var folderNames = Clean(folders);
@@ -38,6 +38,7 @@ public static class VaultSearch
             ["FolderNames"] = string.Join("\n", folderNames),
             ["Under"] = vaultFolder ?? "",
             ["Max"] = Math.Max(1, maxPerName),
+            ["SkipHidden"] = skipHidden,
         };
         var code = RuleTemplate.Replace("{FOLDER}", VaultReader.AddInFolder(application));
         var run = ILogicRules.Execute(application, null, code, "search vault", arguments, undoable: false);
@@ -74,10 +75,11 @@ public static class VaultSearch
                     break;
                 case "FILE":
                     // FILE, searched name, vault path, local path, version, revision, state, category, checked out by,
-                    // vault date, vault size, local size.
+                    // vault date, vault size, local size, hidden.
                     Add(files, cells[1], new
                     {
                         vaultPath = cells[2],
+                        hidden = cells[12] == "1",
                         localPath = cells[3],
                         version = int.TryParse(cells[4], out var version) ? version : (int?)null,
                         revision = cells[5],
@@ -164,21 +166,27 @@ public static class VaultSearch
             Dim users As New Dictionary(Of Long, String)
 
             Dim fileNameProp As Long = NameProperty(conn, "FILE", "ClientFileName")
-            ' Hidden files (such as visualization attachments) are left out, as the Vault client's own search does.
-            Dim notHidden As New WS.SrchCond()
-            notHidden.PropDefId = NameProperty(conn, "FILE", "Hidden")
-            notHidden.PropTyp = WS.PropertySearchType.SingleProperty
-            notHidden.SrchOper = 3
-            notHidden.SrchTxt = "0"
-            notHidden.SrchRule = WS.SearchRuleType.Must
+            ' Hidden files (such as visualization attachments) are found too, unless asked to leave them out.
+            Dim fileConds As New List(Of WS.SrchCond)
+            If CBool(RuleArguments.Arguments.Value("SkipHidden")) Then
+                Dim notHidden As New WS.SrchCond()
+                notHidden.PropDefId = NameProperty(conn, "FILE", "Hidden")
+                notHidden.PropTyp = WS.PropertySearchType.SingleProperty
+                notHidden.SrchOper = 3
+                notHidden.SrchTxt = "0"
+                notHidden.SrchRule = WS.SearchRuleType.Must
+                fileConds.Add(notHidden)
+            End If
             For Each name As String In Split(RuleArguments.Arguments.Value("Names"))
                 Dim matcher As Regex = Wildcard(name)
+                Dim conds As New List(Of WS.SrchCond)(fileConds)
+                conds.Insert(0, Condition(fileNameProp, name))
                 Dim files As New List(Of WS.File)
                 Dim bookmark As String = Nothing
                 Dim status As WS.SrchStatus = Nothing
                 Dim more As Boolean = False
                 Do
-                    Dim page() As WS.File = docs.FindFilesBySearchConditions(New WS.SrchCond() {Condition(fileNameProp, name), notHidden}, Nothing, underIds, True, True, bookmark, status)
+                    Dim page() As WS.File = docs.FindFilesBySearchConditions(conds.ToArray(), Nothing, underIds, True, True, bookmark, status)
                     If page Is Nothing OrElse page.Length = 0 Then Exit Do
                     For Each f As WS.File In page
                         If matcher.IsMatch(f.Name) Then
@@ -206,7 +214,7 @@ public static class VaultSearch
                     Dim localSize As String = If(System.IO.File.Exists(localPath), CStr(New System.IO.FileInfo(localPath).Length), "-1")
                     lines.Add(String.Join(vbTab, New String() {"FILE", name, vaultPath, localPath, CStr(f.VerNum), If(f.FileRev Is Nothing, "", f.FileRev.Label), _
                         If(f.FileLfCyc Is Nothing, "", f.FileLfCyc.LfCycStateName), If(f.Cat Is Nothing, "", f.Cat.CatName), checkedOutBy, _
-                        f.ModDate.ToString("yyyy-MM-dd HH:mm"), CStr(f.FileSize), localSize}))
+                        f.ModDate.ToString("yyyy-MM-dd HH:mm"), CStr(f.FileSize), localSize, If(f.Hidden, "1", "0")}))
                 Next
             Next
 
