@@ -66,6 +66,8 @@ When Inventor keeps a window open while a script is blocked, `run_csharp` return
 
 - Every property read is a call into another process. Avoid loops over thousands of faces or occurrences: filter first, and keep values in local variables.
 - After 60 s, `run_csharp` returns "still running". Call `script_result` to wait for the result. The other tools answer "busy" until the script ends.
+- A script that should have ended (a loop over many occurrences, for example) stops with `script_cancel`, at its next loop step, rolled back. Restarting the MCP server does not stop it. One long Inventor call (an update) cannot be interrupted.
+- A dialog the user left open in Inventor, such as the Bill of Materials window, holds a script until it is closed: the result names it.
 
 ## iLogic
 

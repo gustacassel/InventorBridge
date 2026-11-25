@@ -86,3 +86,6 @@ Changing a part that other assemblies use changes it everywhere. Files from a va
 - Every property read is a call into Inventor's process, about 0.4 to 1 ms. Reading only the names of 4,200 parts takes about 4 s; a loop that reads ten properties per part takes over a minute.
 - Ask Inventor for what it already computes instead of looping: `MassProperties.Mass`, `RangeBox`, the BOM (`bom`), `Occurrences.AllLeafOccurrences.Count`.
 - `bom` walks every level to add up the totals: about 20 s for 4,200 parts in 718 part numbers.
+- To count a component or find where it is used, call `where_used`, or in a script ask for `Occurrences.AllReferencedOccurrences[document]`: every occurrence of that document at any depth. On one assembly, that took 0.35 s where walking the tree and reading each occurrence's iProperties took almost 10 minutes.
+- Reference occurrences are left out of every BOM view, including Parts Only: a count from the BOM leaves them out. `where_used` lists them with their structure.
+- A script that runs much longer than expected can be stopped with `script_cancel`: it stops at its next loop step and is rolled back.

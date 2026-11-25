@@ -439,7 +439,105 @@ public static class DocumentInspector
             dimensions = dimensions.Count,
             detachedDimensions = detached,
             notes = sheet.DrawingNotes.Count,
+            weldSymbols = ReadWeldSymbols(sheet, maxItems, truncated),
         };
+    }
+
+    /// <summary>
+    /// The weld symbols of a sheet: position, and per definition the arrow side and the other side. Which fields a
+    /// weld has depends on its type and the drafting standard; the others throw (E_FAIL), so each is read alone and
+    /// left out when it fails.
+    /// </summary>
+    private static List<object?> ReadWeldSymbols(Sheet sheet, int maxItems, List<string> truncated)
+    {
+        var symbols = new List<object?>();
+        foreach (DrawingWeldingSymbol symbol in sheet.WeldingSymbols)
+        {
+            if (symbols.Count >= maxItems)
+            {
+                truncated.Add($"{sheet.Name} weld symbols: {maxItems} of {sheet.WeldingSymbols.Count} shown");
+                break;
+            }
+
+            symbols.Add(ReadSection(() =>
+            {
+                var definitions = new List<object>();
+                foreach (DrawingWeldingSymbolDefinition definition in symbol.Definitions)
+                {
+                    definitions.Add(new
+                    {
+                        arrowSide = ReadWeld(definition.WeldSymbolOne),
+                        otherSide = ReadWeld(definition.WeldSymbolTwo),
+                        allAround = Try<bool?>(() => definition.AllAroundSymbol),
+                        fieldWeld = Try<bool?>(() => definition.FieldWeldingSymbol),
+                        tail = Try(() => definition.TailNote) is { Length: > 0 } tail ? tail : null,
+                    });
+                }
+
+                return new
+                {
+                    positionMm = new[]
+                    {
+                        Math.Round(symbol.Position.X * MillimetersPerCentimeter, 1),
+                        Math.Round(symbol.Position.Y * MillimetersPerCentimeter, 1),
+                    },
+                    definitions,
+                };
+            }));
+        }
+
+        return symbols;
+    }
+
+    private static Dictionary<string, object>? ReadWeld(WeldSymbol? weld)
+    {
+        if (weld is null)
+        {
+            return null;
+        }
+
+        var type = Try<int?>(() => weld.WeldSymbolType);
+        var fields = new Dictionary<string, object>();
+        if (type is int value)
+        {
+            fields["type"] = Enum.IsDefined(typeof(WeldSymbolTypeEnum), value) ? ((WeldSymbolTypeEnum)value).ToString() : value.ToString();
+        }
+
+        foreach (var (name, read) in new (string, Func<string>)[]
+        {
+            ("prefix", () => weld.Prefix), ("sizeOrStrength", () => weld.SizeOrStrength), ("leg1", () => weld.Leg1),
+            ("leg2", () => weld.Leg2), ("depth", () => weld.Depth), ("number", () => weld.Number),
+            ("length", () => weld.Length), ("pitch", () => weld.Pitch), ("method", () => weld.Method),
+        })
+        {
+            if (Try(read) is { Length: > 0 } text)
+            {
+                fields[name] = text;
+            }
+        }
+
+        if (Try<ContourSymbolTypeEnum?>(() => weld.Contour) is ContourSymbolTypeEnum contour)
+        {
+            fields["contour"] = contour.ToString();
+        }
+
+        // A side with no size, length or other value draws nothing, whatever type Inventor keeps for it.
+        var values = fields.Keys.Count(key => key is not "type" and not "contour");
+        var contoured = fields.TryGetValue("contour", out var shape) && !Equals(shape, nameof(ContourSymbolTypeEnum.kNoContourSymbolType));
+        var none = Equals(fields.GetValueOrDefault("type"), nameof(WeldSymbolTypeEnum.kNoneWeldSymbolType));
+        return none || (values == 0 && !contoured) ? null : fields;
+    }
+
+    private static T? Try<T>(Func<T> read)
+    {
+        try
+        {
+            return read();
+        }
+        catch (COMException)
+        {
+            return default;
+        }
     }
 
     private static object ReadView(DrawingView view)

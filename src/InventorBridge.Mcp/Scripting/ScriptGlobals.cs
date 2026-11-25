@@ -10,11 +10,25 @@ namespace InventorBridge.Mcp.Scripting;
 public sealed class ScriptGlobals
 {
     private readonly StringBuilder output = new();
+    private readonly CancellationToken cancellation;
 
-    public ScriptGlobals(Application application, string? workspacePath)
+    public ScriptGlobals(Application application, string? workspacePath, CancellationToken cancellation = default)
     {
         App = application;
         WorkspacePath = workspacePath;
+        this.cancellation = cancellation;
+    }
+
+    /// <summary>
+    /// Stops the script when script_cancel asked for it. The server calls it at the start of every loop body; a
+    /// script does not need to.
+    /// </summary>
+    public void InventorBridgeCheckCancel()
+    {
+        if (cancellation.IsCancellationRequested)
+        {
+            throw new OperationCanceledException("The script was cancelled with script_cancel.");
+        }
     }
 
     /// <summary>The running Inventor.</summary>

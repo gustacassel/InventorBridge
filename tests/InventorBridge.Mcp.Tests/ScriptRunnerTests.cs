@@ -24,6 +24,40 @@ public sealed class ScriptRunnerTests
     }
 
     [Fact]
+    public void EveryLoopGetsACancellationCheckOnItsOwnLine()
+    {
+        const string code =
+            """
+                var names = new List<string>();
+                foreach (ComponentOccurrence occurrence in ((AssemblyDocument)ActiveDocument).ComponentDefinition.Occurrences)
+                {
+                    names.Add(occurrence.Name);
+                }
+                for (var i = 0; i < 3; i++)
+                    names.Add(i.ToString());
+                var n = 0;
+                while (n < 2) n++;
+                do { n--; } while (n > 0);
+                return names.Count;
+                """;
+
+        var rewritten = CancellationPoints.Add(code);
+
+        Assert.Equal(4, rewritten.Split("InventorBridgeCheckCancel();").Length - 1);
+        Assert.Equal(code.Split('\n').Length, rewritten.Split('\n').Length);
+        Assert.Contains("InventorBridgeCheckCancel();", rewritten.Split('\n')[6]);
+        Assert.Empty(runner.GetCompilationErrors(code));
+    }
+
+    [Fact]
+    public void LineNumbersOfErrorsStayTheAgentsAfterTheChecks()
+    {
+        var errors = runner.GetCompilationErrors("for (var i = 0; i < 2; i++)\n{\n    var x = 1;\n}\nActiveDocument.NoSuchMember();");
+
+        Assert.StartsWith("(5,", Assert.Single(errors));
+    }
+
+    [Fact]
     public void ErrorsComeWithLineColumnAndAnEnglishMessage()
     {
         var errors = runner.GetCompilationErrors("var x = 1;\nActiveDocument.NoSuchMember();");

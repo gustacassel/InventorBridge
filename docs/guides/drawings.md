@@ -22,7 +22,7 @@ Sketched symbols have not been run through these tools yet: look them up with `a
 
 ## The order that works
 
-1. Create the drawing file from the drawing template (`CreateDocument`) next to the model, with the same name and `.idw`.
+1. Look for an existing drawing of the model first (same name and `.idw`, or in the vault with `vault_search`). If there is one, ask whether to revise it or start over: a revision keeps its sheet, title block and history. Otherwise create the drawing file from the drawing template (`CreateDocument`) next to the model, with the same name and `.idw`.
 2. If the template only has an empty default sheet, add a sheet from one of its sheet formats, which carry the border and the title block, and delete the empty one.
 3. Place the views: a base view, projected views, an isometric view, then breaks, sections, details and the flat pattern. Check the layout with `screenshot` (`zoomTo: "sheet"`).
 4. Center marks, dimensions from the edges of the views, then hole, chamfer and bend notes and weld symbols. Move texts that overlap a section line or another note (`Text.Origin`, `Position`).
@@ -248,7 +248,8 @@ return string.Join("\n", notes);
 
 - `WeldingSymbols.CreateDefinitions()`, then `Add()` one definition per weld (two for a symbol on both sides).
 - `WeldSymbolType` takes a `WeldSymbolTypeEnum` value (`kFilletWeldSymbolType`); the `WeldSymbolVariationTypeEnum` values are refused.
-- Which fields a weld takes depends on its type and the drafting standard. Under ISO, a fillet's size goes in `SizeOrStrength` ("a5") and `Length` takes the weld length; `Leg1` and `Thickness` fail with `E_FAIL`.
+- Which fields a weld takes depends on its type and the drafting standard. Under ISO, a fillet's size goes in `SizeOrStrength` ("a5") and `Length` takes the weld length; `Leg1` and `Thickness` fail with `E_FAIL`. Under ANSI it is the other way: the size goes in `Leg1`, and `SizeOrStrength` fails.
+- Reading is the same: a field the weld does not have throws. `inspect` on a drawing lists each sheet's weld symbols with the fields they have (type, size, length, contour, all around, tail).
 - The leader goes like a balloon's: the symbol's position first, the edge's `GeometryIntent` last.
 
 ```csharp
@@ -297,6 +298,7 @@ return $"{list.PartsListRows.Count} rows";
 - `Balloons.Add` takes an `ObjectCollection`: the balloon's position (`Point2d`) first, then a `GeometryIntent` on a curve of the component. A balloon placed on a component's curve gets that component's item number.
 - In a hidden-line-removed view, small parts behind others (washers, nuts) have no visible curve. Stack them on a visible neighbor's balloon: `balloon.BalloonValueSets.Add(row.ReferencedRows[1])` with the parts list row's drawing BOM row. A `PartsListRow` or a `BOMRow` is refused with `E_INVALIDARG`.
 - A stacked balloon grows downward, one balloon per extra item: leave that room.
+- Keep every balloon outside the outline of the views, those already in the drawing too: a balloon in the middle of a view is hard to see, and was the first thing a user asked to fix.
 - Balloons placed in a column beside the view, ordered by the height of the point they point to, keep leaders from crossing. Anchor each leader on the component's point farthest from the view's center: the space beyond it is usually empty.
 
 ```csharp

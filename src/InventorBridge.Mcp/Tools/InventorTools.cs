@@ -194,7 +194,8 @@ public sealed class InventorTools
         {
             return Text($"""
                 {StillRunningMessage(windows)}
-                It keeps running; call script_result to wait for its result. The other Inventor tools answer "busy" until it finishes.
+                It keeps running; call script_result to wait for its result, or script_cancel to stop a run_csharp script that
+                should have ended. The other Inventor tools answer "busy" until it finishes.
                 """);
         }
 
@@ -229,8 +230,8 @@ public sealed class InventorTools
                 ? ""
                 : """
 
-                    If it never ends (an endless loop, for example), ask the user to restart the InventorBridge MCP server
-                    (in Claude Code: /mcp); what the script already did in Inventor stays.
+                    If it should have ended by now, stop it with script_cancel: a run_csharp script stops at its next loop
+                    step, and its transaction is rolled back. Restarting the MCP server does not stop it.
                     """;
             return Text($"""
                 {StillRunningMessage(windows)}
@@ -240,6 +241,63 @@ public sealed class InventorTools
 
         scriptMonitor.Clear(scriptTask);
         return await scriptTask;
+    }
+
+    [McpServerTool(Name = "script_cancel", Title = "Cancel the running script",
+        ReadOnly = false, Destructive = false, Idempotent = true, OpenWorld = false)]
+    [Description(
+        """
+            Stops the run_csharp script that is still running: it stops at the start of its next loop step, with an
+            error, and its transaction is rolled back (with undoable=false, what it already did stays). Use it when a
+            script takes far longer than it should, or the user asks. A single long Inventor call inside it (an update,
+            a save) finishes first. Exports, checks and iLogic rules cannot be cancelled.
+            """)]
+    public async Task<CallToolResult> CancelScriptAsync()
+    {
+        var scriptTask = scriptMonitor.Current();
+        if (scriptTask is null || scriptTask.IsCompleted)
+        {
+            return Text("No script is running.");
+        }
+
+        if (!scriptRunner.Cancel())
+        {
+            return Text($"""
+                The running task ({scriptMonitor.DescribeRunning()}) is not a run_csharp script and cannot be cancelled: wait for it
+                with script_result.
+                """);
+        }
+
+        await Task.WhenAny(scriptTask, Task.Delay(TimeSpan.FromSeconds(15)));
+        if (!scriptTask.IsCompleted)
+        {
+            return Text("""
+                Cancellation requested, but the script has not stopped within 15 s: it is inside a long Inventor call, or
+                in code without loops. It stops at its next loop step; call script_result to wait for it.
+                """);
+        }
+
+        scriptMonitor.Clear(scriptTask);
+        return await scriptTask;
+    }
+
+    [McpServerTool(Name = "where_used", Title = "Where a part is used",
+        ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
+    [Description(
+        """
+            Where a part or subassembly is used in an assembly, at any depth, in under a second: every occurrence with
+            its path, its BOM structure (Normal, Reference, Phantom, Purchased) and whether it counts in the bill of
+            materials (an occurrence that is Reference, inside a Reference one, suppressed or excluded does not), with
+            counts per structure. Use it to count a component or find which subassemblies hold it, instead of a script
+            that walks the occurrences. Works on the active assembly, or on the assembly a drawing shows.
+            """)]
+    public Task<CallToolResult> GetWhereUsedAsync(
+        [Description("The part number or file name to look for, such as '21260' or '21260.ipt'.")] string item,
+        [Description("The assembly: its name or file as listed by inventor_status. Default: the active document.")] string? document = null,
+        [Description("Maximum number of occurrences listed per document; the counts always cover all.")] int maxItems = 200)
+    {
+        return RunTrackedAsync($"find where {item} is used",
+            application => Text(ToJson(WhereUsedReader.Read(application, item, document, maxItems))));
     }
 
     [McpServerTool(Name = "inspect", Title = "Inspect the active document",
@@ -270,12 +328,14 @@ public sealed class InventorTools
         ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
     [Description(
         """
-            Bill of materials of the active assembly, with quantities rolled up through the levels: 'rows' is the
+            Bill of materials of the active assembly (or of the assembly the active drawing shows), with quantities
+            rolled up through the levels: 'rows' is the
             tree (level, path of part numbers, quantity per parent, total for one assembly, BOM structure, file) and
             'totals' adds up each part number across the whole assembly, the list of what to make or buy. Follows the
             BOM rules: phantoms are replaced by their children, references are left out, purchased components are not
             expanded. Reads the Model Data view, so the document is not changed. Part numbers and descriptions come
-            from the iProperties; a file without a part number shows its file name.
+            from the iProperties; a file without a part number shows its file name. To count one component, including
+            its Reference occurrences, which the BOM leaves out, use where_used.
             """)]
     public Task<CallToolResult> GetBomAsync(
         [Description("Deepest level to list in 'rows' (1 = only the assembly's direct components). Totals always cover every level.")] int? maxLevels = null,
@@ -776,7 +836,7 @@ public sealed class InventorTools
     {
         var windows = InventorWindows.FindOtherWindowTitles(scriptMonitor.InventorWindow);
         var dialog = windows.Count == 0 ? "" : $" Inventor shows {QuoteTitles(windows)}, which may be waiting for the user.";
-        return $"Inventor is busy with a script ({running}).{dialog} Call script_result to wait for it.";
+        return $"Inventor is busy with a script ({running}).{dialog} Call script_result to wait for it, or script_cancel to stop it.";
     }
 
     private static string QuoteTitles(IReadOnlyList<string> titles)

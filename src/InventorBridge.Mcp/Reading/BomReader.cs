@@ -19,8 +19,14 @@ public static class BomReader
 
     public static object Read(Application application, int? maxLevels, int maxItems)
     {
-        var assembly = application.ActiveDocument as AssemblyDocument
-            ?? throw new InvalidOperationException("The bill of materials can only be read from an assembly: activate one first.");
+        // On a drawing, the assembly its views show: the drawing's parts list comes from it.
+        var assembly = application.ActiveDocument switch
+        {
+            AssemblyDocument active => active,
+            DrawingDocument drawing => WhereUsedReader.ModelOf(drawing) as AssemblyDocument
+                ?? throw new InvalidOperationException($"{drawing.DisplayName} shows no assembly: the bill of materials comes from an assembly."),
+            _ => throw new InvalidOperationException("The bill of materials can only be read from an assembly: activate one, or the drawing of one."),
+        };
 
         var view = FindModelDataView(assembly.ComponentDefinition.BOM)
             ?? throw new InvalidOperationException("The assembly has no Model Data BOM view.");

@@ -35,6 +35,27 @@ public sealed class ScriptRunner
         .AddImports(Imports)
         .WithEmitDebugInformation(true);
 
+    private readonly object cancellationGate = new();
+    private CancellationTokenSource? running;
+
+    /// <summary>
+    /// Asks the running script to stop at its next loop step. False when no script is running. The script stops
+    /// with an error and its transaction is rolled back.
+    /// </summary>
+    public bool Cancel()
+    {
+        lock (cancellationGate)
+        {
+            if (running is null)
+            {
+                return false;
+            }
+
+            running.Cancel();
+            return true;
+        }
+    }
+
     /// <param name="undoable">False runs the script without a transaction: no undo step, and no rollback on an error.</param>
     public ScriptResult Run(Application application, string code, string description, string? workspacePath,
         ScriptExpectation? expectation, bool undoable = true)
@@ -66,12 +87,24 @@ public sealed class ScriptRunner
         thread.CurrentCulture = CultureInfo.InvariantCulture;
         thread.CurrentUICulture = CultureInfo.InvariantCulture;
 
+        var cancellation = new CancellationTokenSource();
+        lock (cancellationGate)
+        {
+            running = cancellation;
+        }
+
         try
         {
-            return RunSilently(application, script, description, workspacePath, expectation, undoable, stopwatch);
+            return RunSilently(application, script, description, workspacePath, expectation, undoable, stopwatch, cancellation.Token);
         }
         finally
         {
+            lock (cancellationGate)
+            {
+                running = null;
+            }
+
+            cancellation.Dispose();
             thread.CurrentCulture = culture;
             thread.CurrentUICulture = uiCulture;
             RestoreSilentOperation(application, wasSilent);
@@ -80,9 +113,9 @@ public sealed class ScriptRunner
 
     /// <summary>The script itself: snapshot, transaction, run, expectation and changes.</summary>
     private static ScriptResult RunSilently(Application application, Script<object> script, string description,
-        string? workspacePath, ScriptExpectation? expectation, bool undoable, Stopwatch stopwatch)
+        string? workspacePath, ScriptExpectation? expectation, bool undoable, Stopwatch stopwatch, CancellationToken cancellation)
     {
-        var globals = new ScriptGlobals(application, workspacePath);
+        var globals = new ScriptGlobals(application, workspacePath, cancellation);
         var before = TakeSnapshot(application);
         var transaction = ScriptTransaction.Start(application, TransactionPrefix + description, undoable);
 
@@ -131,7 +164,7 @@ public sealed class ScriptRunner
 
     private Script<object> CreateScript(string code)
     {
-        return CSharpScript.Create<object>(code, options, typeof(ScriptGlobals));
+        return CSharpScript.Create<object>(CancellationPoints.Add(code), options, typeof(ScriptGlobals));
     }
 
     private static List<string> GetCompilationErrors(Script<object> script)

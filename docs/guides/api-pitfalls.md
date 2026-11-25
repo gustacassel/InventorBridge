@@ -19,6 +19,9 @@
 - `App.ActiveDocument` is a `Document`. Cast it to `PartDocument`, `AssemblyDocument` or `DrawingDocument` to reach `ComponentDefinition`.
 - The interop hides COM inheritance: an `ExtrudeFeature` is also a `PartFeature`, a `PartDocument` is also a `Document`. `api_lookup` shows "Inherits from".
 - Enum values start with `k`: `DocumentTypeEnum.kPartDocumentObject`, `PartFeatureOperationEnum.kJoinOperation`.
+- C# does not convert between these interfaces by itself: pass a `PartDocument` or an `AssemblyDocument` where a `Document` is expected with a cast, `(Document)assembly`.
+- `AllLeafOccurrences`, `AllReferencedOccurrences[document]`, `OccurrencePath` and `SubOccurrences` return a `ComponentOccurrencesEnumerator`, not `ComponentOccurrences`: a method that takes one does not take the other. Iterate with `foreach (ComponentOccurrence occurrence in ...)`.
+- Members that look obvious and do not exist: `File.ReadOnly` (read `System.IO.FileInfo(document.FullFileName).IsReadOnly`), `DrawingCurve.Radius` (a circle's size comes from its `ModelGeometry`, or from `StartPoint` and `CenterPoint`). Look a member up with `api_lookup` before using it.
 
 ## Indexed properties and methods with array arguments
 
